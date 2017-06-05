@@ -27,7 +27,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _valueConnectorsLazy = valueConnectors;
         }
 
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent" };
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
 
         // cannot inject ValueConnectorCollection else of course it creates a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
