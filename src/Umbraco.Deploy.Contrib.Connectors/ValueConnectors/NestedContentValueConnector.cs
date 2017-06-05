@@ -14,12 +14,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// <summary>
     /// A Deploy connector for the NestedContent property editor
     /// </summary>
-    public class NestedContentConnector : IValueConnector
+    public class NestedContentValueConnector : IValueConnector
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
 
-        public NestedContentConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
+        public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
             if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
