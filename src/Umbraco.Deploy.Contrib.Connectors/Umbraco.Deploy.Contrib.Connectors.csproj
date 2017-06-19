@@ -239,7 +239,7 @@
     <Compile Include="ValueConnectors\MultiUrlPickerValueConnector.cs" />
     <Compile Include="ValueConnectors\InnerContentConnector.cs" />
     <Compile Include="ValueConnectors\StackedContentConnector.cs" />
-    <Compile Include="ValueConnectors\NestedContentConnector.cs" />
+    <Compile Include="ValueConnectors\NestedContentValueConnector.cs" />
     <Compile Include="ValueConnectors\UrlPickerValueConnector.cs" />
   </ItemGroup>
   <ItemGroup>
