@@ -14,12 +14,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// <summary>
     /// A Deploy connector for the NestedContent property editor
     /// </summary>
-    public class NestedContentConnector : IValueConnector
+    public class NestedContentValueConnector : IValueConnector
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
 
-        public NestedContentConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
+        public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
             if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
@@ -27,7 +27,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _valueConnectorsLazy = valueConnectors;
         }
 
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent" };
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
 
         // cannot inject ValueConnectorCollection else of course it creates a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
