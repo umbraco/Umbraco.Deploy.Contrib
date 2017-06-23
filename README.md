@@ -1,5 +1,5 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/bfotoy95lmos15b2/branch/master?svg=true)](https://ci.appveyor.com/project/Umbraco/umbraco-courier-contrib/branch/master)
-[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Courier.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Courier.Contrib)
+[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
 
 # Umbraco Deploy Contrib
 
@@ -22,6 +22,12 @@ This project offers Umbraco Deploy connectors for the following community packag
 
 ## Getting Started
 
+### Installation
+
+You can install the NuGet package using `Install-Package Umbraco.Deploy.Contrib`.  
+[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
+
+---
 ## Contributing to this project
 
 Anyone who wishes to get involved with this project is more than welcome to contribute. Please take a moment to review the [guidelines for contributing](CONTRIBUTING.md), this applies for any bug reports, feature requests and pull requests.
