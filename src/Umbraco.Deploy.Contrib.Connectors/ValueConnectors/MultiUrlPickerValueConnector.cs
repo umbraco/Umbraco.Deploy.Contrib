@@ -52,7 +52,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _mediaService = mediaService;
             _logger = logger;
         }
-        
+
         /// <inheritdoc/>
         public virtual IEnumerable<string> PropertyEditorAliases => new[] { "RJP.MultiUrlPicker" };
 
@@ -62,15 +62,82 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (string.IsNullOrWhiteSpace(svalue))
                 return string.Empty;
 
-            var links = JsonConvert.DeserializeObject<JArray>(svalue);
-            if (links == null)
-                return string.Empty;
+            var valueAsJToken = JToken.Parse(svalue);
 
-            foreach (var link in links)
+            if (valueAsJToken is JArray)
             {
+                // Multiple links, parse as JArray
+                var links = JsonConvert.DeserializeObject<JArray>(svalue);
+                if (links == null)
+                    return string.Empty;
+
+                foreach (var link in links)
+                {
+                    var isMedia = link["isMedia"] != null;
+                    int intId;
+                    string url;
+                    GuidUdi guidUdi;
+                    // Only do processing if the Id is set on the element. OR if the url is set and its a media item
+                    if (TryParseJTokenAttr(link, "id", out  intId))
+                    {
+                        // Checks weather we are resolving a media item or a document
+                        var objectTypeId = isMedia
+                            ? UmbracoObjectTypes.Media
+                            : UmbracoObjectTypes.Document;
+                        var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
+
+                        var guidAttempt = _entityService.GetKeyForId(intId, objectTypeId);
+                        if (guidAttempt.Success == false)
+                            continue;
+
+                        var udi = new GuidUdi(entityType, guidAttempt.Result);
+                        // Add the artifact dependency
+                        dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
+
+                        // Set the Id attribute to the udi
+                        link["id"] = udi.ToString();
+                    }
+                    else if (TryParseJTokenAttr(link, "udi", out guidUdi))
+                    {
+                        var entity = _entityService.GetByKey(guidUdi.Guid, Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType));
+                        if (entity == null)
+                            continue;
+
+                        // Add the artifact dependency
+                        dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
+                    }
+                    else if (isMedia && TryParseJTokenAttr(link, "url", out url))
+                    {
+                        // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on), 
+                        // where you edit a media link, and just hit "Select". 
+                        // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as 
+                        // a dependency to the package. If we can't find it, we abort(aka continue)
+                        var entry = _mediaPaths.Get(url);
+                        if (entry == null)
+                            continue;
+
+                        // Add the artifact dependency
+                        var udi = entry.Udi;
+                        dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
+
+                        // Update the url on the item to the udi aka umb://media/fileguid
+                        link["url"] = udi.ToString();
+                    }
+                }
+                return JsonConvert.SerializeObject(links);
+            }
+
+            if (valueAsJToken is JObject)
+            {
+                // Single link, parse as JToken
+                var link = JsonConvert.DeserializeObject<JToken>(svalue);
+                if (link == null)
+                    return string.Empty;
+
                 var isMedia = link["isMedia"] != null;
                 int intId;
                 string url;
+                GuidUdi guidUdi;
                 // Only do processing if the Id is set on the element. OR if the url is set and its a media item
                 if (TryParseJTokenAttr(link, "id", out intId))
                 {
@@ -81,15 +148,24 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
                     var guidAttempt = _entityService.GetKeyForId(intId, objectTypeId);
-                    if (guidAttempt.Success == false)
-                        continue;
+                    if (guidAttempt.Success)
+                    {
+                        var udi = new GuidUdi(entityType, guidAttempt.Result);
+                        // Add the artifact dependency
+                        dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
 
-                    var udi = new GuidUdi(entityType, guidAttempt.Result);
-                    // Add the artifact dependency
-                    dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
-
-                    // Set the Id attribute to the udi
-                    link["id"] = udi.ToString();
+                        // Set the Id attribute to the udi
+                        link["id"] = udi.ToString();
+                    }
+                }
+                else if (TryParseJTokenAttr(link, "udi", out guidUdi))
+                {
+                    var entity = _entityService.GetByKey(guidUdi.Guid, Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType));
+                    if (entity != null)
+                    {
+                        // Add the artifact dependency
+                        dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
+                    }
                 }
                 else if (isMedia && TryParseJTokenAttr(link, "url", out url))
                 {
@@ -97,20 +173,22 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // where you edit a media link, and just hits "Select". 
                     // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as 
                     // a dependency to the package. If we can't find it, we abort(aka continue)
-                    //var media = _mediaService.GetMediaByPath(url);
                     var entry = _mediaPaths.Get(url);
-                    if (entry == null)
-                        continue;
+                    if (entry != null)
+                    {
+                        // Add the artifact dependency
+                        var udi = entry.Udi;
+                        dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
 
-                    // Add the artifact dependency
-                    var udi = entry.Udi;
-                    dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
-
-                    // Update the url on the item to the udi aka umb://media/fileguid
-                    link["url"] = udi.ToString();
+                        // Update the url on the item to the udi aka umb://media/fileguid
+                        link["url"] = udi.ToString();
+                    }
                 }
+                return JsonConvert.SerializeObject(link);
             }
-            return JsonConvert.SerializeObject(links);
+
+            //if none of the above...
+            return string.Empty;
         }
 
         public void SetValue(IContentBase content, string alias, string value)
@@ -120,49 +198,99 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 content.SetValue(alias, value);
                 return;
             }
-            var links = JsonConvert.DeserializeObject<JArray>(value);
-            if (links != null)
-            {
-                foreach (var link in links)
-                {
-                    GuidUdi udi;
-                    string url;
-                    // Only do processing on an item if the Id or the url is set
-                    if (TryParseJTokenAttr(link, "id", out udi))
-                    {
-                        // Check the type of the link
-                        var nodeObjectType = link["isMedia"] != null
-                            ? UmbracoObjectTypes.Media
-                            : UmbracoObjectTypes.Document;
 
-                        // Get the Id corresponding to the Guid
-                        // it *should* succeed when deploying, due to dependencies management
-                        // nevertheless, assume it can fail, and then create an invalid localLink
-                        var idAttempt = _entityService.GetIdForKey(udi.Guid, nodeObjectType);
-                        if (idAttempt)
-                            link["id"] = idAttempt.Success ? idAttempt.Result : 0;
-                    }
-                    else if (TryParseJTokenAttr(link, "url", out url))
+            var valueAsJToken = JToken.Parse(value);
+
+            if (valueAsJToken is JArray)
+            {
+                //Multiple links, parse as JArray
+                var links = JsonConvert.DeserializeObject<JArray>(value);
+                if (links != null)
+                {
+                    foreach (var link in links)
                     {
-                        // Check weather the url attribut  of the link contains a udi, if so, replace it with the 
-                        // path to the file, i.e. the regex replaces <udi> with /path/to/file
-                        var newUrl = MediaUdiSrcRegex.Replace(url, match =>
+                        GuidUdi udi;
+                        string url;
+                        // Only do processing on an item if the Id or the url is set
+                        if (TryParseJTokenAttr(link, "id", out udi))
                         {
-                            var udiString = match.Groups["udi"].ToString();
-                            GuidUdi foundUdi;
-                            if (GuidUdi.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
+                            // Check the type of the link
+                            var nodeObjectType = link["isMedia"] != null
+                                ? UmbracoObjectTypes.Media
+                                : UmbracoObjectTypes.Document;
+
+                            // Get the Id corresponding to the Guid
+                            // it *should* succeed when deploying, due to dependencies management
+                            // nevertheless, assume it can fail, and then create an invalid localLink
+                            var idAttempt = _entityService.GetIdForKey(udi.Guid, nodeObjectType);
+                            if (idAttempt)
+                                link["id"] = idAttempt.Success ? idAttempt.Result : 0;
+                        }
+                        else if (TryParseJTokenAttr(link, "url", out url))
+                        {
+                            // Check whether the url attribute of the link contains a udi, if so, replace it with the
+                            // path to the file, i.e. the regex replaces <udi> with /path/to/file
+                            var newUrl = MediaUdiSrcRegex.Replace(url, match =>
                             {
-                                // (take care of nulls)
-                                var media = _mediaService.GetById(foundUdi.Guid);
-                                if (media != null)
-                                    return media.GetUrl("umbracoFile", _logger);
-                            }
-                            return string.Empty;
-                        });
-                        link["url"] = newUrl;
+                                var udiString = match.Groups["udi"].ToString();
+                                GuidUdi foundUdi;
+                                if (GuidUdi.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
+                                {
+                                    // (take care of nulls)
+                                    var media = _mediaService.GetById(foundUdi.Guid);
+                                    if (media != null)
+                                        return media.GetUrl("umbracoFile", _logger);
+                                }
+                                return string.Empty;
+                            });
+                            link["url"] = newUrl;
+                        }
                     }
+                    content.SetValue(alias, JsonConvert.SerializeObject(links));
                 }
-                content.SetValue(alias, JsonConvert.SerializeObject(links));
+            }
+            else if (valueAsJToken is JObject)
+            {
+                //Single link, parse as JToken    
+                var link = JsonConvert.DeserializeObject<JToken>(value);
+
+                GuidUdi udi;
+                string url;
+                // Only do processing on an item if the Id or the url is set
+                if (TryParseJTokenAttr(link, "id", out udi))
+                {
+                    // Check the type of the link
+                    var nodeObjectType = link["isMedia"] != null
+                        ? UmbracoObjectTypes.Media
+                        : UmbracoObjectTypes.Document;
+
+                    // Get the Id corresponding to the Guid
+                    // it *should* succeed when deploying, due to dependencies management
+                    // nevertheless, assume it can fail, and then create an invalid localLink
+                    var idAttempt = _entityService.GetIdForKey(udi.Guid, nodeObjectType);
+                    if (idAttempt)
+                        link["id"] = idAttempt.Success ? idAttempt.Result : 0; 
+                }
+                else if (TryParseJTokenAttr(link, "url", out url))
+                {
+                    // Check whether the url attribute of the link contains a udi, if so, replace it with the 
+                    // path to the file, i.e. the regex replaces <udi> with /path/to/file
+                    var newUrl = MediaUdiSrcRegex.Replace(url, match =>
+                    {
+                        var udiString = match.Groups["udi"].ToString();
+                        GuidUdi foundUdi;
+                        if (GuidUdi.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
+                        {
+                            // (take care of nulls)
+                            var media = _mediaService.GetById(foundUdi.Guid);
+                            if (media != null)
+                                return media.GetUrl("umbracoFile", _logger);
+                        }
+                        return string.Empty;
+                    });
+                    link["url"] = newUrl;
+                }
+                content.SetValue(alias, JsonConvert.SerializeObject(link));
             }
         }
 
