@@ -59,7 +59,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             // try parsing this as a Vorto value
             var vortoValue = JsonConvert.DeserializeObject<VortoValue>(value);
-            if (vortoValue == null)
+            if (vortoValue?.Values?.ValuePairs == null)
                 return null;
 
             // get the Vorto datatype
