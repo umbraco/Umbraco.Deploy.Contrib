@@ -81,8 +81,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
-                    var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
+                    // skip key - it is not a property and it is a guid anyway so no need to convert
+                    if (key == "key")
+                        continue;
 
+                    var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
+                    
                     if (propertyType == null)
                         throw new NullReferenceException($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
 
@@ -174,6 +178,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
+                    // skip key - it is not a property and it is a guid anyway so no need to convert
+                    if (key == "key")
+                        continue;
+
                     var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
                     if (propertyType == null)
@@ -188,8 +196,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     {
                         propValueConnector.SetValue(mockContent, propertyType.Alias, rowValue.ToString());
                         var convertedValue = mockContent.GetValue(propertyType.Alias);
+                        if (convertedValue == null)
+                        {
+                            row.PropertyValues[key] = null;
+                        }
                         // integers needs to be converted into strings
-                        if (convertedValue is int)
+                        else if (convertedValue is int)
                         {
                             row.PropertyValues[key] = convertedValue.ToString();
                         }
