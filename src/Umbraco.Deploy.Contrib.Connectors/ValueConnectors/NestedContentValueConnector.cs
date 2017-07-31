@@ -27,6 +27,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _valueConnectorsLazy = valueConnectors;
         }
 
+        // Our.Umbraco.NestedContent is the original NestedContent package
+        // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
         public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
 
         // cannot inject ValueConnectorCollection else of course it creates a circular (recursive) dependency,
@@ -81,12 +83,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
-                    // skip key - it is not a property and it is a guid anyway so no need to convert
+                    // key is a system property that is added by NestedContent in Core v7.7
+                    // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
                         continue;
 
                     var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
-                    
+
                     if (propertyType == null)
                         throw new NullReferenceException($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
 
@@ -178,7 +181,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
-                    // skip key - it is not a property and it is a guid anyway so no need to convert
+                    // key is a system property that is added by NestedContent in Core v7.7
+                    // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
                         continue;
 
@@ -251,6 +255,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             [JsonProperty("ncContentTypeAlias")]
             public string ContentTypeAlias { get; set; }
+
+            // starting with v7.7, Core's NestedContent implement "key" as a system property
+            // but since we are supporting pre-v7.7 including the NestedContent package, we
+            // cannot do it this way - it's all managed "manually" when dealing with
+            // PropertyValues.
+            //[JsonProperty("key")]
+            //public Guid Key { get; set; }
 
             /// <summary>
             /// The remaining properties will be serialized to a dictionary
