@@ -102,6 +102,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     object parsedValue = propValueConnector.GetValue(mockProperty, dependencies);
 
+                    // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
+                    Umbraco.Core.Logging.LogHelper.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
+                        + "' using " + propValueConnector.GetType() + " for " + propertyType);
+
                     // test if the value is a json object (thus could be a nested complex editor)
                     // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
                     JToken jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
