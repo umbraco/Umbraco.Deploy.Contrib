@@ -2,9 +2,8 @@
 SETLOCAL
 	:: SETLOCAL is on, so changes to the path not persist to the actual user's path
 
-REM Get the version and comment from Version.txt lines 2 and 3
-SET "release=1.0.0"
-SET "comment="
+SET "release=1.0.19"
+SET "comment=alpha"
 
 REM If there's arguments on the command line use that as the version
 IF [%1] NEQ [] (SET release=%1)
@@ -28,4 +27,4 @@ ECHO Restore NuGet packages
 SET msbuild="%programfiles(x86)%\MSBuild\14.0\Bin\MsBuild.exe"
 
 ECHO Build the library and produce NuGet package
-%msbuild% Package.build.xml /p:ProductVersion=%version%
+%msbuild% Package.build.xml /p:ProductVersion=%release% /p:ProductComment=%comment%

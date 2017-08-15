@@ -48,8 +48,10 @@
 		<BuildNuGetDir>$(MSBuildProjectDirectory)\_nuget</BuildNuGetDir>
 		<CoreProjectDir>$(RootDir)\..\src\Umbraco.Deploy.Contrib.Connectors\</CoreProjectDir>
 		<SolutionRootDir>$(RootDir)\..\src</SolutionRootDir>
+		<FullVersion>$(ProductVersion)</FullVersion>
+		<FullVersion Condition="'$(ProductComment)' != ''">$(ProductVersion)-$(ProductComment)</FullVersion>
 	</PropertyGroup>
-
+	
 	<!-- TARGETS -->
   
 	<!-- CLEAN -->
@@ -99,7 +101,7 @@
 			Title="$(NugetPackageName)"
 			Description="$(Readme)"
 			Summary="$(Summary)"
-			Version="$(ProductVersion)"
+			Version="$(FullVersion)"
 			MinimumRequiredUmbracoVersion ="$(MinUmbracoVersion)"
 			Authors="$(AuthorName)"
 			Owners="$(Owners)"
@@ -119,15 +121,15 @@
 		<MSBuild.NuGet.Tasks.Pack NuGetExePath="$(RootDir)\Tools\NuGet.exe"
           	ManifestFile="$(BuildNuGetDir)\package.nuspec"
           	BasePath="$(BuildNuGetDir)"
-          	Version="$(ProductVersion)"
+          	Version="$(FullVersion)"
           	OutputDirectory="$(PackageDir)"
           	Symbols="true" />
 	</Target>
 
 	<Target Name="ZipPackage" DependsOnTargets="Package">
 		<Message Text="Starting to zip the package" Importance="high" />		
-		<Exec Command="$(RootDir)\Tools\7za.exe a %22$(PackageDir)\$(PackageId).$(ProductVersion).zip%22 %22$(CoreProjectDir)\bin\$(BuildConfiguration)\Umbraco.Deploy.Contrib.Connectors.dll%22" />
-		<Message Text="Finished zipping to Release\$(PackageId).$(ProductVersion).zip" Importance="high" />
+		<Exec Command="$(RootDir)\Tools\7za.exe a %22$(PackageDir)\$(PackageId).$(FullVersion).zip%22 %22$(CoreProjectDir)\bin\$(BuildConfiguration)\Umbraco.Deploy.Contrib.Connectors.dll%22" />
+		<Message Text="Finished zipping to Release\$(PackageId).$(FullVersion).zip" Importance="high" />
 	</Target>
 
 	<Target Name="PostClean" DependsOnTargets="ZipPackage">
