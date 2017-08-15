@@ -238,6 +238,8 @@
     <Compile Include="Properties\VersionInfo.cs" />
     <Compile Include="ValueConnectors\ArchetypeValueConnector.cs" />
     <Compile Include="ValueConnectors\MultiUrlPickerValueConnector.cs" />
+    <Compile Include="ValueConnectors\RelatedLinksValueConnector.cs" />
+    <Compile Include="ValueConnectors\RelatedLinks2ValueConnector.cs" />
     <Compile Include="ValueConnectors\VortoValueConnector.cs" />
     <Compile Include="ValueConnectors\InnerContentConnector.cs" />
     <Compile Include="ValueConnectors\StackedContentConnector.cs" />
