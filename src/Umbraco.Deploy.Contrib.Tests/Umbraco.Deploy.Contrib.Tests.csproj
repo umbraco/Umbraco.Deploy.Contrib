@@ -254,7 +254,6 @@
     <Compile Include="TestHelpers\TestFileTypeCollection.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="App_Plugins\Deploy\package.manifest" />
     <None Include="config\UmbracoDeploy.config" />
     <None Include="config\UmbracoDeploy.Settings.config" />

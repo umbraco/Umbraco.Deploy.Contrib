@@ -247,7 +247,6 @@
     <Compile Include="ValueConnectors\UrlPickerValueConnector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="App_Plugins\Deploy\package.manifest" />
     <None Include="Config\UmbracoDeploy.config" />
     <None Include="Config\UmbracoDeploy.Settings.config" />
