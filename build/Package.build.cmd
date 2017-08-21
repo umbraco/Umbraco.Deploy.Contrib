@@ -3,7 +3,7 @@ SETLOCAL
 	:: SETLOCAL is on, so changes to the path not persist to the actual user's path
 
 SET "release=1.0.19"
-SET "comment=alpha"
+SET "comment="
 
 REM If there's arguments on the command line use that as the version
 IF [%1] NEQ [] (SET release=%1)
