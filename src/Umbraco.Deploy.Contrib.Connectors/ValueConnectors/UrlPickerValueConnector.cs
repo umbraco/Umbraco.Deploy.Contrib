@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Web.Hosting;
 using Newtonsoft.Json;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
@@ -16,6 +19,27 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     {
         private readonly IEntityService _entityService;
 
+        private readonly Version UrlPickerVersionStoringArray = new Version(0, 15, 0, 1);
+
+        private static Lazy<Version> UrlPickerVersion
+        {
+            get
+            {
+                return new Lazy<Version>(() =>
+                {
+                    // we cannot just get the assembly and get version from that, as we need to check the FileVersion
+                    // (apparently that is different from the assembly version...)
+                    var urlPickerAssemblyPath = HostingEnvironment.MapPath("~/bin/UrlPicker.dll");
+                    if (System.IO.File.Exists(urlPickerAssemblyPath))
+                    {
+                        var fileVersionInfo = FileVersionInfo.GetVersionInfo(urlPickerAssemblyPath);
+                        return new Version(fileVersionInfo.FileVersion);
+                    }
+                    return null;
+                });
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UrlPickerValueConnector"/> class.
         /// </summary>
@@ -28,7 +52,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         }
 
         /// <inheritdoc/>
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Imulus.UrlPicker" };
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] {"Imulus.UrlPicker"};
 
         /// <inheritdoc/>
         public string GetValue(Property property, ICollection<ArtifactDependency> dependencies)
@@ -37,14 +61,30 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (string.IsNullOrWhiteSpace(svalue))
                 return string.Empty;
 
-            var urlPickerPropertyData = JsonConvert.DeserializeObject<IEnumerable<UrlPickerPropertyData>>(svalue);
-            foreach (var urlPicker in urlPickerPropertyData)
+            IEnumerable<UrlPickerPropertyData> urlPickerPropertyDatas;
+
+            // If using an old version of the UrlPicker - data is serialized as a single object
+            // Otherwise data is serialized as an array of objects, even if only one is selected.
+            if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
+            {
+                var urlPickerPropertyData = JsonConvert.DeserializeObject<UrlPickerPropertyData>(svalue);
+                urlPickerPropertyDatas = new List<UrlPickerPropertyData> {urlPickerPropertyData};
+            }
+            else
+            {
+                urlPickerPropertyDatas = JsonConvert.DeserializeObject<IEnumerable<UrlPickerPropertyData>>(svalue)
+                    .ToList();
+            }
+
+
+            foreach (var urlPicker in urlPickerPropertyDatas)
             {
                 // If the contentId/mediaId of the TypeData is set try get the GuidUdi for the content/media and
                 // mark it as a dependency we need to deploy.
                 // We need the Guid for the content/media because the integer value could be different in the different environments.
                 GuidUdi contentGuidUdi;
-                if (TryGetGuidUdi(urlPicker.TypeData.ContentId, UmbracoObjectTypes.Document, Constants.UdiEntityType.Document, out contentGuidUdi))
+                if (TryGetGuidUdi(urlPicker.TypeData.ContentId, UmbracoObjectTypes.Document,
+                    Constants.UdiEntityType.Document, out contentGuidUdi))
                 {
                     dependencies.Add(new ArtifactDependency(contentGuidUdi, false, ArtifactDependencyMode.Exist));
                     urlPicker.TypeData.ContentId = contentGuidUdi.Guid;
@@ -53,14 +93,20 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 // The picker can have values set for both content and media even though only one of them is "active".
                 // We still need to resolve the value for both settings.
                 GuidUdi mediaGuidUdi;
-                if (TryGetGuidUdi(urlPicker.TypeData.MediaId, UmbracoObjectTypes.Media, Constants.UdiEntityType.Media, out mediaGuidUdi))
+                if (TryGetGuidUdi(urlPicker.TypeData.MediaId, UmbracoObjectTypes.Media, Constants.UdiEntityType.Media,
+                    out mediaGuidUdi))
                 {
                     dependencies.Add(new ArtifactDependency(mediaGuidUdi, false, ArtifactDependencyMode.Exist));
                     urlPicker.TypeData.MediaId = mediaGuidUdi.Guid;
                 }
             }
-            
-            return JsonConvert.SerializeObject(urlPickerPropertyData);
+            // If using an old version of the UrlPicker - data is serialized as a single object
+            // Otherwise data is serialized as an array of objects, even if only one is selected.
+            if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
+            {
+                return JsonConvert.SerializeObject(urlPickerPropertyDatas.FirstOrDefault());
+            }
+            return JsonConvert.SerializeObject(urlPickerPropertyDatas);
         }
 
         /// <inheritdoc/>
@@ -72,8 +118,21 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return;
             }
 
-            var urlPickerPropertyData = JsonConvert.DeserializeObject<IEnumerable<UrlPickerPropertyData>>(value);
-            foreach (var urlPicker in urlPickerPropertyData)
+            IEnumerable<UrlPickerPropertyData> urlPickerPropertyDatas;
+
+            // If using an old version of the UrlPicker - data is serialized as a single object
+            // Otherwise data is serialized as an array of objects, even if only one is selected.
+            if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
+            {
+                var urlPickerPropertyData = JsonConvert.DeserializeObject<UrlPickerPropertyData>(value);
+                urlPickerPropertyDatas = new List<UrlPickerPropertyData> {urlPickerPropertyData};
+            }
+            else
+            {
+                urlPickerPropertyDatas = JsonConvert.DeserializeObject<IEnumerable<UrlPickerPropertyData>>(value).ToList();
+            }
+
+            foreach (var urlPicker in urlPickerPropertyDatas)
             {
                 // When we set the value we want to switch the Guid value of the contentId/mediaId to the integervalue
                 // as this is what the UrlPicker uses to lookup it's content/media
@@ -87,11 +146,21 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (TryGetId(urlPicker.TypeData.MediaId, UmbracoObjectTypes.Media, out mediaId))
                     urlPicker.TypeData.MediaId = mediaId;
             }
-            
-            content.SetValue(alias, JsonConvert.SerializeObject(urlPickerPropertyData));
+
+            // If using an old version of the UrlPicker - data is serialized as a single object
+            // Otherwise data is serialized as an array of objects, even if only one is selected.
+            if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
+            {
+                content.SetValue(alias, JsonConvert.SerializeObject(urlPickerPropertyDatas.FirstOrDefault()));
+            }
+            else
+            {
+                content.SetValue(alias, JsonConvert.SerializeObject(urlPickerPropertyDatas));
+            }
         }
 
-        private bool TryGetGuidUdi(object value, UmbracoObjectTypes umbracoObjectType, string entityType, out GuidUdi udi)
+        private bool TryGetGuidUdi(object value, UmbracoObjectTypes umbracoObjectType, string entityType,
+            out GuidUdi udi)
         {
             int id;
             if (value != null && int.TryParse(value.ToString(), out id))
@@ -127,10 +196,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             [JsonProperty("type")]
             public string Type { get; set; }
+
             [JsonProperty("meta")]
             public Meta Meta { get; set; }
+
             [JsonProperty("typeData")]
             public TypeData TypeData { get; set; }
+
             [JsonProperty("disabled")]
             public bool Disabled { get; set; }
         }
@@ -139,6 +211,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             [JsonProperty("title")]
             public string Title { get; set; }
+
             [JsonProperty("newWindow")]
             public bool NewWindow { get; set; }
         }
@@ -147,8 +220,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             [JsonProperty("url")]
             public string Url { get; set; }
+
             [JsonProperty("contentId")]
             public object ContentId { get; set; }
+
             [JsonProperty("mediaId")]
             public object MediaId { get; set; }
         }
