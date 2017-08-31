@@ -181,7 +181,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
                     if (propertyType == null)
-                        throw new NullReferenceException($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
+                    {
+                        LogHelper.Debug<InnerContentConnector>($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
+                        continue;
+                    }
 
                     // throws if not found - no need for a null check
                     var propValueConnector = ValueConnectors.Get(propertyType);
