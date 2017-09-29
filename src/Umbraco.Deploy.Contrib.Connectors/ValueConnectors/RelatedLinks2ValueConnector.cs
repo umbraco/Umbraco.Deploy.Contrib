@@ -50,7 +50,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             foreach (var internalLink in relatedLinks.Where(x => x.IsInternal))
             {
                 //As the page was picked we need to add it to collection of depenencies for this deployment
-                dependencies.Add(new ArtifactDependency(internalLink.Link, false, ArtifactDependencyMode.Exist));
+                if (internalLink.Link != null)
+                    dependencies.Add(new ArtifactDependency(internalLink.Link, false, ArtifactDependencyMode.Exist));
             }
 
             //As this property editor already stores UDIs and not ints
