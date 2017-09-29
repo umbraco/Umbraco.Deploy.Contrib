@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Services;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -29,9 +33,17 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// </summary>
     public class RelatedLinks2ValueConnector : IValueConnector
     {
+        private readonly IEntityService _entityService;
+
+        public RelatedLinks2ValueConnector(IEntityService entityService)
+        {
+            if (entityService == null) throw new ArgumentNullException(nameof(entityService));
+            _entityService = entityService;
+        }
+
         public string GetValue(Property property, ICollection<ArtifactDependency> dependencies)
         {
-            
+
             var value = property.Value as string;
 
             if (string.IsNullOrWhiteSpace(value))
@@ -40,7 +52,44 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (value.DetectIsJson() == false)
                 return null;
 
-            var relatedLinks = JsonConvert.DeserializeObject<IEnumerable<RelatedLinkUdiModel>>(value);
+            var relatedLinks = new List<RelatedLinkUdiModel>();
+            try
+            {
+                relatedLinks = JsonConvert.DeserializeObject<List<RelatedLinkUdiModel>>(value);
+            }
+            catch (JsonSerializationException ex)
+            {
+                // We might be transferring related links stored as int id, parse with ints instead.
+
+                var relatedLinksInt = JsonConvert.DeserializeObject<JArray>(value);
+
+                if (relatedLinksInt == null)
+                    return string.Empty;
+
+                foreach (var relatedLink in relatedLinksInt)
+                {
+                    //Get the value from the JSON object
+                    var isInternal = Convert.ToBoolean(relatedLink["isInternal"]);
+
+                    //We are only concerned about internal links
+                    if (!isInternal)
+                        continue;
+
+                    var linkIntId = Convert.ToInt32(relatedLink["link"]);
+
+                    //get the guid corresponding to the id
+                    //it *can* fail if eg the id points to a deleted content,
+                    //and then we use an empty guid
+                    var guidAttempt = _entityService.GetKeyForId(linkIntId, UmbracoObjectTypes.Document);
+                    if (guidAttempt.Success)
+                    {
+                        // replace the picked content id by the corresponding Udi as a dependancy
+                        var udi = new GuidUdi(Constants.UdiEntityType.Document, guidAttempt.Result);
+
+                        relatedLinks.Add(new RelatedLinkUdiModel { Link = udi, IsInternal = true });
+                    }
+                }
+            }
 
             if (relatedLinks == null)
                 return null;
