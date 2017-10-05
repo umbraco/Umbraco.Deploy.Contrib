@@ -34,50 +34,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
         }
 
-        public IEnumerable<string> PropertyEditorAliases => new[]
-        {
-            "nuPickers.DotNetCheckBoxPicker",
-            "nuPickers.DotNetDropDownPicker",
-            "nuPickers.DotNetLabels",
-            "nuPickers.DotNetPagedListPicker",
-            "nuPickers.DotNetPrefetchListPicker",
-            "nuPickers.DotNetRadioButtonPicker",
-            "nuPickers.DotNetTypeaheadListPicker",
-            "nuPickers.EnumCheckBoxPicker",
-            "nuPickers.EnumDropDownPicker",
-            "nuPickers.EnumLabels",
-            "nuPickers.EnumPrefetchListPicker",
-            "nuPickers.EnumRadioButtonPicker",
-            "nuPickers.JsonCheckBoxPicker",
-            "nuPickers.JsonDropDownPicker",
-            "nuPickers.JsonLabels",
-            "nuPickers.JsonPagedListPicker",
-            "nuPickers.JsonPrefetchListPicker",
-            "nuPickers.JsonRadioButtonPicker",
-            "nuPickers.JsonTypeaheadListPicker",
-            "nuPickers.LuceneCheckBoxPicker",
-            "nuPickers.LuceneDropDownPicker",
-            "nuPickers.LuceneLabels",
-            "nuPickers.LucenePagedListPicker",
-            "nuPickers.LucenePrefetchListPicker",
-            "nuPickers.LuceneRadioButtonPicker",
-            "nuPickers.LuceneTypeaheadListPicker",
-            "nuPickers.RelationLabels",
-            "nuPickers.SqlCheckBoxPicker",
-            "nuPickers.SqlDropDownPicker",
-            "nuPickers.SqlLabels",
-            "nuPickers.SqlPagedListPicker",
-            "nuPickers.SqlPrefetchListPicker",
-            "nuPickers.SqlRadioButtonPicker",
-            "nuPickers.SqlTypeaheadListPicker",
-            "nuPickers.XmlCheckBoxPicker",
-            "nuPickers.XmlDropDownPicker",
-            "nuPickers.XmlLabels",
-            "nuPickers.XmlPagedListPicker",
-            "nuPickers.XmlPrefetchListPicker",
-            "nuPickers.XmlRadioButtonPicker",
-            "nuPickers.XmlTypeaheadListPicker"
-        };
+        public IEnumerable<string> PropertyEditorAliases => Enumerable.Empty<string>();
 
         /// <summary>
         /// Gets the deploy property corresponding to a content property.
