@@ -12,7 +12,7 @@ using Umbraco.Core.Services;
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     /// <summary>
-    /// A Deploy connector for the nuPickers property editor
+    /// A Deploy connector for the nuPickers property editor, when used with Umbraco content & media.
     /// </summary>
     public class NuPickersValueConnector : IValueConnector
     {
