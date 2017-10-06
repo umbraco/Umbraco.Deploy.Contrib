@@ -22,7 +22,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             CSV,
             JSON,
-            XML,
+            XML
         }
 
         /// <summary>
@@ -48,14 +48,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             var value = property.Value as string;
 
             // parse the value - checking the format - CSV, XML or JSON
-            var items = ParseValue(value, out SaveFormat format);
+            SaveFormat format;
+            var items = ParseValue(value, out format);
 
             var result = new List<KeyValuePair<string, string>>();
 
             // loop over the values
             foreach (var item in items)
             {
-                if (int.TryParse(item.Key, out int nodeId))
+                int nodeId;
+                if (int.TryParse(item.Key, out nodeId))
                 {
                     // if an INT, attempt to get the UDI
                     var guidUdi = GetGuidUdi(nodeId);
@@ -90,14 +92,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         public void SetValue(IContentBase content, string alias, string value)
         {
             // parse the value - checking the format - CSV, XML or JSON
-            var items = ParseValue(value, out SaveFormat format);
+            SaveFormat format;
+            var items = ParseValue(value, out format);
 
             var result = new List<KeyValuePair<string, string>>();
 
             // loop over the values
             foreach (var item in items)
             {
-                if (GuidUdi.TryParse(item.Key, out GuidUdi guidUdi) && guidUdi.Guid != Guid.Empty)
+                GuidUdi guidUdi;
+                if (GuidUdi.TryParse(item.Key, out guidUdi) && guidUdi.Guid != Guid.Empty)
                 {
                     // if an UDI, attempt to get the INT
                     var nodeId = GetIntId(guidUdi.Guid);
@@ -175,7 +179,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (keyForId.Success)
                 return new GuidUdi(Constants.UdiEntityType.Document, keyForId.Result);
 
-            keyForId = this._entityService.GetKeyForId(id, UmbracoObjectTypes.Media);
+            keyForId = _entityService.GetKeyForId(id, UmbracoObjectTypes.Media);
             if (keyForId.Success)
                 return new GuidUdi(Constants.UdiEntityType.Media, keyForId.Result);
 
