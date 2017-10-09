@@ -47,6 +47,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             // get the property value
             var value = property.Value as string;
 
+            if (string.IsNullOrWhiteSpace(value))
+                return null;
+
             // parse the value - checking the format - CSV, XML or JSON
             SaveFormat format;
             var items = ParseValue(value, out format);
