@@ -17,6 +17,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 - [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender)
 - [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
 - [Stacked Content](https://github.com/umco/umbraco-stacked-content)
+- [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
 
 ---
 
