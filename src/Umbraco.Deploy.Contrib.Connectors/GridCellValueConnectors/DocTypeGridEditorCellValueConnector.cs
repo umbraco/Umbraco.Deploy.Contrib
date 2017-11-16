@@ -150,6 +150,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                     {
                         docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue.ToString();
                     }
+                    else if (convertedValue is null)
+                    {
+                        //Assign the null back - otherwise the check for JSON will fail as we cant convert a null to a string
+                        //NOTE: LinkPicker2 for example if no link set is returning a null as opposed to empty string
+                        docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue;
+                    }
                     else
                     {
                         // test if the value is a json object (thus could be a nested complex editor)
