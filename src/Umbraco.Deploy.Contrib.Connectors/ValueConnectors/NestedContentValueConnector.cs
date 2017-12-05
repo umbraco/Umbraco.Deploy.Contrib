@@ -57,9 +57,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (value.DetectIsJson() == false)
                 return null;
 
-            var nestedContent = JsonConvert.DeserializeObject<NestedContentValue[]>(value);
+            var nestedContent = new List<NestedContentValue>();
+            if (value.Trim().StartsWith("{"))
+                nestedContent.Add(JsonConvert.DeserializeObject<NestedContentValue>(value));
+            else
+                nestedContent.AddRange(JsonConvert.DeserializeObject<NestedContentValue[]>(value));
 
-            if (nestedContent == null)
+            if (nestedContent.All(x => x == null))
                 return null;
 
             var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
@@ -243,7 +247,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // NestedContent does not use formatting when serializing JSON values
-            value = JArray.FromObject(nestedContent).ToString(Formatting.None);
+            if (nestedContent.Length == 1)
+                value = JObject.FromObject(nestedContent.FirstOrDefault()).ToString(Formatting.None);
+            else
+                value = JArray.FromObject(nestedContent).ToString(Formatting.None);
+
             content.SetValue(alias, value);
         }
 
