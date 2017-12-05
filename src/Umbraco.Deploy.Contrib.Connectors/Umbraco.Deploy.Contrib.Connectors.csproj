@@ -207,14 +207,14 @@
     <Reference Include="umbraco.DataLayer, Version=1.0.6396.36624, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\umbraco.DataLayer.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Deploy, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoDeploy.1.0.5\lib\net45\Umbraco.Deploy.dll</HintPath>
+    <Reference Include="Umbraco.Deploy, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Deploy.Cloud, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoDeploy.1.0.5\lib\net45\Umbraco.Deploy.Cloud.dll</HintPath>
+    <Reference Include="Umbraco.Deploy.Cloud, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.Cloud.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Deploy.UI, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoDeploy.1.0.5\lib\net45\Umbraco.Deploy.UI.dll</HintPath>
+    <Reference Include="Umbraco.Deploy.UI, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.UI.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.6396.36634, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\umbraco.editorControls.dll</HintPath>
@@ -249,75 +249,7 @@
     <Compile Include="ValueConnectors\UrlPickerValueConnector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App_Plugins\Deploy\package.manifest" />
-    <None Include="Config\UmbracoDeploy.config" />
-    <None Include="Config\UmbracoDeploy.Settings.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="App_Plugins\Deploy\assets\css\deploy.css" />
-    <Content Include="App_Plugins\Deploy\js\deploy.components.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.controllers.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.decorators.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.filters.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.modules.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.resources.js" />
-    <Content Include="App_Plugins\Deploy\js\deploy.services.js" />
-    <Content Include="App_Plugins\Deploy\js\nonodes.bootstrap.js" />
-    <Content Include="App_Plugins\Deploy\js\nonodes.modules.js" />
-    <Content Include="App_Plugins\Deploy\lang\cs-CZ.xml" />
-    <Content Include="App_Plugins\Deploy\lang\da-DK.xml" />
-    <Content Include="App_Plugins\Deploy\lang\de-DE.xml" />
-    <Content Include="App_Plugins\Deploy\lang\en-GB.xml" />
-    <Content Include="App_Plugins\Deploy\lang\en-US.xml" />
-    <Content Include="App_Plugins\Deploy\lang\es-ES.xml" />
-    <Content Include="App_Plugins\Deploy\lang\fr-FR.xml" />
-    <Content Include="App_Plugins\Deploy\lang\he-IL.xml" />
-    <Content Include="App_Plugins\Deploy\lang\it-IT.xml" />
-    <Content Include="App_Plugins\Deploy\lang\ja-JP.xml" />
-    <Content Include="App_Plugins\Deploy\lang\ko-KR.xml" />
-    <Content Include="App_Plugins\Deploy\lang\nb-NO.xml" />
-    <Content Include="App_Plugins\Deploy\lang\nl-NL.xml" />
-    <Content Include="App_Plugins\Deploy\lang\pl-PL.xml" />
-    <Content Include="App_Plugins\Deploy\lang\pt-BR.xml" />
-    <Content Include="App_Plugins\Deploy\lang\ru-RU.xml" />
-    <Content Include="App_Plugins\Deploy\lang\sv-SE.xml" />
-    <Content Include="App_Plugins\Deploy\lang\zh-CN.xml" />
-    <Content Include="App_Plugins\Deploy\lib\signalr\jquery.signalR.min.js" />
-    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeploycomplete\uddeploycomplete.html" />
-    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeployprogress\uddeployprogress.html" />
-    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeployqueue\uddeployqueue.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udcontenttypechangederror\udcontenttypechangederror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\uddeployschemamismatcherror\uddeployschemamismatcherror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udkabumerror\udkabumerror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udrestoremissingnodeerror\udrestoremissingnodeerror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udrestoreschemamismatcherror\udrestoreschemamismatcherror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udunauthorizedclienterror\udunauthorizedclienterror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\errors\udwebexceptionerror\udwebexceptionerror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\restore\udrestorecomplete\udrestorecomplete.html" />
-    <Content Include="App_Plugins\Deploy\views\components\restore\udrestoreprogress\udrestoreprogress.html" />
-    <Content Include="App_Plugins\Deploy\views\components\udconnectlocal\udconnectlocal.html" />
-    <Content Include="App_Plugins\Deploy\views\components\udcontentflow\udcontentflow.html" />
-    <Content Include="App_Plugins\Deploy\views\components\uderror\uderror.html" />
-    <Content Include="App_Plugins\Deploy\views\components\udinfobox\udinfobox.html" />
-    <Content Include="App_Plugins\Deploy\views\components\udstarterkitselector\udstarterkitselector.html" />
-    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspaceadd\udworkspaceadd.html" />
-    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspaceinfo\udworkspaceinfo.html" />
-    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspace\udworkspace.html" />
-    <Content Include="App_Plugins\Deploy\views\dashboards\dashboard.html" />
-    <Content Include="App_Plugins\Deploy\views\dialogs\addtoqueue.html" />
-    <Content Include="App_Plugins\Deploy\views\dialogs\deploy.html" />
-    <Content Include="App_Plugins\Deploy\views\dialogs\partial-restore.html" />
-    <Content Include="App_Plugins\Deploy\views\dialogs\restore.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\add-workspace.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\debug.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\done-deploy.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\flow.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\progress.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\queue.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\restore.html" />
-    <Content Include="App_Plugins\Deploy\views\partials\workspace-info.html" />
-    <Content Include="Config\splashes\noNodes.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
