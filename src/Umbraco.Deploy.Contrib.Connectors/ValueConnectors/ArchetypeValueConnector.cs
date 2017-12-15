@@ -19,6 +19,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         public virtual IEnumerable<string> PropertyEditorAliases => new[] {"Imulus.Archetype"};
 
+        internal static string MockPropertyTypeAlias = "mockArchetypePropertyTypeAlias";
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
         public ArchetypeValueConnector(IDataTypeService dataTypeService, IMacroParser macroParser, Lazy<ValueConnectorCollection> valueConnectors)
@@ -181,7 +182,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
 
                 // if the macro parser didn't convert the value then try to find a value connector that can and convert it
-                var propertyType = new PropertyType(dataType.PropertyEditorAlias, dataType.DatabaseType, "mockPropertyTypeAlias");
+                var propertyType = new PropertyType(dataType.PropertyEditorAlias, dataType.DatabaseType, MockPropertyTypeAlias);
                 propertyType.DataTypeDefinitionId = dataType.Id;
                 var propValueConnector = ValueConnectors.Get(propertyType);
                 var mockProperty = new Property(propertyType);
