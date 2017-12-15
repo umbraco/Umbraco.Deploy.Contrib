@@ -247,7 +247,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
             }
 
-            // NestedContent does not use formatting when serializing JSON values
+            // This statement checks whether we have a single item being stored - and if this is stored inside a LeBlender value.
+            // For some reason, LeBlender does not store an array of one object (like normal Nested Content would do) if the Nested
+            // Content is inside a LeBlender property. Instead it simply stores an object - therefore we need to save single items
+            // using JObject instead of JArray, if the current operation is being run from within a wrapping LeBlender property.
+            // Note: NestedContent does not use formatting when serializing JSON values.
             if (nestedContent.Length == 1 && content.Properties[0]?.Alias == LeBlenderGridCellValueConnector.MockPropertyTypeAlias)
                 value = JObject.FromObject(nestedContent.FirstOrDefault()).ToString(Formatting.None);
             else
