@@ -19,6 +19,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IDataTypeService _dataTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
 
+        internal static string MockPropertyTypeAlias = "mockVortoPropertyTypeAlias";
+
         public VortoValueConnector(IDataTypeService dataTypeService, Lazy<ValueConnectorCollection> valueConnectors)
         {
             if (dataTypeService == null) throw new ArgumentNullException(nameof(dataTypeService));
@@ -154,7 +156,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (wrappedDataType == null)
                 throw new InvalidOperationException($"Could not resolve the datatype used inside the Vorto property: {alias}");
 
-            var propertyType = new PropertyType(wrappedDataType, "mockPropertyType");
+            var propertyType = new PropertyType(wrappedDataType, MockPropertyTypeAlias);
             var valueConnector = ValueConnectors.Get(propertyType);
 
             // iterate values for each language
