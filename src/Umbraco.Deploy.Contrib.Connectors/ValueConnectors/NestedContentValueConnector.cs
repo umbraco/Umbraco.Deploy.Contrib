@@ -8,6 +8,7 @@ using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors;
 using Umbraco.Deploy.ValueConnectors;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
@@ -247,7 +248,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // NestedContent does not use formatting when serializing JSON values
-            if (nestedContent.Length == 1)
+            if (nestedContent.Length == 1 && content.Properties[0]?.Alias == LeBlenderGridCellValueConnector.MockPropertyTypeAlias)
                 value = JObject.FromObject(nestedContent.FirstOrDefault()).ToString(Formatting.None);
             else
                 value = JArray.FromObject(nestedContent).ToString(Formatting.None);

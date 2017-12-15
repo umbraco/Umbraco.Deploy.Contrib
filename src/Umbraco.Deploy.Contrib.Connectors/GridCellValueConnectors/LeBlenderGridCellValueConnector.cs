@@ -19,6 +19,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
         private readonly IMacroParser _macroParser;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
 
+        internal static string MockPropertyTypeAlias = "mockLeBlenderPropertyTypeAlias";
+
         public LeBlenderGridCellValueConnector(IDataTypeService dataTypeService, IMacroParser macroParser, Lazy<ValueConnectorCollection> valueConnectors)
         {
             if (dataTypeService == null) throw new ArgumentNullException(nameof(dataTypeService));
@@ -193,7 +195,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                         continue;
                     }
 
-                    var propertyType = new PropertyType(dataType.PropertyEditorAlias, dataType.DatabaseType, "mockPropertyTypeAlias");
+                    var propertyType = new PropertyType(dataType.PropertyEditorAlias, dataType.DatabaseType, MockPropertyTypeAlias);
                     propertyType.DataTypeDefinitionId = dataType.Id;
                     // get the value connector for the property type
                     var propValueConnector = ValueConnectors.Get(propertyType);
