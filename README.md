@@ -18,6 +18,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 - [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
 - [Stacked Content](https://github.com/umco/umbraco-stacked-content)
 - [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
+- [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
 
 ---
 

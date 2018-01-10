@@ -106,18 +106,30 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (!isInternal)
                     continue;
 
-                //Get the UDI value in the JSON
-                var pickedUdi = GuidUdi.Parse(relatedLink["link"].ToString());
+                var relatedLinkValue = relatedLink["link"].ToString();
 
-                //Lets use entitiy sevice to get the int ID for this item on the new environment
-                //Get the Id corresponding to the Guid
-                //it *should* succeed when deploying, due to dependencies management
-                //nevertheless, assume it can fail, and then create an invalid localLink
-                var idAttempt = _entityService.GetIdForKey(pickedUdi.Guid, UmbracoObjectTypes.Document);
+                //Check if related links is stored as an int
+                if (int.TryParse(relatedLinkValue, out var relatedLinkInt))
+                {
+                    //Update the JSON back to the int ids on this env
+                    relatedLink["link"] = relatedLinkInt;
+                    relatedLink["internal"] = relatedLinkInt;
+                }
+                else
+                {
+                    //Get the UDI value in the JSON
+                    var pickedUdi = GuidUdi.Parse(relatedLinkValue);
 
-                //Update the JSON back to the int ids on this env
-                relatedLink["link"] = idAttempt.Success ? idAttempt.Result : 0;
-                relatedLink["internal"] = idAttempt.Success ? idAttempt.Result : 0;
+                    //Lets use entitiy sevice to get the int ID for this item on the new environment
+                    //Get the Id corresponding to the Guid
+                    //it *should* succeed when deploying, due to dependencies management
+                    //nevertheless, assume it can fail, and then create an invalid localLink
+                    var idAttempt = _entityService.GetIdForKey(pickedUdi.Guid, UmbracoObjectTypes.Document);
+
+                    //Update the JSON back to the int ids on this env
+                    relatedLink["link"] = idAttempt.Success ? idAttempt.Result : 0;
+                    relatedLink["internal"] = idAttempt.Success ? idAttempt.Result : 0;
+                }
             }
 
             //Save the updated JSON with replaced UDIs for int IDs
