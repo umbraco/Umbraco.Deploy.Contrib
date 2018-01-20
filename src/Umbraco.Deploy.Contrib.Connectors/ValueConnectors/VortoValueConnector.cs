@@ -95,18 +95,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 object parsedValue = valueConnector.GetValue(mockProperty, dependencies);
 
-                // test if the value is a json object (thus could be a nested complex editor)
-                // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                var jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                if (jtokenValue != null)
-                {
-                    parsedValue = jtokenValue;
-                }
-                else if (parsedValue != null)
-                {
-                    parsedValue = parsedValue.ToString();
-                }
                 // set the parsed value back onto the original object.
+                // it may be a string representing more json but that's fine
                 vortoValue.Values.ValuePairs[languageKey] = parsedValue;
             }
             value = JsonConvert.SerializeObject(vortoValue);
@@ -164,26 +154,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 var val = vortoValue.Values.ValuePairs[languageKey];
 
-                var mockProperty = new Property(propertyType, val);
+                var mockProperty = new Property(propertyType);
                 var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> {mockProperty}));
 
                 // due to how ValueConnector.SetValue() works, we have to pass the mock item through the connector to have it do its
                 // work on parsing the value on the item itself.
                 valueConnector.SetValue(mockContent, mockProperty.Alias, val.ToString());
 
-                // we then extract the converted value from the mock item so we can assign it to the inner value object inside the
-                // actual Vorto item's value pair for this specific language.
+                // get the value back and assign
                 var convertedValue = mockContent.GetValue(mockProperty.Alias);
-
-                var jtokenValue = convertedValue != null && convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                if (jtokenValue != null)
-                {
-                    convertedValue = jtokenValue;
-                }
-                else if (convertedValue != null)
-                {
-                    convertedValue = convertedValue.ToString();
-                }
                 vortoValue.Values.ValuePairs[languageKey] = convertedValue;
             }
             
@@ -205,7 +184,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// ]]>
         /// </example>
         
-        internal class VortoValue
+        public class VortoValue
         {
             [JsonProperty("values")]
             public Values Values { get; set; }
@@ -213,7 +192,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             public string DtdGuid { get; set; }
         }
 
-        internal class Values
+        public class Values
         {
             /// <summary>
             /// The value properties will be serialized to a dictionary
