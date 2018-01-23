@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Deploy.ValueConnectors;
@@ -159,7 +160,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 // due to how ValueConnector.SetValue() works, we have to pass the mock item through the connector to have it do its
                 // work on parsing the value on the item itself.
-                valueConnector.SetValue(mockContent, mockProperty.Alias, val.ToString());
+                valueConnector.SetValue(mockContent, mockProperty.Alias, val?.ToString());
 
                 // get the value back and assign
                 var convertedValue = mockContent.GetValue(mockProperty.Alias);
