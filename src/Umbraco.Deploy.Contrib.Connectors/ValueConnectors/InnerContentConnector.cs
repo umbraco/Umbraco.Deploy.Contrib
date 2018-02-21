@@ -60,27 +60,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (innerContent == null)
                 return null;
 
-            var allContentTypes = innerContent.Select(x => x.IcContentTypeAlias)
-                .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.GetContentType(a));
-
-            //Ensure all of these content types are found
-            if (allContentTypes.Values.Any(contentType => contentType == null))
+            foreach (var innerContentItem in innerContent)
             {
-                throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
-            }
+                var contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid);
+                if (contentType == null)
+                    contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeAlias);
+                if (contentType == null)
+                    throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property with key: {innerContentItem.Key}, and name: {innerContentItem.Name}");
 
-            //Ensure that these content types have dependencies added
-            foreach (var contentType in allContentTypes.Values)
-            {
-                dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
-            }
-
-            foreach (var row in innerContent)
-            {
-                var contentType = allContentTypes[row.IcContentTypeAlias];
-
-                foreach (var key in row.PropertyValues.Keys.ToArray())
+                foreach (var key in innerContentItem.PropertyValues.Keys.ToArray())
                 {
                     var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
@@ -95,7 +83,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     // this should be enough for all other value connectors to work with
                     // as all they should need is the value, and the property type infos
-                    var mockProperty = new Property(propertyType, row.PropertyValues[key]);
+                    var mockProperty = new Property(propertyType, innerContentItem.PropertyValues[key]);
 
                     object parsedValue = propValueConnector.GetValue(mockProperty, dependencies);
 
@@ -111,7 +99,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         parsedValue = parsedValue.ToString();
                     }
 
-                    row.PropertyValues[key] = parsedValue;
+                    innerContentItem.PropertyValues[key] = parsedValue;
                 }
             }
 
@@ -147,21 +135,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (innerContent == null)
                 return;
 
-            var allContentTypes = innerContent.Select(x => x.IcContentTypeAlias)
-                .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.GetContentType(a));
-
-            //Ensure all of these content types are found
-            if (allContentTypes.Values.Any(contentType => contentType == null))
+            foreach (var innerContentItem in innerContent)
             {
-                throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
-            }
+                var contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid);
+                if (contentType == null)
+                    contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeAlias);
+                if (contentType == null)
+                    throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property with key: {innerContentItem.Key}, and name: {innerContentItem.Name}");
 
-            var mocks = new Dictionary<IContentType, IContent>();
 
-            foreach (var row in innerContent)
-            {
-                var contentType = allContentTypes[row.IcContentTypeAlias];
+                var mocks = new Dictionary<IContentType, IContent>();
 
                 // note
                 // the way we do it here, doing content.SetValue() several time on the same content, reduces
@@ -176,7 +159,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (!mocks.TryGetValue(contentType, out mockContent))
                     mockContent = mocks[contentType] = new Content("IC_" + Guid.NewGuid(), -1, contentType);
 
-                foreach (var key in row.PropertyValues.Keys.ToArray())
+                foreach (var key in innerContentItem.PropertyValues.Keys.ToArray())
                 {
                     var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
@@ -189,7 +172,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // throws if not found - no need for a null check
                     var propValueConnector = ValueConnectors.Get(propertyType);
 
-                    var rowValue = row.PropertyValues[key];
+                    var rowValue = innerContentItem.PropertyValues[key];
 
                     if (rowValue != null)
                     {
@@ -198,7 +181,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         // integers needs to be converted into strings
                         if (convertedValue is int)
                         {
-                            row.PropertyValues[key] = convertedValue.ToString();
+                            innerContentItem.PropertyValues[key] = convertedValue.ToString();
                         }
                         else
                         {
@@ -207,17 +190,17 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
                             if (jtokenValue != null)
                             {
-                                row.PropertyValues[key] = jtokenValue;
+                                innerContentItem.PropertyValues[key] = jtokenValue;
                             }
                             else
                             {
-                                row.PropertyValues[key] = convertedValue;
+                                innerContentItem.PropertyValues[key] = convertedValue;
                             }
                         }
                     }
                     else
                     {
-                        row.PropertyValues[key] = rowValue;
+                        innerContentItem.PropertyValues[key] = rowValue;
                     }
                 }
             }
@@ -250,6 +233,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             public string Icon { get; set; }
             [JsonProperty("icContentTypeAlias")]
             public string IcContentTypeAlias { get; set; }
+            [JsonProperty("icContentTypeGuid")]
+            public Guid IcContentTypeGuid { get; set; }
 
             /// <summary>
             /// The remaining properties will be serialized to a dictionary
