@@ -67,6 +67,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeAlias);
                 if (contentType == null)
                     throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property with key: {innerContentItem.Key}, and name: {innerContentItem.Name}");
+                
+                // ensure the content typ[e is added as a unique dependency
+                var contentTypeUdi = contentType.GetUdi();
+                var distinctContentTypes = new Dictionary<GuidUdi,IContentType>();
+                if (distinctContentTypes.ContainsKey(contentTypeUdi) == false)
+                {
+                    distinctContentTypes.Add(contentTypeUdi,contentType);
+                    dependencies.Add(new ArtifactDependency(contentTypeUdi,false,ArtifactDependencyMode.Match));
+                }
 
                 foreach (var key in innerContentItem.PropertyValues.Keys.ToArray())
                 {
