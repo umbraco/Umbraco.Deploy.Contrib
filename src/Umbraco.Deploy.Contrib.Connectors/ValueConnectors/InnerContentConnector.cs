@@ -68,7 +68,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (contentType == null)
                     throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property with key: {innerContentItem.Key}, and name: {innerContentItem.Name}");
                 
-                // ensure the content typ[e is added as a unique dependency
+                // ensure the content type is added as a unique dependency
                 var contentTypeUdi = contentType.GetUdi();
                 var distinctContentTypes = new Dictionary<GuidUdi,IContentType>();
                 if (distinctContentTypes.ContainsKey(contentTypeUdi) == false)
