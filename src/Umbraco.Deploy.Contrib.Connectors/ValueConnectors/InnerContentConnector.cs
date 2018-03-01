@@ -60,6 +60,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (innerContent == null)
                 return null;
 
+            var distinctContentTypes = new Dictionary<GuidUdi, IContentType>();
             foreach (var innerContentItem in innerContent)
             {
                 var contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid);
@@ -70,7 +71,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 
                 // ensure the content type is added as a unique dependency
                 var contentTypeUdi = contentType.GetUdi();
-                var distinctContentTypes = new Dictionary<GuidUdi,IContentType>();
                 if (distinctContentTypes.ContainsKey(contentTypeUdi) == false)
                 {
                     distinctContentTypes.Add(contentTypeUdi,contentType);
