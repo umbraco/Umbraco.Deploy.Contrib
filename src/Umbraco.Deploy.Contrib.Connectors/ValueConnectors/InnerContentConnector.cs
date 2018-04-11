@@ -63,7 +63,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             var distinctContentTypes = new Dictionary<GuidUdi, IContentType>();
             foreach (var innerContentItem in innerContent)
             {
-                var contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid);
+                IContentType contentType = null;
+                if (innerContentItem.IcContentTypeGuid.HasValue)
+                    contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid.Value);
                 if (contentType == null)
                     contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeAlias);
                 if (contentType == null)
@@ -146,12 +148,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             foreach (var innerContentItem in innerContent)
             {
-                var contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid);
+                IContentType contentType = null;
+                if (innerContentItem.IcContentTypeGuid.HasValue)
+                    contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeGuid.Value);
                 if (contentType == null)
                     contentType = _contentTypeService.GetContentType(innerContentItem.IcContentTypeAlias);
                 if (contentType == null)
                     throw new InvalidOperationException($"Could not resolve these content types for the Inner Content property with key: {innerContentItem.Key}, and name: {innerContentItem.Name}");
-
 
                 var mocks = new Dictionary<IContentType, IContent>();
 
@@ -243,7 +246,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             [JsonProperty("icContentTypeAlias")]
             public string IcContentTypeAlias { get; set; }
             [JsonProperty("icContentTypeGuid")]
-            public Guid IcContentTypeGuid { get; set; }
+            public Guid? IcContentTypeGuid { get; set; }
 
             /// <summary>
             /// The remaining properties will be serialized to a dictionary
