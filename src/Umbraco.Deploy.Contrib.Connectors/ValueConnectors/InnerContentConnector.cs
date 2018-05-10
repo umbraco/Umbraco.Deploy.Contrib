@@ -100,8 +100,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     // test if the value is a json object (thus could be a nested complex editor)
                     // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    var jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                    if (jtokenValue != null)
+                    JToken jtokenValue;
+                    if (TryParseJToken(parsedValue, out jtokenValue))
                     {
                         parsedValue = jtokenValue;
                     }
@@ -199,8 +199,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         {
                             // test if the value is a json object (thus could be a nested complex editor)
                             // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                            var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                            if (jtokenValue != null)
+                            JToken jtokenValue;
+                            if (TryParseJToken(convertedValue, out jtokenValue))
                             {
                                 innerContentItem.PropertyValues[key] = jtokenValue;
                             }
@@ -220,6 +220,26 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             // InnerContent does not use formatting when serializing JSON values
             value = JArray.FromObject(innerContent).ToString(Formatting.None);
             content.SetValue(alias, value);
+        }
+
+        private static bool TryParseJToken(object value, out JToken json)
+        {
+            json = default(JToken);
+
+            if (value == null)
+                return false;
+
+            var s = value.ToString();
+            if (string.IsNullOrWhiteSpace(s) || s.DetectIsJson() == false)
+                return false;
+
+            try
+            {
+                json = JToken.Parse(s);
+            }
+            catch { }
+
+            return json != null;
         }
 
         /// <summary>
