@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 
@@ -107,7 +106,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             //We need to return the original JSON string as we have not modified or replaced the values
             return property.Value.ToString();
         }
-
 
         public void SetValue(IContentBase content, string alias, string value)
         {

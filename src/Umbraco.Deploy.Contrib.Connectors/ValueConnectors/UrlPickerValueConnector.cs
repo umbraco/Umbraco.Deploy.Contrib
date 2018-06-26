@@ -52,7 +52,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         }
 
         /// <inheritdoc/>
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] {"Imulus.UrlPicker"};
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Imulus.UrlPicker" };
 
         /// <inheritdoc/>
         public string GetValue(Property property, ICollection<ArtifactDependency> dependencies)
@@ -68,7 +68,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
             {
                 var urlPickerPropertyData = JsonConvert.DeserializeObject<UrlPickerPropertyData>(svalue);
-                urlPickerPropertyDatas = new List<UrlPickerPropertyData> {urlPickerPropertyData};
+                urlPickerPropertyDatas = new List<UrlPickerPropertyData> { urlPickerPropertyData };
             }
             else
             {
@@ -125,7 +125,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (UrlPickerVersion.Value < UrlPickerVersionStoringArray)
             {
                 var urlPickerPropertyData = JsonConvert.DeserializeObject<UrlPickerPropertyData>(value);
-                urlPickerPropertyDatas = new List<UrlPickerPropertyData> {urlPickerPropertyData};
+                urlPickerPropertyDatas = new List<UrlPickerPropertyData> { urlPickerPropertyData };
             }
             else
             {

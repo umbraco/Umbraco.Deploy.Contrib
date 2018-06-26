@@ -12,13 +12,14 @@ Primarily this project offers connectors for the most popular Umbraco community 
 
 This project offers Umbraco Deploy connectors for the following community packages:
 
+- [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
 - [DocType Grid Editor](https://our.umbraco.org/projects/backoffice-extensions/doc-type-grid-editor/)
-- [UrlPicker](https://our.umbraco.org/projects/backoffice-extensions/urlpicker/)
 - [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender)
 - [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
-- [Stacked Content](https://github.com/umco/umbraco-stacked-content)
 - [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
-- [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
+- [Multi Url Picker](https://our.umbraco.com/projects/backoffice-extensions/multi-url-picker)
+- [Stacked Content](https://github.com/umco/umbraco-stacked-content)
+- [UrlPicker](https://our.umbraco.org/projects/backoffice-extensions/urlpicker/)
 
 ---
 
@@ -26,7 +27,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 
 ### Installation
 
-You can install the NuGet package using `Install-Package Umbraco.Deploy.Contrib`.  
+You can install the NuGet package using `Install-Package Umbraco.Deploy.Contrib`.
 [![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
 
 ---
