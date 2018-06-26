@@ -260,6 +260,7 @@
     <Compile Include="Connectors\LeBlenderGridCellValueConnectorTests.cs" />
     <Compile Include="Connectors\NestedContentValueConnectorTests.cs" />
     <Compile Include="Connectors\UrlPickerValueConnectorTests.cs" />
+    <Compile Include="Connectors\PropertyListValueConnectorTests.cs" />
     <Compile Include="Connectors\VortoValueConnectorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHelpers\MemoryFileTypeCollection.cs" />

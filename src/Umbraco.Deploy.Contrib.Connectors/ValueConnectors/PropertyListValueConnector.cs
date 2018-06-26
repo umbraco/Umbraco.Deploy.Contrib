@@ -106,7 +106,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // serialize the JSON values
-            content.SetValue(alias, JObject.FromObject(model).ToString());
+            content.SetValue(alias, JObject.FromObject(model).ToString(Formatting.None));
         }
 
         public class PropertyListValue
