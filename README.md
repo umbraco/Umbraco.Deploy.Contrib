@@ -21,6 +21,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 - [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
 - [Content List](https://github.com/umco/umbraco-content-list)
 - [Property List](https://github.com/umco/umbraco-property-list)
+- [Tuple](https://github.com/umco/umbraco-tuple)
 
 ---
 
