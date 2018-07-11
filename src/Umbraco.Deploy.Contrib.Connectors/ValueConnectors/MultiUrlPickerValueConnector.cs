@@ -78,7 +78,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     string url;
                     GuidUdi guidUdi;
                     // Only do processing if the Id is set on the element. OR if the url is set and its a media item
-                    if (TryParseJTokenAttr(link, "id", out  intId))
+                    if (TryParseJTokenAttr(link, "id", out intId))
                     {
                         // Checks weather we are resolving a media item or a document
                         var objectTypeId = isMedia
@@ -269,7 +269,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // nevertheless, assume it can fail, and then create an invalid localLink
                     var idAttempt = _entityService.GetIdForKey(udi.Guid, nodeObjectType);
                     if (idAttempt)
-                        link["id"] = idAttempt.Success ? idAttempt.Result : 0; 
+                        link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                 }
                 else if (TryParseJTokenAttr(link, "url", out url))
                 {

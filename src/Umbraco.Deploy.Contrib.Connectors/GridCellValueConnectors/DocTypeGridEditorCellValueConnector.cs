@@ -69,7 +69,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
                 // throws if not found - no need for a null check
                 var propValueConnector = ValueConnectors.Get(propertyType);
-                
+
                 var mockProperty = new Property(propertyType, value);
                 var parsedValue = propValueConnector.GetValue(mockProperty, dependencies);
                 // test if the value is a json object (thus could be a nested complex editor)
@@ -83,7 +83,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 {
                     docTypeGridEditorContent.Value[propertyType.Alias] = parsedValue;
                 }
-                
+
             }
 
             var resolvedValue = JsonConvert.SerializeObject(docTypeGridEditorContent);
@@ -140,7 +140,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
                 var mockProperty = new Property(propertyType);
                 var mockContent = new Content("mockContent", -1, new ContentType(-1),
-                    new PropertyCollection(new List<Property> {mockProperty}));
+                    new PropertyCollection(new List<Property> { mockProperty }));
 
                 {
                     propValueConnector.SetValue(mockContent, mockProperty.Alias, value.ToString());
@@ -176,7 +176,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             control.Value = JToken.FromObject(docTypeGridEditorContent);
         }
     }
-
 
     /// <summary>
     /// The value of a DocTypeGridEditor cell

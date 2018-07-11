@@ -8,7 +8,7 @@ namespace Umbraco.Deploy.Contrib.Tests.TestHelpers
         public static Media CreateImageMedia(IMediaType mediaType, string name, int parentId = -1, string path = null)
         {
             var media = new Media(name, parentId, mediaType);
-            
+
             if (string.IsNullOrWhiteSpace(path) == false)
             {
                 media.SetValue("umbracoFile", path);

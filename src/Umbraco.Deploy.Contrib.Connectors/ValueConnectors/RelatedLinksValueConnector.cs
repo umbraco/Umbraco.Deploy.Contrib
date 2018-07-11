@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
@@ -49,7 +48,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             if (value.DetectIsJson() == false)
                 return null;
-            
+
             var relatedLinks = JsonConvert.DeserializeObject<JArray>(value);
 
             if (relatedLinks == null)
@@ -59,7 +58,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 //Get the value from the JSON object
                 var isInternal = Convert.ToBoolean(relatedLink["isInternal"]);
-                
+
                 //We are only concerned about internal links
                 if (!isInternal)
                     continue;
@@ -81,11 +80,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     relatedLink["internal"] = udi.ToString();
                 }
             }
-            
+
             //Serialise the new updated object with UDIs in it to JSON to transfer across the wire
             return JsonConvert.SerializeObject(relatedLinks);
         }
-
 
         public void SetValue(IContentBase content, string alias, string value)
         {
@@ -136,7 +134,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             content.SetValue(alias, JsonConvert.SerializeObject(relatedLinks));
         }
 
+#pragma warning disable CS0618 // Type or member is obsolete
         public virtual IEnumerable<string> PropertyEditorAliases => new[] { Constants.PropertyEditors.RelatedLinksAlias };
-        
+#pragma warning restore CS0618 // Type or member is obsolete
     }
 }

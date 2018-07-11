@@ -10,10 +10,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// </summary>
     public class StackedContentConnector : InnerContentConnector
     {
-        public override IEnumerable<string> PropertyEditorAliases => new[] {"Our.Umbraco.StackedContent"};
+        public override IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.StackedContent" };
 
-        public StackedContentConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors) : base(contentTypeService, valueConnectors)
-        {
-        }
+        public StackedContentConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
+            : base(contentTypeService, valueConnectors)
+        { }
     }
 }
