@@ -240,6 +240,7 @@
     <Compile Include="ValueConnectors\ArchetypeValueConnector.cs" />
     <Compile Include="ValueConnectors\MultiUrlPickerValueConnector.cs" />
     <Compile Include="ValueConnectors\NuPickersValueConnector.cs" />
+    <Compile Include="ValueConnectors\PropertyListValueConnector.cs" />
     <Compile Include="ValueConnectors\RelatedLinksValueConnector.cs" />
     <Compile Include="ValueConnectors\RelatedLinks2ValueConnector.cs" />
     <Compile Include="ValueConnectors\ContentListConnector.cs" />

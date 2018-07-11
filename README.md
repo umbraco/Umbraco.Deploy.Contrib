@@ -20,6 +20,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 - [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
 - [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
 - [Content List](https://github.com/umco/umbraco-content-list)
+- [Property List](https://github.com/umco/umbraco-property-list)
 
 ---
 
