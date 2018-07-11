@@ -102,8 +102,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                         // test if the value is a json object (thus could be a nested complex editor)
                         // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                        var jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                        if (jtokenValue != null)
+						JToken jtokenValue;
+	                    if (TryParseJToken(parsedValue, out jtokenValue))
                         {
                             parsedValue = jtokenValue;
                         }
@@ -174,58 +174,80 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (!mocks.TryGetValue(contentType, out mockContent))
                     mockContent = mocks[contentType] = new Content("IC_" + Guid.NewGuid(), -1, contentType);
 
-                if (innerContentItem.PropertyValues != null)
+				if (innerContentItem.PropertyValues != null)
                 {
-                    foreach (var key in innerContentItem.PropertyValues.Keys.ToArray())
-                    {
-                        var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
-                        if (propertyType == null)
-                        {
-                            LogHelper.Debug<InnerContentConnector>($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
-                            continue;
-                        }
+	                foreach (var key in innerContentItem.PropertyValues.Keys.ToArray())
+	                {
+	                    var propertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
-                        // throws if not found - no need for a null check
-                        var propValueConnector = ValueConnectors.Get(propertyType);
+	                    if (propertyType == null)
+	                    {
+	                        LogHelper.Debug<InnerContentConnector>($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
+	                        continue;
+	                    }
 
-                        var rowValue = innerContentItem.PropertyValues[key];
+	                    // throws if not found - no need for a null check
+	                    var propValueConnector = ValueConnectors.Get(propertyType);
 
-                        if (rowValue != null)
-                        {
-                            propValueConnector.SetValue(mockContent, propertyType.Alias, rowValue.ToString());
-                            var convertedValue = mockContent.GetValue(propertyType.Alias);
-                            // integers needs to be converted into strings
-                            if (convertedValue is int)
-                            {
-                                innerContentItem.PropertyValues[key] = convertedValue.ToString();
-                            }
-                            else
-                            {
-                                // test if the value is a json object (thus could be a nested complex editor)
-                                // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                                var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                                if (jtokenValue != null)
-                                {
-                                    innerContentItem.PropertyValues[key] = jtokenValue;
-                                }
-                                else
-                                {
-                                    innerContentItem.PropertyValues[key] = convertedValue;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            innerContentItem.PropertyValues[key] = rowValue;
-                        }
-                    }
-                }
+	                    var rowValue = innerContentItem.PropertyValues[key];
+
+	                    if (rowValue != null)
+	                    {
+	                        propValueConnector.SetValue(mockContent, propertyType.Alias, rowValue.ToString());
+	                        var convertedValue = mockContent.GetValue(propertyType.Alias);
+	                        // integers needs to be converted into strings
+	                        if (convertedValue is int)
+	                        {
+	                            innerContentItem.PropertyValues[key] = convertedValue.ToString();
+	                        }
+	                        else
+	                        {
+	                            // test if the value is a json object (thus could be a nested complex editor)
+	                            // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
+	                            JToken jtokenValue;
+	                            if (TryParseJToken(convertedValue, out jtokenValue))
+	                            {
+	                                innerContentItem.PropertyValues[key] = jtokenValue;
+	                            }
+	                            else
+	                            {
+	                                innerContentItem.PropertyValues[key] = convertedValue;
+	                            }
+	                        }
+	                    }
+	                    else
+	                    {
+	                        innerContentItem.PropertyValues[key] = rowValue;
+	                    }
+	                }
+				}	
             }
 
             // InnerContent does not use formatting when serializing JSON values
             value = JArray.FromObject(innerContent).ToString(Formatting.None);
             content.SetValue(alias, value);
+        }
+
+        private static bool TryParseJToken(object value, out JToken json)
+        {
+            json = default(JToken);
+
+            if (value == null)
+                return false;
+
+            var s = value.ToString();
+            if (string.IsNullOrWhiteSpace(s) || s.DetectIsJson() == false)
+                return false;
+
+            // we're okay with an empty catch here as that just means 'json' will stay null and we return false
+            try
+            {
+                json = JToken.Parse(s);
+            }
+            catch { }
+
+            return json != null;
         }
 
         /// <summary>
