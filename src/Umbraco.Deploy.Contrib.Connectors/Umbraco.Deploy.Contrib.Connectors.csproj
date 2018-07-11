@@ -244,6 +244,7 @@
     <Compile Include="ValueConnectors\RelatedLinksValueConnector.cs" />
     <Compile Include="ValueConnectors\RelatedLinks2ValueConnector.cs" />
     <Compile Include="ValueConnectors\ContentListConnector.cs" />
+    <Compile Include="ValueConnectors\TupleValueConnector.cs" />
     <Compile Include="ValueConnectors\VortoValueConnector.cs" />
     <Compile Include="ValueConnectors\InnerContentConnector.cs" />
     <Compile Include="ValueConnectors\StackedContentConnector.cs" />
