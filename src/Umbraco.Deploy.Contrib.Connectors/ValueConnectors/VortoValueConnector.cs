@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Deploy.ValueConnectors;
@@ -53,7 +52,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             // do various null/empty checks to avoid doing work we don't need to do.
             var value = property.Value as string;
-            
+
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
@@ -156,7 +155,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var val = vortoValue.Values.ValuePairs[languageKey];
 
                 var mockProperty = new Property(propertyType);
-                var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> {mockProperty}));
+                var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> { mockProperty }));
 
                 // due to how ValueConnector.SetValue() works, we have to pass the mock item through the connector to have it do its
                 // work on parsing the value on the item itself.
@@ -166,7 +165,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var convertedValue = mockContent.GetValue(mockProperty.Alias);
                 vortoValue.Values.ValuePairs[languageKey] = convertedValue;
             }
-            
+
             // Vorto does not use formatting when serializing JSON values
             value = JObject.FromObject(vortoValue).ToString(Formatting.None);
             content.SetValue(alias, value);
@@ -184,11 +183,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         ///    {"values":{"en-US":"1198","da-DK":"1215"},"dtdGuid":"c812b8ac-30a6-4b82-90a8-c2dad1781024"}
         /// ]]>
         /// </example>
-        
         public class VortoValue
         {
             [JsonProperty("values")]
             public Values Values { get; set; }
+
             [JsonProperty("dtdGuid")]
             public string DtdGuid { get; set; }
         }

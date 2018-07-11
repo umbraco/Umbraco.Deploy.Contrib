@@ -201,7 +201,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                     var propValueConnector = ValueConnectors.Get(propertyType);
                     // we need to create a mocked property that we can parse in to the value connector
                     var mockProperty = new Property(propertyType);
-                    var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> {mockProperty}));
+                    var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> { mockProperty }));
 
                     if (leBlenderProperty.Value.Type == JTokenType.Array)
                     {

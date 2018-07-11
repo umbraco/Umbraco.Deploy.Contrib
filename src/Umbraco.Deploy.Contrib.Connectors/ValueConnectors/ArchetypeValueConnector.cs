@@ -17,7 +17,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IDataTypeService _dataTypeService;
         private readonly IMacroParser _macroParser;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] {"Imulus.Archetype"};
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Imulus.Archetype" };
 
         internal static string MockPropertyTypeAlias = "mockArchetypePropertyTypeAlias";
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
@@ -111,7 +111,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var propValueConnector = ValueConnectors.Get(propertyType);
 
                 var mockProperty = new Property(propertyType, archetypeProperty.Value);
-                
+
                 archetypeValue = propValueConnector.GetValue(mockProperty, dependencies);
                 archetypeProperty.Value = archetypeValue;
             }
@@ -135,7 +135,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new NullReferenceException($"Property not found: '{alias}'.");
 
             var prevalues = _dataTypeService.GetPreValuesCollectionByDataTypeId(property.PropertyType.DataTypeDefinitionId).FormatAsDictionary();
-            
+
             PreValue prevalue = null;
             //Fetch the Prevalues for the current Property's DataType (if its an 'Archetype config')
             if (!prevalues.TryGetValue("archetypeconfig", out prevalue) && !prevalues.TryGetValue("archetypeConfig", out prevalue))
@@ -186,7 +186,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 propertyType.DataTypeDefinitionId = dataType.Id;
                 var propValueConnector = ValueConnectors.Get(propertyType);
                 var mockProperty = new Property(propertyType);
-                var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> {mockProperty}));
+                var mockContent = new Content("mockContent", -1, new ContentType(-1), new PropertyCollection(new List<Property> { mockProperty }));
                 propValueConnector.SetValue(mockContent, mockProperty.Alias, archetypeProperty.Value.ToString());
                 archetypeProperty.Value = mockContent.GetValue(mockProperty.Alias);
             }
@@ -426,7 +426,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             [JsonProperty("allowedMemberGroups")]
             public string AllowedMemberGroups { get; set; }
-
         }
 
         internal class ArchetypePropertyModel
