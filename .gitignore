@@ -25,3 +25,7 @@ bower_components/
 node_modules/
 Umbraco.Deploy.UI.Client/build/
 build/Tools/nuget.exe
+
+src/Umbraco.Deploy.Contrib.Connectors/App_Plugins/*
+src/Umbraco.Deploy.Contrib.Connectors/Config/*
+src/Umbraco.Deploy.Contrib.Connectors/app.config
