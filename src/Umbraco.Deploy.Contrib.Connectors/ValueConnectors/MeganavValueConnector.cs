@@ -9,6 +9,10 @@ using Umbraco.Core.Services;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
+    /// <summary>
+    /// Represents a value connector for the Cogworks.Meganav property editor.
+    /// </summary>
+    /// <seealso cref="Umbraco.Core.Deploy.IValueConnector" />
     public class MeganavValueConnector : IValueConnector
     {
         /// <summary>
@@ -48,25 +52,38 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // Parse links and convert ID to UDI
-            var links = JArray.Parse(value);
-            foreach (var link in links)
+            JArray ParseLinks(JArray links)
             {
-                GuidUdi guidUdi = null;
-                int id = link.Value<int>("id");
-                if (id != 0)
+                foreach (var link in links)
                 {
-                    Attempt<Guid> keyForId = this.entityService.GetKeyForId(id, UmbracoObjectTypes.Document);
-                    if (keyForId.Success)
+                    GuidUdi guidUdi = null;
+                    int id = link.Value<int>("id");
+                    if (id != 0)
                     {
-                        guidUdi = new GuidUdi("document", keyForId.Result);
-                        dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
+                        Attempt<Guid> keyForId = this.entityService.GetKeyForId(id, UmbracoObjectTypes.Document);
+                        if (keyForId.Success)
+                        {
+                            guidUdi = new GuidUdi("document", keyForId.Result);
+                            dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
+                        }
+                    }
+
+                    link["id"] = guidUdi?.ToString();
+
+                    // Parse children
+                    var children = link.Value<JArray>("children");
+                    if (children != null)
+                    {
+                        link["children"] = ParseLinks(children);
                     }
                 }
 
-                link["id"] = guidUdi?.ToString();
+                return links;
             }
 
-            return links.ToString(Formatting.None);
+            var rootLinks = ParseLinks(JArray.Parse(value));
+
+            return rootLinks.ToString(Formatting.None);
         }
 
         /// <summary>
@@ -91,23 +108,36 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // Parse links and convert UDI back to local ID
-            var links = JArray.Parse(value);
-            foreach (var link in links)
+            JArray ParseLinks(JArray links)
             {
-                int id = 0;
-                if (GuidUdi.TryParse(link.Value<string>("id"), out GuidUdi guidUdi))
+                foreach (var link in links)
                 {
-                    Attempt<int> idForUdi = this.entityService.GetIdForUdi(guidUdi);
-                    if (idForUdi.Success)
+                    int id = 0;
+                    if (GuidUdi.TryParse(link.Value<string>("id"), out GuidUdi guidUdi))
                     {
-                        id = idForUdi.Result;
+                        Attempt<int> idForUdi = this.entityService.GetIdForUdi(guidUdi);
+                        if (idForUdi.Success)
+                        {
+                            id = idForUdi.Result;
+                        }
+                    }
+
+                    link["id"] = id;
+
+                    // Parse children
+                    var children = link.Value<JArray>("children");
+                    if (children != null)
+                    {
+                        link["children"] = ParseLinks(children);
                     }
                 }
 
-                link["id"] = id;
+                return links;
             }
 
-            content.SetValue(alias, links.ToString(Formatting.None));
+            var rootLinks = ParseLinks(JArray.Parse(value));
+
+            content.SetValue(alias, rootLinks.ToString(Formatting.None));
         }
     }
 }
