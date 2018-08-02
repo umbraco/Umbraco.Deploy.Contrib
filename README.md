@@ -13,14 +13,14 @@ Primarily this project offers connectors for the most popular Umbraco community 
 This project offers Umbraco Deploy connectors for the following community packages:
 
 - [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
-- [Content List](https://github.com/umco/umbraco-content-list)
+- [Content List](https://our.umbraco.com/projects/backoffice-extensions/content-list/)
 - [DocType Grid Editor](https://our.umbraco.org/projects/backoffice-extensions/doc-type-grid-editor/)
-- [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender)
-- [Multi Url Picker](https://our.umbraco.com/projects/backoffice-extensions/multi-url-picker)
+- [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender/)
+- [Multi Url Picker](https://our.umbraco.com/projects/backoffice-extensions/multi-url-picker/)
 - [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
 - [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
-- [Property List](https://github.com/umco/umbraco-property-list)
-- [Stacked Content](https://github.com/umco/umbraco-stacked-content)
+- [Property List](https://our.umbraco.com/projects/backoffice-extensions/property-list/)
+- [Stacked Content](https://our.umbraco.com/projects/backoffice-extensions/stacked-content/)
 - [Tuple](https://github.com/umco/umbraco-tuple)
 - [UrlPicker](https://our.umbraco.org/projects/backoffice-extensions/urlpicker/)
 
@@ -31,7 +31,6 @@ This project offers Umbraco Deploy connectors for the following community packag
 ### Installation
 
 You can install the NuGet package using `Install-Package Umbraco.Deploy.Contrib`.
-[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
 
 ---
 ## Contributing to this project
@@ -64,7 +63,7 @@ Special thanks to the following community members for assisting on this project.
 
 Copyright &copy; 2016 Umbraco
 
-Copyright &copy; 2016 Our Umbraco and [other contributors](https://github.com/leekelleher/umbraco-courier-dataresolvers/graphs/contributors)
+Copyright &copy; 2016 Our Umbraco and [other contributors](https://github.com/umbraco/Umbraco.Deploy.Contrib/graphs/contributors)
 
 Copyright &copy; 2014 Lee Kelleher, Umbrella Inc
 
