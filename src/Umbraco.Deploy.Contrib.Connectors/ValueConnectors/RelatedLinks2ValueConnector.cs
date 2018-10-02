@@ -56,7 +56,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 relatedLinks = JsonConvert.DeserializeObject<List<RelatedLinkUdiModel>>(value);
             }
-            catch (JsonSerializationException ex)
+            catch (JsonSerializationException)
             {
                 // We might be transferring related links stored as int id, parse with ints instead.
 
