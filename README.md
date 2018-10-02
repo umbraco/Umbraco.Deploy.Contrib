@@ -16,6 +16,7 @@ This project offers Umbraco Deploy connectors for the following community packag
 - [Content List](https://our.umbraco.com/projects/backoffice-extensions/content-list/)
 - [DocType Grid Editor](https://our.umbraco.org/projects/backoffice-extensions/doc-type-grid-editor/)
 - [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender/)
+- [Meganav](https://our.umbraco.com/projects/website-utilities/meganav/)
 - [Multi Url Picker](https://our.umbraco.com/projects/backoffice-extensions/multi-url-picker/)
 - [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
 - [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)

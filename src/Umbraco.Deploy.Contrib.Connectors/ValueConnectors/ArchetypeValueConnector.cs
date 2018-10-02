@@ -413,7 +413,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             [JsonProperty("disabled")]
             public bool Disabled { get; set; }
 
-            [JsonProperty("properties")] public IEnumerable<ArchetypePropertyModel> Properties;
+            [JsonProperty("properties")]
+            public IEnumerable<ArchetypePropertyModel> Properties { get; set; }
 
             [JsonProperty("id")]
             public Guid Id { get; set; }
@@ -457,7 +458,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             // container for the names of any files selected for a property in the Umbraco backend
             [JsonProperty("fileNames")]
-            public IEnumerable<string> FileNames;
+            public IEnumerable<string> FileNames { get; set; }
         }
     }
 }
