@@ -18,12 +18,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <summary>
         /// The entity service.
         /// </summary>
-        private readonly IEntityService entityService;
+        private readonly IEntityService _entityService;
 
         /// <summary>
         /// Gets the property editor aliases that the value converter supports by default.
         /// </summary>
-        public IEnumerable<string> PropertyEditorAliases => new string[] { "Cogworks.Meganav" };
+        public IEnumerable<string> PropertyEditorAliases => new[] { "Cogworks.Meganav" };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeganavValueConnector"/> class.
@@ -32,7 +32,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <exception cref="ArgumentNullException">entityService</exception>
         public MeganavValueConnector(IEntityService entityService)
         {
-            this.entityService = entityService ?? throw new ArgumentNullException("entityService");
+            _entityService = entityService ?? throw new ArgumentNullException("entityService");
         }
 
         /// <summary>
@@ -52,36 +52,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             // Parse links and convert ID to UDI
-            JArray ParseLinks(JArray links)
-            {
-                foreach (var link in links)
-                {
-                    GuidUdi guidUdi = null;
-                    int id = link.Value<int>("id");
-                    if (id != 0)
-                    {
-                        Attempt<Guid> keyForId = this.entityService.GetKeyForId(id, UmbracoObjectTypes.Document);
-                        if (keyForId.Success)
-                        {
-                            guidUdi = new GuidUdi("document", keyForId.Result);
-                            dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
-                        }
-                    }
-
-                    link["id"] = guidUdi?.ToString();
-
-                    // Parse children
-                    var children = link.Value<JArray>("children");
-                    if (children != null)
-                    {
-                        link["children"] = ParseLinks(children);
-                    }
-                }
-
-                return links;
-            }
-
-            var rootLinks = ParseLinks(JArray.Parse(value));
+            var rootLinks = ParseLinks(JArray.Parse(value), dependencies, Direction.ToArtifact);
 
             return rootLinks.ToString(Formatting.None);
         }
@@ -103,41 +74,58 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             if (!StringExtensions.DetectIsJson(value))
             {
-                // Skip invalid value (probably shoudn't be saved, right?)
+                // Skip invalid values
                 return;
             }
 
             // Parse links and convert UDI back to local ID
-            JArray ParseLinks(JArray links)
+            var rootLinks = ParseLinks(JArray.Parse(value), null, Direction.FromArtifact);
+
+            content.SetValue(alias, rootLinks.ToString(Formatting.None));
+        }
+
+        private JArray ParseLinks(JArray links, ICollection<ArtifactDependency> dependencies, Direction direction)
+        {
+            foreach (var link in links)
             {
-                foreach (var link in links)
+                if (direction == Direction.ToArtifact)
                 {
-                    int id = 0;
+                    GuidUdi guidUdi = null;
+                    var id = link.Value<int>("id");
+                    if (id != 0)
+                    {
+                        var keyForId = _entityService.GetKeyForId(id, UmbracoObjectTypes.Document);
+                        if (keyForId.Success)
+                        {
+                            guidUdi = new GuidUdi(Constants.UdiEntityType.Document, keyForId.Result);
+                            dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
+                        }
+                    }
+                    link["id"] = guidUdi?.ToString();
+                }
+                else
+                {
+                    var id = 0;
                     if (GuidUdi.TryParse(link.Value<string>("id"), out GuidUdi guidUdi))
                     {
-                        Attempt<int> idForUdi = this.entityService.GetIdForUdi(guidUdi);
+                        var idForUdi = _entityService.GetIdForUdi(guidUdi);
                         if (idForUdi.Success)
                         {
                             id = idForUdi.Result;
                         }
                     }
-
                     link["id"] = id;
-
-                    // Parse children
-                    var children = link.Value<JArray>("children");
-                    if (children != null)
-                    {
-                        link["children"] = ParseLinks(children);
-                    }
                 }
 
-                return links;
+                // Parse children
+                var children = link.Value<JArray>("children");
+                if (children != null)
+                {
+                    link["children"] = ParseLinks(children, dependencies, direction);
+                }
             }
 
-            var rootLinks = ParseLinks(JArray.Parse(value));
-
-            content.SetValue(alias, rootLinks.ToString(Formatting.None));
+            return links;
         }
     }
 }
