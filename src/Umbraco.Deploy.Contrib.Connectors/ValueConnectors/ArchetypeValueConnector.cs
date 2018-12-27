@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
@@ -31,6 +32,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public string GetValue(Property property, ICollection<ArtifactDependency> dependencies)
         {
+            // Local cache for storing dataTypeDefinitions - Archetype can nest alot, which can cause many calls to the dataTypeService.GetDataTypeDefinitionById
+            // This will ensure that for properties where lots of fields are used, the datatype definitions are cached, while trying to get the end value.
+            var dataTypeDefinitionCache = new Dictionary<Guid, IDataTypeDefinition>();
+
             if (property.Value == null)
                 return null;
 
@@ -46,12 +51,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             var archetypePreValue = prevalue == null
                 ? null
                 : JsonConvert.DeserializeObject<ArchetypePreValue>(prevalue.Value);
-
-            RetrieveAdditionalProperties(ref archetypePreValue);
+            RetrieveAdditionalProperties(ref archetypePreValue, ref dataTypeDefinitionCache);
 
             var archetype = JsonConvert.DeserializeObject<ArchetypeModel>(value);
-
-            RetrieveAdditionalProperties(ref archetype, archetypePreValue);
+            RetrieveAdditionalProperties(ref archetype, archetypePreValue, ref dataTypeDefinitionCache);
 
             if (archetype == null)
                 throw new InvalidOperationException("Could not parse Archetype value.");
@@ -63,7 +66,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 if (archetypeProperty.DataTypeGuid == null)
                     continue;
                 // get the data type of the property
-                var dataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid));
+                var dataType = GetDataTypeDefinitionCached(Guid.Parse(archetypeProperty.DataTypeGuid), ref dataTypeDefinitionCache);
                 if (dataType == null)
                 {
                     throw new ArgumentNullException(
@@ -85,12 +88,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
                     continue;
                 }
-
                 var tempDependencies = new List<Udi>();
                 // try to convert the value with the macro parser - this is mainly for legacy editors
                 var archetypeValue = archetypeProperty.Value != null
                     ? _macroParser.ReplaceAttributeValue(archetypeProperty.Value.ToString(), dataType.PropertyEditorAlias, tempDependencies, Direction.ToArtifact)
                     : null;
+
                 foreach (var dependencyUdi in tempDependencies)
                 {
                     // if the macro parser was able to convert the value it will mark the Udi as dependency
@@ -111,8 +114,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var propValueConnector = ValueConnectors.Get(propertyType);
 
                 var mockProperty = new Property(propertyType, archetypeProperty.Value);
-
                 archetypeValue = propValueConnector.GetValue(mockProperty, dependencies);
+
                 archetypeProperty.Value = archetypeValue;
             }
             value = archetype.SerializeForPersistence();
@@ -134,6 +137,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (property == null)
                 throw new NullReferenceException($"Property not found: '{alias}'.");
 
+            var dataTypeDefinitionCache = new Dictionary<Guid, IDataTypeDefinition>();
+
             var prevalues = _dataTypeService.GetPreValuesCollectionByDataTypeId(property.PropertyType.DataTypeDefinitionId).FormatAsDictionary();
 
             PreValue prevalue = null;
@@ -146,14 +151,14 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 ? null
                 : JsonConvert.DeserializeObject<ArchetypePreValue>(prevalue.Value);
 
-            RetrieveAdditionalProperties(ref archetypePreValue);
+            RetrieveAdditionalProperties(ref archetypePreValue, ref dataTypeDefinitionCache);
 
             var archetype = JsonConvert.DeserializeObject<ArchetypeModel>(value);
 
             if (archetype == null)
                 throw new InvalidOperationException("Could not parse Archetype value.");
 
-            RetrieveAdditionalProperties(ref archetype, archetypePreValue);
+            RetrieveAdditionalProperties(ref archetype, archetypePreValue, ref dataTypeDefinitionCache);
 
             var properties = archetype.Fieldsets.SelectMany(x => x.Properties);
 
@@ -163,7 +168,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     continue;
 
                 // get the data type of the property
-                var dataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid));
+                var dataType = GetDataTypeDefinitionCached(Guid.Parse(archetypeProperty.DataTypeGuid), ref dataTypeDefinitionCache);
                 if (dataType == null)
                 {
                     throw new ArgumentNullException(
@@ -194,7 +199,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             content.SetValue(alias, value);
         }
 
-        private void RetrieveAdditionalProperties(ref ArchetypePreValue preValue)
+        private void RetrieveAdditionalProperties(ref ArchetypePreValue preValue, ref Dictionary<Guid, IDataTypeDefinition> dataTypeDefinitionCache)
         {
             if (preValue == null)
                 return;
@@ -203,8 +208,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 foreach (var property in fieldset.Properties)
                 {
-                    var dataType = _dataTypeService.GetDataTypeDefinitionById(property.DataTypeGuid);
-
+                    var dataType = GetDataTypeDefinitionCached(property.DataTypeGuid, ref dataTypeDefinitionCache);
                     if (dataType == null)
                         throw new NullReferenceException($"Could not find DataType with guid: '{property.DataTypeGuid}'");
 
@@ -213,7 +217,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
         }
 
-        private void RetrieveAdditionalProperties(ref ArchetypeModel archetype, ArchetypePreValue preValue)
+        private void RetrieveAdditionalProperties(ref ArchetypeModel archetype, ArchetypePreValue preValue, ref Dictionary<Guid, IDataTypeDefinition> dataTypeDefinitionCache)
         {
             if (preValue == null)
                 return;
@@ -230,7 +234,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             Guid dataTypeGuid;
                             if (Guid.TryParse(propertyInst.DataTypeGuid, out dataTypeGuid) == false)
                                 throw new InvalidOperationException($"Could not parse DataTypeGuid as a guid: '{propertyInst.DataTypeGuid}'.");
-                            var dataTypeDefinition = _dataTypeService.GetDataTypeDefinitionById(dataTypeGuid);
+                            var dataTypeDefinition = GetDataTypeDefinitionCached(dataTypeGuid, ref dataTypeDefinitionCache);
                             if (dataTypeDefinition == null)
                                 throw new NullReferenceException($"Could not find DataType with guid: '{dataTypeGuid}'");
                             propertyInst.DataTypeId = dataTypeDefinition.Id;
@@ -238,6 +242,19 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         }
                     }
                 }
+            }
+        }
+
+        private IDataTypeDefinition GetDataTypeDefinitionCached(Guid id, ref Dictionary<Guid, IDataTypeDefinition> dataTypeDefinitionCache)
+        {
+            if (dataTypeDefinitionCache.ContainsKey(id))
+                return dataTypeDefinitionCache[id];
+            else
+            {
+                var dataType = _dataTypeService.GetDataTypeDefinitionById(id);
+                if (dataType != null)
+                    dataTypeDefinitionCache.Add(id, dataType);
+                return dataType;
             }
         }
 
