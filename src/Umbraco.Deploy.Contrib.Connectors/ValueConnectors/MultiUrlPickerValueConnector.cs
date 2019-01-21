@@ -54,7 +54,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         }
 
         /// <inheritdoc/>
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "RJP.MultiUrlPicker" };
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "RJP.MultiUrlPicker", "Umbraco.MultiUrlPicker" };
 
         public string GetValue(Property property, ICollection<ArtifactDependency> dependencies)
         {
