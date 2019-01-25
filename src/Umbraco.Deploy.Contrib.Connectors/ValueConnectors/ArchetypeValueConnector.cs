@@ -1,19 +1,36 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Contrib.Connectors.Caching;
 using Umbraco.Deploy.ValueConnectors;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     public class ArchetypeValueConnector : IValueConnector
     {
+
+        /// <summary>
+        /// The duration that results for operations related to data types are cached.
+        /// </summary>
+        private readonly TimeSpan dataTypeCacheDuration;
+
+        /// <summary>
+        /// Stores the string version of the Archetype config prevalues using the data type definition ID as the key.
+        /// </summary>
+        private readonly InstanceByKeyCache<string, int> archetypeConfigPreValuesByDtdId;
+
+        /// <summary>
+        /// Stores data type definitions using the data type definition GUID ID as the key.
+        /// </summary>
+        private readonly InstanceByKeyCache<DataTypeDefinition, Guid> dataTypeDefinitionsById;
+
         private readonly IDataTypeService _dataTypeService;
         private readonly IMacroParser _macroParser;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
@@ -24,6 +41,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public ArchetypeValueConnector(IDataTypeService dataTypeService, IMacroParser macroParser, Lazy<ValueConnectorCollection> valueConnectors)
         {
+            dataTypeCacheDuration = TimeSpan.FromSeconds(30);
+            archetypeConfigPreValuesByDtdId = new InstanceByKeyCache<string, int>();
+            dataTypeDefinitionsById = new InstanceByKeyCache<DataTypeDefinition, Guid>();
             _dataTypeService = dataTypeService;
             _macroParser = macroParser;
             _valueConnectorsLazy = valueConnectors;
@@ -35,17 +55,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
 
             var value = property.Value.ToString();
-
-            var prevalues = _dataTypeService.GetPreValuesCollectionByDataTypeId(property.PropertyType.DataTypeDefinitionId).PreValuesAsDictionary;
-            PreValue prevalue;
-            //Fetch the Prevalues for the current Property's DataType (if its an 'Archetype config')
-            if (!prevalues.TryGetValue("archetypeconfig", out prevalue) && !prevalues.TryGetValue("archetypeConfig", out prevalue))
-            {
-                throw new InvalidOperationException("Could not find Archetype configuration.");
-            }
-            var archetypePreValue = prevalue == null
+            var strPrevalue = GetArchetypeConfiguration(property.PropertyType.DataTypeDefinitionId);
+            var archetypePreValue = strPrevalue == null
                 ? null
-                : JsonConvert.DeserializeObject<ArchetypePreValue>(prevalue.Value);
+                : JsonConvert.DeserializeObject<ArchetypePreValue>(strPrevalue);
 
             RetrieveAdditionalProperties(ref archetypePreValue);
 
@@ -62,13 +75,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 if (archetypeProperty.DataTypeGuid == null)
                     continue;
+
                 // get the data type of the property
-                var dataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid));
-                if (dataType == null)
-                {
-                    throw new ArgumentNullException(
-                        $"Unable to find the data type for editor '{archetypeProperty.PropertyEditorAlias}' ({archetypeProperty.DataTypeGuid}) referenced by '{property.Alias}'.");
-                }
+                var errorMessage = $"Unable to find the data type for editor '{archetypeProperty.PropertyEditorAlias}' ({archetypeProperty.DataTypeGuid}) referenced by '{property.Alias}'.";
+                var dataType = GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid), errorMessage);
+
                 // add the datatype as a dependency
                 dependencies.Add(new ArtifactDependency(new GuidUdi(Constants.UdiEntityType.DataType, dataType.Key), false, ArtifactDependencyMode.Exist));
 
@@ -134,17 +145,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (property == null)
                 throw new NullReferenceException($"Property not found: '{alias}'.");
 
-            var prevalues = _dataTypeService.GetPreValuesCollectionByDataTypeId(property.PropertyType.DataTypeDefinitionId).FormatAsDictionary();
-
-            PreValue prevalue = null;
-            //Fetch the Prevalues for the current Property's DataType (if its an 'Archetype config')
-            if (!prevalues.TryGetValue("archetypeconfig", out prevalue) && !prevalues.TryGetValue("archetypeConfig", out prevalue))
-            {
-                throw new InvalidOperationException("Could not find Archetype configuration.");
-            }
-            var archetypePreValue = prevalue == null
+            var strPrevalue = GetArchetypeConfiguration(property.PropertyType.DataTypeDefinitionId);
+            var archetypePreValue = strPrevalue == null
                 ? null
-                : JsonConvert.DeserializeObject<ArchetypePreValue>(prevalue.Value);
+                : JsonConvert.DeserializeObject<ArchetypePreValue>(strPrevalue);
 
             RetrieveAdditionalProperties(ref archetypePreValue);
 
@@ -163,12 +167,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     continue;
 
                 // get the data type of the property
-                var dataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid));
-                if (dataType == null)
-                {
-                    throw new ArgumentNullException(
-                        $"Unable to find the data type for editor '{archetypeProperty.PropertyEditorAlias}' ({archetypeProperty.DataTypeGuid}) referenced by '{property.Alias}'.");
-                }
+                var errorMessage = $"Unable to find the data type for editor '{archetypeProperty.PropertyEditorAlias}' ({archetypeProperty.DataTypeGuid}) referenced by '{property.Alias}'.";
+                var dataType = GetDataTypeDefinitionById(Guid.Parse(archetypeProperty.DataTypeGuid), errorMessage);
 
                 // try to convert the value with the macro parser - this is mainly for legacy editors
                 var archetypeValue = _macroParser.ReplaceAttributeValue(archetypeProperty.Value.ToString(), dataType.PropertyEditorAlias, null, Direction.FromArtifact);
@@ -203,11 +203,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 foreach (var property in fieldset.Properties)
                 {
-                    var dataType = _dataTypeService.GetDataTypeDefinitionById(property.DataTypeGuid);
-
-                    if (dataType == null)
-                        throw new NullReferenceException($"Could not find DataType with guid: '{property.DataTypeGuid}'");
-
+                    var errorMessage = $"Could not find DataType with guid: '{property.DataTypeGuid}'";
+                    var dataType = GetDataTypeDefinitionById(property.DataTypeGuid, errorMessage);
                     property.PropertyEditorAlias = dataType.PropertyEditorAlias;
                 }
             }
@@ -230,15 +227,70 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             Guid dataTypeGuid;
                             if (Guid.TryParse(propertyInst.DataTypeGuid, out dataTypeGuid) == false)
                                 throw new InvalidOperationException($"Could not parse DataTypeGuid as a guid: '{propertyInst.DataTypeGuid}'.");
-                            var dataTypeDefinition = _dataTypeService.GetDataTypeDefinitionById(dataTypeGuid);
-                            if (dataTypeDefinition == null)
-                                throw new NullReferenceException($"Could not find DataType with guid: '{dataTypeGuid}'");
-                            propertyInst.DataTypeId = dataTypeDefinition.Id;
+                            var errorMessage = $"Could not find DataType with guid: '{dataTypeGuid}'";
+                            var dataType = GetDataTypeDefinitionById(dataTypeGuid, errorMessage);
+                            propertyInst.DataTypeId = dataType.Id;
                             propertyInst.PropertyEditorAlias = property.PropertyEditorAlias;
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets a data type definition from the cache for the specified GUID ID of
+        /// a data type definition.
+        /// </summary>
+        /// <param name="id">
+        /// The GUID ID of the data type definition.
+        /// </param>
+        /// <param name="errorMessage">
+        /// The error message to include with the exception that will be thrown in the case
+        /// that the data type definition cannot be found.
+        /// </param>
+        /// <returns>
+        /// The data type definition.
+        /// </returns>
+        private DataTypeDefinition GetDataTypeDefinitionById(Guid id, string errorMessage)
+        {
+            return dataTypeDefinitionsById.Get(id, dtdKey =>
+            {
+                var dataType = _dataTypeService.GetDataTypeDefinitionById(id);
+                if (dataType == null)
+                {
+                    throw new ArgumentNullException(errorMessage);
+                }
+                return new DataTypeDefinition()
+                {
+                    DatabaseType = dataType.DatabaseType,
+                    Id = dataType.Id,
+                    PropertyEditorAlias = dataType.PropertyEditorAlias
+                };
+            }, dataTypeCacheDuration);
+        }
+
+        /// <summary>
+        /// Returns the Archetype configuration corresponding to the specified data type
+        /// definition.
+        /// </summary>
+        /// <param name="dataTypeDefinitionId">
+        /// The ID of the data type definition.
+        /// </param>
+        /// <returns>
+        /// The Archetype configuration.
+        /// </returns>
+        private string GetArchetypeConfiguration(int dataTypeDefinitionId)
+        {
+            return archetypeConfigPreValuesByDtdId.Get(dataTypeDefinitionId, dtdId =>
+            {
+                PreValue prevalue;
+                var prevalues = _dataTypeService.GetPreValuesCollectionByDataTypeId(dtdId).PreValuesAsDictionary;
+                if (!prevalues.TryGetValue("archetypeconfig", out prevalue) && !prevalues.TryGetValue("archetypeConfig", out prevalue))
+                {
+                    throw new InvalidOperationException("Could not find Archetype configuration.");
+                }
+                return prevalue?.Value;
+            }, TimeSpan.FromSeconds(30));
         }
 
         internal class ArchetypePreValue
@@ -460,5 +512,19 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             [JsonProperty("fileNames")]
             public IEnumerable<string> FileNames { get; set; }
         }
+
+
+        /// <summary>
+        /// A local version of IDataTypeDefinition (to avoid any potential lazy loading/deferred
+        /// execution issues).
+        /// </summary>
+        internal class DataTypeDefinition
+        {
+            public string PropertyEditorAlias { get; set; }
+            public DataTypeDatabaseType DatabaseType { get; set; }
+            public int Id { get; set; }
+            public Guid Key { get; set; }
+        }
+
     }
 }
