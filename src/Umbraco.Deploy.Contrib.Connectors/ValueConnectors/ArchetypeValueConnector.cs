@@ -264,7 +264,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 {
                     DatabaseType = dataType.DatabaseType,
                     Id = dataType.Id,
-                    PropertyEditorAlias = dataType.PropertyEditorAlias
+                    PropertyEditorAlias = dataType.PropertyEditorAlias,
+                    Key = dataType.Key
                 };
             }, dataTypeCacheDuration);
         }
