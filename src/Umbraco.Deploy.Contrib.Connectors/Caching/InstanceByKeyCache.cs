@@ -1,10 +1,9 @@
-﻿namespace Umbraco.Deploy.Contrib.Connectors.Caching
-{
+﻿using System;
+using System.Collections.Generic;
+using Umbraco.Deploy.Contrib.Connectors.Caching.Comparers;
 
-    // Namespaces.
-    using Comparers;
-    using System;
-    using System.Collections.Generic;
+namespace Umbraco.Deploy.Contrib.Connectors.Caching
+{
 
     /// <summary>
     /// Caches instance variables by key in a dictionary-like structure.
@@ -21,13 +20,10 @@
     public class InstanceByKeyCache<T, TKey>
     {
 
-        #region Static Variables
-
+        /// <summary>
+        /// An empty array (convenience variable).
+        /// </summary>
         private static string[] EmptyArray = new string[] { };
-
-        #endregion
-
-        #region Properties
 
         /// <summary>
         /// The instances stored by their key, then again by a contextual key.
@@ -39,10 +35,6 @@
         /// </summary>
         private object InstancesLock { get; set; }
 
-        #endregion
-
-        #region Constructors
-
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -51,10 +43,6 @@
             InstancesLock = new object();
             Instances = new Dictionary<TKey, Tuple<Dictionary<string[], T>, DateTime>>();
         }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Gets the instance variable (either from the cache or from the specified function).
@@ -150,10 +138,6 @@
                 }
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         /// <summary>
         /// Trys to get the value by the specified keys.
@@ -257,8 +241,6 @@
                 instanceDictionary, lastCache);
 
         }
-
-        #endregion
 
     }
 

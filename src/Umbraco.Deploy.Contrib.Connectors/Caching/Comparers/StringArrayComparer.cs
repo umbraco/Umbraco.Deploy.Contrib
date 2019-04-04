@@ -1,9 +1,8 @@
-﻿namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
-{
+﻿using System.Collections.Generic;
+using System.Linq;
 
-    // Namespaces.
-    using System.Collections.Generic;
-    using System.Linq;
+namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
+{
 
     /// <summary>
     /// Compares an array of strings.
@@ -13,8 +12,6 @@
     /// </remarks>
     public class StringArrayComparer : IEqualityComparer<string[]>
     {
-
-        #region Methods
 
         /// <summary>
         /// Check if the arrays are equal.
@@ -74,8 +71,6 @@
                 return hashCode;
             }
         }
-
-        #endregion
 
     }
 
