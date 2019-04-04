@@ -445,7 +445,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             /// <returns></returns>
             public string SerializeForPersistence()
             {
-                var json = JObject.Parse(JsonConvert.SerializeObject(this, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
+                var json = JObject.Parse(JsonConvert.SerializeObject(this, new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }));
 
                 var propertiesToRemove = new[] { "propertyEditorAlias", "dataTypeId", "dataTypeGuid", "hostContentType", "editorState" };
 
@@ -514,7 +514,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             public IEnumerable<string> FileNames { get; set; }
         }
 
-
         /// <summary>
         /// A local version of IDataTypeDefinition (to avoid any potential lazy loading/deferred
         /// execution issues).
@@ -526,6 +525,5 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             public int Id { get; set; }
             public Guid Key { get; set; }
         }
-
     }
 }

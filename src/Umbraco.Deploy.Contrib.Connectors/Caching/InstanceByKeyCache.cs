@@ -4,7 +4,6 @@ using Umbraco.Deploy.Contrib.Connectors.Caching.Comparers;
 
 namespace Umbraco.Deploy.Contrib.Connectors.Caching
 {
-
     /// <summary>
     /// Caches instance variables by key in a dictionary-like structure.
     /// </summary>
@@ -19,7 +18,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
     /// </remarks>
     public class InstanceByKeyCache<T, TKey>
     {
-
         /// <summary>
         /// An empty array (convenience variable).
         /// </summary>
@@ -77,8 +75,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
 
                 // Value already cached?
                 var tempTuple = default(Tuple<Dictionary<string[], T>, DateTime>);
-                if (Instances.TryGetValue(key, out tempTuple)
-                    && tempTuple.Item1.ContainsKey(keys))
+                if (Instances.TryGetValue(key, out tempTuple) && tempTuple.Item1.ContainsKey(keys))
                 {
                     if (now.Subtract(Instances[key].Item2) >= duration)
                     {
@@ -166,6 +163,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
                     }
                 }
             }
+
             return default(T);
         }
 
@@ -187,8 +185,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
         /// <param name="doLock">
         /// Lock the instance cache during the update?
         /// </param>
-        private void UpdateValueByKeys(string[] keys, TKey accessKey, T value,
-            DateTime lastCache, bool doLock = true)
+        private void UpdateValueByKeys(string[] keys, TKey accessKey, T value, DateTime lastCache, bool doLock = true)
         {
             if (doLock)
             {
@@ -215,10 +212,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
         /// <param name="value">
         /// The value to update the cache with.
         /// </param>
-        private void UpdateValueByKeysWithoutLock(string[] keys, TKey accessKey,
-            T value, DateTime lastCache)
+        private void UpdateValueByKeysWithoutLock(string[] keys, TKey accessKey, T value, DateTime lastCache)
         {
-
             // Variables.
             var instanceTuple = default(Tuple<Dictionary<string[], T>, DateTime>);
             var instanceDictionary = default(Dictionary<string[], T>);
@@ -237,11 +232,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching
             instanceDictionary[keys] = value;
 
             // Update the last cache date.
-            Instances[accessKey] = new Tuple<Dictionary<string[], T>, DateTime>(
-                instanceDictionary, lastCache);
-
+            Instances[accessKey] = new Tuple<Dictionary<string[], T>, DateTime>(instanceDictionary, lastCache);
         }
-
     }
-
 }

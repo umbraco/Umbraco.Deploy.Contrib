@@ -3,7 +3,6 @@ using System.Linq;
 
 namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
 {
-
     /// <summary>
     /// Compares an array of strings.
     /// </summary>
@@ -12,7 +11,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
     /// </remarks>
     public class StringArrayComparer : IEqualityComparer<string[]>
     {
-
         /// <summary>
         /// Check if the arrays are equal.
         /// </summary>
@@ -32,10 +30,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
             {
                 return x == null && y == null;
             }
+
             if (x.Length != y.Length)
             {
                 return false;
             }
+
             for (var i = 0; i < x.Length; i++)
             {
                 if (x[i] != y[i])
@@ -43,6 +43,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -68,10 +69,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.Caching.Comparers
                 {
                     hashCode ^= (item ?? string.Empty).GetHashCode();
                 }
+
                 return hashCode;
             }
         }
-
     }
-
 }
