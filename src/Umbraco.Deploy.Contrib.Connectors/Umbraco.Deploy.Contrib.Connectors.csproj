@@ -66,6 +66,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\Comparers\StringArrayComparer.cs" />
+    <Compile Include="Caching\InstanceByKeyCache.cs" />
     <Compile Include="GridCellValueConnectors\DocTypeGridEditorCellValueConnector.cs" />
     <Compile Include="GridCellValueConnectors\LeBlenderGridCellValueConnector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
