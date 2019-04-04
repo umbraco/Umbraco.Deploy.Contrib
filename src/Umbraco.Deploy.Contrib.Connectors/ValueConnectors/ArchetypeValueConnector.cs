@@ -15,7 +15,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     public class ArchetypeValueConnector : IValueConnector
     {
-
         /// <summary>
         /// The duration that results for operations related to data types are cached.
         /// </summary>
@@ -515,8 +514,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         }
 
         /// <summary>
-        /// A local version of IDataTypeDefinition (to avoid any potential lazy loading/deferred
-        /// execution issues).
+        /// A local version of IDataTypeDefinition (to avoid any potential lazy loading/deferred execution issues).
         /// </summary>
         internal class DataTypeDefinition
         {

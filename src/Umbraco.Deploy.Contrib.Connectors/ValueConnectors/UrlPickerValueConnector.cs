@@ -13,7 +13,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     /// <summary>
     /// Implements a value connector for the url picker editor (Imulus.UrlPicker)
-    /// https://our.umbraco.org/projects/backoffice-extensions/urlpicker/
     /// </summary>
     public class UrlPickerValueConnector : IValueConnector
     {

@@ -27,7 +27,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     */
 
     /// <summary>
-    /// Implements a value connector for the new related links editor (storing Udis).
+    /// Implements a value connector for the old related links editor (storing integer ids).
     /// </summary>
     public class RelatedLinksValueConnector : IValueConnector
     {
