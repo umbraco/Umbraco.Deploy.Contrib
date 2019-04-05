@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Deploy.ValueConnectors;
@@ -63,6 +64,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             var vortoValue = JsonConvert.DeserializeObject<VortoValue>(value);
             if (vortoValue?.Values?.ValuePairs == null)
                 return null;
+
+            // old versions of Vorto doesn't seem to store a DtdGuid - in those cases we just deploy the value as it is without any further handling.
+            if (string.IsNullOrWhiteSpace(vortoValue.DtdGuid))
+            {
+                LogHelper.Debug<VortoValueConnector>($"No datatype definition defined inside the Vorto property: {property.Alias} - are you using an old version of Vorto? - data value will be deployed as it is.");
+                return value;
+            }
 
             // get the Vorto datatype
             var vortoDataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(vortoValue.DtdGuid));
@@ -134,6 +142,14 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             var vortoValue = JsonConvert.DeserializeObject<VortoValue>(value);
             if (vortoValue == null)
                 return;
+
+            // old versions of Vorto doesn't seem to store a DtdGuid - in those cases we just deploy the value as it is without any further handling.
+            if (string.IsNullOrWhiteSpace(vortoValue.DtdGuid))
+            {
+                LogHelper.Debug<VortoValueConnector>($"No datatype definition defined inside the Vorto property: {alias} - are you using an old version of Vorto? - data value will be deployed as it is.");
+                content.SetValue(alias, value);
+                return;
+            }
 
             // getting the wrapped datatype via the Vorto datatype
             var vortoDataType = _dataTypeService.GetDataTypeDefinitionById(Guid.Parse(vortoValue.DtdGuid));
