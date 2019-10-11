@@ -3,7 +3,7 @@
 
 # Umbraco Deploy Contrib
 
-This project contains community contributions for Umbraco Deploy.
+This project contains community contributions for Umbraco Deploy targetted for version 8.
 
 Primarily this project offers connectors for the most popular Umbraco community packages - these are used by Deploy to aid with the deployment and transferring of content/property-data between environments on [Umbraco Cloud](https://umbraco.com/cloud).
 
@@ -12,19 +12,7 @@ Primarily this project offers connectors for the most popular Umbraco community 
 
 This project offers Umbraco Deploy connectors for the following community packages:
 
-- [Archetype](https://github.com/kgiszewski/Archetype/)
-- [Content List](https://our.umbraco.com/packages/backoffice-extensions/content-list/)
-- [DocType Grid Editor](https://our.umbraco.org/packages/backoffice-extensions/doc-type-grid-editor/)
-- [LeBlender](https://our.umbraco.org/packages/backoffice-extensions/leblender/)
-- [Meganav](https://our.umbraco.com/packages/website-utilities/meganav/)
-- [Multi Url Picker](https://our.umbraco.com/packages/backoffice-extensions/multi-url-picker/)
-- [Nested Content](https://our.umbraco.org/packages/backoffice-extensions/nested-content/)
-- [nuPickers](https://our.umbraco.org/packages/backoffice-extensions/nupickers/)
-- [Property List](https://our.umbraco.com/packages/backoffice-extensions/property-list/)
-- [Stacked Content](https://our.umbraco.com/packages/backoffice-extensions/stacked-content/)
-- [Tuple](https://github.com/umco/umbraco-tuple)
-- UrlPicker
-- [Vorto](https://our.umbraco.com/packages/backoffice-extensions/vorto/)
+None so far.
 
 ---
 
