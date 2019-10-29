@@ -98,7 +98,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (propertyType == null)
                     {
-                        LogHelper.Debug<NestedContentValueConnector>($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
+                        LogHelper.Debug<NestedContentValueConnector>($"No property type found with alias {key} on content type {contentType.Alias}");
                         continue;
                     }
 
@@ -203,7 +203,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (propertyType == null)
                     {
-                        LogHelper.Debug<NestedContentValueConnector>($"No Property Type found with alias {key} on Content Type {contentType.Alias}");
+                        LogHelper.Debug<NestedContentValueConnector>($"No property type found with alias {key} on content type {contentType.Alias}");
                         continue;
                     }
 

@@ -13,7 +13,7 @@ using Umbraco.Deploy.ValueConnectors;
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     /// <summary>
-    /// A Deploy valueconnector for the property editors based on InnerContent
+    /// A Deploy ValueConnector for the property editors based on InnerContent
     /// </summary>
     public abstract class InnerContentConnector : IValueConnector
     {

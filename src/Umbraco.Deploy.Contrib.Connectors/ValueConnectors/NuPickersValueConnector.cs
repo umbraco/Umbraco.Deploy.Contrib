@@ -168,7 +168,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                 case SaveFormat.XML:
                     var xml = value.Select(x => $"<Picked Key=\"{x.Key}\"><![CDATA[{x.Value}]]></Picked>");
-                    return string.Concat("<Picker>", string.Join(",", xml, "</Picker>"));
+                    return string.Concat("<Picker>", string.Join("", xml), "</Picker>");
 
                 case SaveFormat.CSV:
                 default:

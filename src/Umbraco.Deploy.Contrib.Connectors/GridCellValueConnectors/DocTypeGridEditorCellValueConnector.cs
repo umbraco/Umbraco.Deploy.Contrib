@@ -139,36 +139,37 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 var propValueConnector = ValueConnectors.Get(propertyType);
 
                 var mockProperty = new Property(propertyType);
-                var mockContent = new Content("mockContent", -1, new ContentType(-1),
-                    new PropertyCollection(new List<Property> { mockProperty }));
+                var mockContent = new Content("mockContentGrid", -1, new ContentType(-1),
+                    new PropertyCollection(new List<Property> {mockProperty}));
 
+                propValueConnector.SetValue(mockContent, mockProperty.Alias, value.ToString());
+                var convertedValue = mockContent.GetValue(mockProperty.Alias);
+
+                // integers needs to be converted into strings for DTGE to work
+                if (convertedValue is int)
                 {
-                    propValueConnector.SetValue(mockContent, mockProperty.Alias, value.ToString());
-                    var convertedValue = mockContent.GetValue(mockProperty.Alias);
-                    // integers needs to be converted into strings for DTGE to work
-                    if (convertedValue is int)
+                    docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue.ToString();
+                }
+                else if (convertedValue == null)
+                {
+                    //Assign the null back - otherwise the check for JSON will fail as we cant convert a null to a string
+                    //NOTE: LinkPicker2 for example if no link set is returning a null as opposed to empty string
+                    docTypeGridEditorContent.Value[propertyType.Alias] = null;
+                }
+                else
+                {
+                    // test if the value is a json object (thus could be a nested complex editor)
+                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
+                    var jtokenValue = convertedValue.ToString().DetectIsJson()
+                        ? JToken.Parse(convertedValue.ToString())
+                        : null;
+                    if (jtokenValue != null)
                     {
-                        docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue.ToString();
-                    }
-                    else if (convertedValue is null)
-                    {
-                        //Assign the null back - otherwise the check for JSON will fail as we cant convert a null to a string
-                        //NOTE: LinkPicker2 for example if no link set is returning a null as opposed to empty string
-                        docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue;
+                        docTypeGridEditorContent.Value[propertyType.Alias] = jtokenValue;
                     }
                     else
                     {
-                        // test if the value is a json object (thus could be a nested complex editor)
-                        // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                        var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                        if (jtokenValue != null)
-                        {
-                            docTypeGridEditorContent.Value[propertyType.Alias] = jtokenValue;
-                        }
-                        else
-                        {
-                            docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue;
-                        }
+                        docTypeGridEditorContent.Value[propertyType.Alias] = convertedValue;
                     }
                 }
             }

@@ -6,7 +6,7 @@ using Umbraco.Deploy.ValueConnectors;
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     /// <summary>
-    /// A Deploy valueconnector for the StackedContent property editor
+    /// A Deploy ValueConnector for the StackedContent property editor
     /// </summary>
     public class StackedContentConnector : InnerContentConnector
     {

@@ -12,18 +12,19 @@ Primarily this project offers connectors for the most popular Umbraco community 
 
 This project offers Umbraco Deploy connectors for the following community packages:
 
-- [Archetype](https://our.umbraco.org/projects/backoffice-extensions/archetype/)
-- [Content List](https://our.umbraco.com/projects/backoffice-extensions/content-list/)
-- [DocType Grid Editor](https://our.umbraco.org/projects/backoffice-extensions/doc-type-grid-editor/)
-- [LeBlender](https://our.umbraco.org/projects/backoffice-extensions/leblender/)
-- [Meganav](https://our.umbraco.com/projects/website-utilities/meganav/)
-- [Multi Url Picker](https://our.umbraco.com/projects/backoffice-extensions/multi-url-picker/)
-- [Nested Content](https://our.umbraco.org/projects/backoffice-extensions/nested-content/)
-- [nuPickers](https://our.umbraco.org/projects/backoffice-extensions/nupickers/)
-- [Property List](https://our.umbraco.com/projects/backoffice-extensions/property-list/)
-- [Stacked Content](https://our.umbraco.com/projects/backoffice-extensions/stacked-content/)
+- [Archetype](https://github.com/kgiszewski/Archetype/)
+- [Content List](https://our.umbraco.com/packages/backoffice-extensions/content-list/)
+- [DocType Grid Editor](https://our.umbraco.org/packages/backoffice-extensions/doc-type-grid-editor/)
+- [LeBlender](https://our.umbraco.org/packages/backoffice-extensions/leblender/)
+- [Meganav](https://our.umbraco.com/packages/website-utilities/meganav/)
+- [Multi Url Picker](https://our.umbraco.com/packages/backoffice-extensions/multi-url-picker/)
+- [Nested Content](https://our.umbraco.org/packages/backoffice-extensions/nested-content/)
+- [nuPickers](https://our.umbraco.org/packages/backoffice-extensions/nupickers/)
+- [Property List](https://our.umbraco.com/packages/backoffice-extensions/property-list/)
+- [Stacked Content](https://our.umbraco.com/packages/backoffice-extensions/stacked-content/)
 - [Tuple](https://github.com/umco/umbraco-tuple)
-- [UrlPicker](https://our.umbraco.org/projects/backoffice-extensions/urlpicker/)
+- UrlPicker
+- [Vorto](https://our.umbraco.com/packages/backoffice-extensions/vorto/)
 
 ---
 
@@ -51,7 +52,7 @@ When reporting issues with a connector it will help us a whole lot if you can re
 
 This means try removing anything unnecessary or unrelated to the actual issue, from your setup and also try reducing the steps to reproduce, to only cover exactly what we would need to do in order to see the error you are getting.
 
-Please use the [Umbraco Deploy Issue Tracker (for both Deploy and Deploy.Contrib)](http://issues.umbraco.org/issues/deploy).
+Please use the [Umbraco Cloud Issue Tracker (for both Deploy and Deploy.Contrib)](https://github.com/umbraco/Umbraco.Cloud.Issues/issues).
 
 ## Credits
 
