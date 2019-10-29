@@ -19,7 +19,7 @@ SET version=%release%
 IF [%comment%] EQU [] (SET version=%release%) ELSE (SET version=%release%-%comment%)
 ECHO Building UmbracoDeploy.Contrib %version%
 
-.\tools\nuget.exe restore .\..\src\Umbraco.Deploy.Contrib.sln
+tools\nuget.exe restore .\..\src\Umbraco.Deploy.Contrib.sln
 
 RMDIR _BuildOutput /s /q
 DEL UmbracoDeploy.Contrib.*.zip /q
@@ -45,8 +45,10 @@ if exist "%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15
 ECHO MSBUILD is here %MSBUILDPath%
 %MSBUILDPath% "Build.proj" /p:BUILD_RELEASE=%release% /p:BUILD_COMMENT=%comment%
 
+DEL .7z /q
+
 ECHO Packing the NuGet release files
-.\tools\NuGet.exe Pack NuSpecs\UmbracoDeploy.Contrib.nuspec -Version %version% -Verbosity quiet
+tools\NuGet.exe Pack NuSpecs\UmbracoDeploy.Contrib.nuspec -Version %version% -Verbosity quiet
 
 if %errorlevel% neq 0 exit /b %errorlevel%
 
