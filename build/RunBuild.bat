@@ -23,7 +23,7 @@ ECHO Building UmbracoDeploy.Contrib %version%
 
 RMDIR _BuildOutput /s /q
 DEL UmbracoDeploy.Contrib.*.zip /q
-DEL *.nupkg /q
+DEL UmbracoDeploy.Contrib.*.nupkg /q
 
 ECHO ################################################################
 ECHO Building Umbraco Deploy Contrib
@@ -44,8 +44,6 @@ if exist "%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15
 
 ECHO MSBUILD is here %MSBUILDPath%
 %MSBUILDPath% "Build.proj" /p:BUILD_RELEASE=%release% /p:BUILD_COMMENT=%comment%
-
-DEL .7z /q
 
 ECHO Packing the NuGet release files
 .\tools\NuGet.exe Pack NuSpecs\UmbracoDeploy.Contrib.nuspec -Version %version% -Verbosity quiet

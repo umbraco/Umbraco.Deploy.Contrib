@@ -96,8 +96,8 @@
 
 	<Target Name="Zip" DependsOnTargets="CopyFiles">
 		<Message Text="Starting to zip to $(BuildDeployPackageFileName)" Importance="high" />
-		<Exec Command="tools\7za.exe a -r %22$(BuildFolder)..\$(BuildDeployPackageFileName)%22 %22$(DeployFolderAbsolutePath)*%22" />
-		<Message Text="Finished zipping to build\$(BuildDeployPackageFileName)" Importance="high" />
+		<Exec Command="tools\7za.exe a -r %22$(BuildFolder)..\$(BuildPackageFileName)%22 %22$(DeployFolderAbsolutePath)*%22" />
+		<Message Text="Finished zipping to build\$(BuildPackageFileName)" Importance="high" />
 	</Target>
 
 	<Target Name="Build" DependsOnTargets="Zip">
