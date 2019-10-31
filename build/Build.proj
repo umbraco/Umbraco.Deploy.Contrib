@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<MSBuildCommunityTasksPath>..\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+	</PropertyGroup>
+
+	<Import Project=".\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+
+	<PropertyGroup Condition="'$(BUILD_NUMBER)'!=''">
+		<DECIMAL_BUILD_NUMBER>$(BUILD_NUMBER)</DECIMAL_BUILD_NUMBER>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(BUILD_RELEASE)'!=''">
+		<DECIMAL_BUILD_NUMBER>$(BUILD_RELEASE)</DECIMAL_BUILD_NUMBER>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(BUILD_RELEASE)'!='' AND '$(BUILD_COMMENT)'!=''">
+		<DECIMAL_BUILD_NUMBER>$(BUILD_RELEASE)-$(BUILD_COMMENT)</DECIMAL_BUILD_NUMBER>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<ProductName>UmbracoDeploy.Contrib</ProductName>
+		<BuildConfiguration>Release</BuildConfiguration>
+		<BuildPackageFileName>$(ProductName).$(DECIMAL_BUILD_NUMBER).zip</BuildPackageFileName>
+		<BuildFolder>_BuildOutput\</BuildFolder>
+		<BuildFolderAbsolutePath>$(MSBuildProjectDirectory)\$(BuildFolder)</BuildFolderAbsolutePath>
+		<SolutionBinFolder>$(BuildFolder)bin\</SolutionBinFolder>
+		<SolutionBinFolderAbsolutePath>$(BuildFolderAbsolutePath)bin\</SolutionBinFolderAbsolutePath>
+		<DeployFolderAbsolutePath>$(BuildFolderAbsolutePath)Deploy\</DeployFolderAbsolutePath>
+	</PropertyGroup>
+
+	<Target Name="CleanUp">
+		<RemoveDir Directories="$(BuildFolder)"></RemoveDir>
+	</Target>
+
+	<Target Name="SetVersionNumber" DependsOnTargets="CleanUp" Condition="'$(BUILD_RELEASE)'!=''">		
+		<!--This updates the copyright year-->
+		<FileUpdate
+			Files="..\src\Umbraco.Deploy.Contrib.Connectors\Properties\AssemblyInfo.cs"
+			Regex="AssemblyCopyright\(&quot;(.+)?&quot;\)"
+			ReplacementText="AssemblyCopyright(&quot;Copyright © Umbraco $([System.DateTime]::Now.ToString(`yyyy`))&quot;)"/>
+		<!--This updates the assembly versions-->
+		<AssemblyInfo CodeLanguage="CS"
+			OutputFile="..\src\Umbraco.Deploy.Contrib.Connectors\Properties\VersionInfo.cs"
+			AssemblyVersion="$(BUILD_RELEASE)" AssemblyInformationalVersion="$(DECIMAL_BUILD_NUMBER)" />
+	</Target>
+
+	<Target Name="UpdateReferencedVersions" DependsOnTargets="SetVersionNumber" Condition="'$(BUILD_RELEASE)'!=''">
+		<!--
+			This step will update the versions it finds in the packages.config in the Umbraco.Deploy.Contrib.Connectors project.
+			It is used to update the nuspec file.
+		-->
+		<XmlRead
+			XPath="/packages/package[@id='UmbracoCms.Core']/@version"
+			XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\packages.config">
+			<Output TaskParameter="Value" PropertyName="CoreVersion" />
+		</XmlRead>
+		
+		<PropertyGroup>
+			<CoreBaseVersion>$(CoreVersion.Substring(0, 5))</CoreBaseVersion>
+		</PropertyGroup>
+
+		<FileUpdate
+			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
+			Regex="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;(.*)?&quot;"
+			ReplacementText="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;$(CoreBaseVersion)&quot;"/>
+		
+		<XmlRead
+			XPath="/packages/package[@id='UmbracoDeploy']/@version"
+			XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\packages.config">
+			<Output TaskParameter="Value" PropertyName="UmbracoDeployVersion" />
+		</XmlRead>
+		<FileUpdate
+			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
+			Regex="dependency id=&quot;UmbracoDeploy&quot; version=&quot;(.*)?,"
+			ReplacementText="dependency id=&quot;UmbracoDeploy&quot; version=&quot;[$(UmbracoDeployVersion),"/>
+	</Target>
+
+	<Target Name="CompileSolution" DependsOnTargets="UpdateReferencedVersions">
+		<Message Importance="high" Text="Compiling Deploy.Contrib project to build\$(BuildFolder)" />
+		<MSBuild
+			Projects="../src/Umbraco.Deploy.Contrib.sln"
+			Targets="Clean;Rebuild;"
+			ToolsVersion="15.0"
+			UnloadProjectsOnCompletion="False" BuildInParallel="False"
+			Properties="WarningLevel=0;Configuration=$(BuildConfiguration);PipelineDependsOnBuild=False;OutDir=$(SolutionBinFolderAbsolutePath)" >
+		</MSBuild>
+		<Message Text="Finished compiling Deploy Contrib project" Importance="high" />
+	</Target>
+
+	<Target Name="CopyFiles" DependsOnTargets="CompileSolution">
+		<ItemGroup>
+			<DeployBinFiles Include="$(SolutionBinFolderAbsolutePath)Umbraco.Deploy.Contrib.Connectors.dll" />
+		</ItemGroup>
+		<Message Text="Copying Deploy Contrib files to correct folder structure" />
+		<Copy SourceFiles="@(DeployBinFiles)" DestinationFolder="$(DeployFolderAbsolutePath)bin" SkipUnchangedFiles="False" OverwriteReadOnlyFiles="True" />
+	</Target>
+
+	<Target Name="Zip" DependsOnTargets="CopyFiles">
+		<Message Text="Starting to zip to $(BuildDeployPackageFileName)" Importance="high" />
+		<Exec Command="tools\7za.exe a -r %22$(BuildFolder)..\$(BuildPackageFileName)%22 %22$(DeployFolderAbsolutePath)*%22" />
+		<Message Text="Finished zipping to build\$(BuildPackageFileName)" Importance="high" />
+	</Target>
+
+	<Target Name="Build" DependsOnTargets="Zip">
+		<Message Text="Build finished" />
+	</Target>
+</Project>
