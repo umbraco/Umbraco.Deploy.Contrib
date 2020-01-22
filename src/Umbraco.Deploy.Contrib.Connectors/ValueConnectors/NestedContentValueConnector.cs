@@ -43,7 +43,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             var svalue = value as string;
             if (string.IsNullOrWhiteSpace(svalue))
-                return null;
+                return null; 
 
             if (svalue.DetectIsJson() == false)
                 return null;
@@ -102,7 +102,20 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
                     var val = row.PropertyValues[key];
-                    object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
+
+                    object parsedValue;
+
+                   
+                    //checkbox values of true/false within NestedContent is breaking when you're trying to do a restore from Development, it hits into the .ToArtifact() and break
+                    if (val != null && propType.PropertyEditorAlias.InvariantEquals("Umbraco.TrueFalse") && val.GetType().Name.InvariantEquals("Int64"))
+                    {
+                       int.TryParse(val.ToString(), out var converted);
+                       parsedValue = converted;
+                    }
+                    else
+                    {
+                        parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
+                    }
 
                     // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
                     _logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
@@ -181,29 +194,40 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     if (rowValue != null)
                     {
                         // pass the artifact value and property type to the connector to get a real value from the artifact
-                        var convertedValue = propValueConnector.FromArtifact(rowValue.ToString(), innerPropertyType, null);
-                        if (convertedValue == null)
+                        try
                         {
-                            row.PropertyValues[key] = null;
-                        }
-                        // integers needs to be converted into strings
-                        else if (convertedValue is int)
-                        {
-                            row.PropertyValues[key] = convertedValue.ToString();
-                        }
-                        else
-                        {
-                            // test if the value is a json object (thus could be a nested complex editor)
-                            // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                            var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                            if (jtokenValue != null)
+                            var convertedValue = propValueConnector.FromArtifact(rowValue.ToString(), innerPropertyType, null);
+                            if (convertedValue == null)
                             {
-                                row.PropertyValues[key] = jtokenValue;
+                                row.PropertyValues[key] = null;
+                            }
+                            // integers needs to be converted into strings
+                            else if (convertedValue is int)
+                            {
+                                row.PropertyValues[key] = convertedValue.ToString();
                             }
                             else
                             {
-                                row.PropertyValues[key] = convertedValue;
+                                // test if the value is a json object (thus could be a nested complex editor)
+                                // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
+                                var jtokenValue = convertedValue.ToString().DetectIsJson()
+                                    ? JToken.Parse(convertedValue.ToString())
+                                    : null;
+                                if (jtokenValue != null)
+                                {
+                                    row.PropertyValues[key] = jtokenValue;
+                                }
+                                else
+                                {
+                                    row.PropertyValues[key] = convertedValue;
+                                }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            // getting error for Umbraco.TrueFalse and Umbraco.DropDown.Flexibl, just remapping it back to the value without passing into propValueConnector.FromArtifact()
+                            this._logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' using " + propValueConnector.GetType() + " . Error: " + ex);
+                            row.PropertyValues[key] = rowValue;
                         }
                     }
                     else
