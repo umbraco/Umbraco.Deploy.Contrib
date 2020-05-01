@@ -108,17 +108,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     _logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
                         + "' using " + propValueConnector.GetType() + " for " + propType);
 
-                    // test if the value is a json object (thus could be a nested complex editor)
-                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    JToken jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                    if (jtokenValue != null)
-                    {
-                        parsedValue = jtokenValue;
-                    }
-                    else if (parsedValue != null)
-                    {
-                        parsedValue = parsedValue.ToString();
-                    }
+                    parsedValue = parsedValue.ToString();
 
                     row.PropertyValues[key] = parsedValue;
                 }
@@ -193,17 +183,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         }
                         else
                         {
-                            // test if the value is a json object (thus could be a nested complex editor)
-                            // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                            var jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                            if (jtokenValue != null)
-                            {
-                                row.PropertyValues[key] = jtokenValue;
-                            }
-                            else
-                            {
-                                row.PropertyValues[key] = convertedValue;
-                            }
+                            row.PropertyValues[key] = convertedValue;
                         }
                     }
                     else
