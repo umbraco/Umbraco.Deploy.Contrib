@@ -115,14 +115,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     Umbraco.Core.Logging.LogHelper.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
                         + "' using " + propValueConnector.GetType() + " for " + propertyType);
 
-                    // test if the value is a json object (thus could be a nested complex editor)
-                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    JToken jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                    if (jtokenValue != null)
-                    {
-                        parsedValue = jtokenValue;
-                    }
-                    else if (parsedValue != null)
+                    if (parsedValue != null)
                     {
                         parsedValue = parsedValue.ToString();
                     }
@@ -227,17 +220,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         }
                         else
                         {
-                            // test if the value is a json object (thus could be a nested complex editor)
-                            // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                            JToken jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                            if (jtokenValue != null)
-                            {
-                                row.PropertyValues[key] = jtokenValue;
-                            }
-                            else
-                            {
-                                row.PropertyValues[key] = convertedValue;
-                            }
+                            row.PropertyValues[key] = convertedValue;
                         }
                     }
                     else
