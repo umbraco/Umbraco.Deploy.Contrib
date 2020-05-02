@@ -108,7 +108,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     _logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
                         + "' using " + propValueConnector.GetType() + " for " + propType);
 
-                    parsedValue = parsedValue.ToString();
+                    parsedValue = parsedValue?.ToString();
 
                     row.PropertyValues[key] = parsedValue;
                 }
