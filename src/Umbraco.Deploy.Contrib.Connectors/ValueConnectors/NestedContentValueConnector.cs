@@ -21,6 +21,14 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
 
+        // Our.Umbraco.NestedContent is the original NestedContent package
+        // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
+        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
+
+        // cannot inject ValueConnectorCollection else of course it creates a circular (recursive) dependency,
+        // so we have to inject it lazily and use the lazy value when actually needing it
+        private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
+
         public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
@@ -31,8 +39,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _logger = logger;
         }
 
-        // Our.Umbraco.NestedContent is the original NestedContent package
-        // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
             var svalue = value as string;
@@ -44,9 +50,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             var nestedContent = new List<NestedContentValue>();
             if (svalue.Trim().StartsWith("{"))
+            {
                 nestedContent.Add(JsonConvert.DeserializeObject<NestedContentValue>(svalue));
+            }
             else
+            {
                 nestedContent.AddRange(JsonConvert.DeserializeObject<NestedContentValue[]>(svalue));
+            }
 
             if (nestedContent.All(x => x == null))
                 return null;
@@ -86,13 +96,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         continue;
                     }
 
+                    // fetch the right value connector from the collection of connectors, intended for use with this property type.
                     // throws if not found - no need for a null check
                     var propValueConnector = ValueConnectors.Get(propType);
 
-                    // this should be enough for all other value connectors to work with
-                    // as all they should need is the value, and the property type infos
-                    //var mockProperty = new Property(propType);
-                    //var mockProperty = new Property(propType, row.PropertyValues[key]);
+                    // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
                     var val = row.PropertyValues[key];
                     object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
 
@@ -100,17 +108,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     _logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
                         + "' using " + propValueConnector.GetType() + " for " + propType);
 
-                    // test if the value is a json object (thus could be a nested complex editor)
-                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    JToken jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                    if (jtokenValue != null)
-                    {
-                        parsedValue = jtokenValue;
-                    }
-                    else if (parsedValue != null)
-                    {
-                        parsedValue = parsedValue.ToString();
-                    }
+                    parsedValue = parsedValue?.ToString();
 
                     row.PropertyValues[key] = parsedValue;
                 }
@@ -145,24 +143,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new InvalidOperationException($"Could not resolve these content types for the Nested Content property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            var mocks = new Dictionary<IContentType, IContent>();
-
             foreach (var row in nestedContent)
             {
                 var contentType = allContentTypes[row.ContentTypeAlias];
-
-                // note
-                // the way we do it here, doing content.SetValue() several time on the same content, reduces
-                // allocations and should be ok because SetValue does not care about the previous value - would
-                // be different for the overloads that manage eg files for uploads (not sure how NestedContent
-                // deals with them really)
-
-                // we need a fake content instance to pass in to the value connector, since the value connector
-                // wants to SetValue on an object - then we can extract the value back from that object to set
-                // it correctly on the real instance
-                IContent mockContent;
-                if (!mocks.TryGetValue(contentType, out mockContent))
-                    mockContent = mocks[contentType] = new Content("NC_" + Guid.NewGuid(), -1, contentType);
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
@@ -179,6 +162,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         continue;
                     }
 
+                    // fetch the right value connector from the collection of connectors, intended for use with this property type.
                     // throws if not found - no need for a null check
                     var propValueConnector = ValueConnectors.Get(innerPropertyType);
 
@@ -186,6 +170,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (rowValue != null)
                     {
+                        // pass the artifact value and property type to the connector to get a real value from the artifact
                         var convertedValue = propValueConnector.FromArtifact(rowValue.ToString(), innerPropertyType, null);
                         if (convertedValue == null)
                         {
@@ -198,17 +183,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         }
                         else
                         {
-                            // test if the value is a json object (thus could be a nested complex editor)
-                            // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                            JToken jtokenValue = convertedValue.ToString().DetectIsJson() ? JToken.Parse(convertedValue.ToString()) : null;
-                            if (jtokenValue != null)
-                            {
-                                row.PropertyValues[key] = jtokenValue;
-                            }
-                            else
-                            {
-                                row.PropertyValues[key] = convertedValue;
-                            }
+                            row.PropertyValues[key] = convertedValue;
                         }
                     }
                     else
@@ -222,12 +197,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             value = JArray.FromObject(nestedContent).ToString(Formatting.None);
             return value;
         }
-
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
-
-        // cannot inject ValueConnectorCollection else of course it creates a circular (recursive) dependency,
-        // so we have to inject it lazily and use the lazy value when actually needing it
-        private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
         /// <summary>
         /// The typed value stored for Nested Content
@@ -248,13 +217,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             [JsonProperty("ncContentTypeAlias")]
             public string ContentTypeAlias { get; set; }
-
-            // starting with v7.7, Core's NestedContent implement "key" as a system property
-            // but since we are supporting pre-v7.7 including the NestedContent package, we
-            // cannot do it this way - it's all managed "manually" when dealing with
-            // PropertyValues.
-            //[JsonProperty("key")]
-            //public Guid Key { get; set; }
 
             /// <summary>
             /// The remaining properties will be serialized to a dictionary

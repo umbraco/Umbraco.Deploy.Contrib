@@ -1,5 +1,4 @@
-![Build status](https://umbraco.visualstudio.com/_apis/public/build/definitions/c854e28c-27a5-4caf-a499-67997042aa5e/15/badge)
-[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
+[![Build Status](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_apis/build/status/Umbraco%20Deploy%20Contrib%20v3%20-%20Release?branchName=master-v3)](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_build/latest?definitionId=185&branchName=master-v3) [![NuGet release](https://img.shields.io/nuget/v/UmbracoDeploy.Contrib.svg)](https://www.nuget.org/packages/UmbracoDeploy.Contrib)
 
 # Umbraco Deploy Contrib
 
@@ -20,7 +19,7 @@ None so far.
 
 ### Installation
 
-You can install the NuGet package using `Install-Package Umbraco.Deploy.Contrib`.
+You can install the NuGet package using `Install-Package UmbracoDeploy.Contrib`.
 
 ---
 ## Contributing to this project
