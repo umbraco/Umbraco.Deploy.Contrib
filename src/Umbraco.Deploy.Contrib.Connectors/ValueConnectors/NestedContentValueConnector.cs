@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
@@ -43,7 +43,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             var svalue = value as string;
             if (string.IsNullOrWhiteSpace(svalue))
-                return null; 
+                return null;
 
             if (svalue.DetectIsJson() == false)
                 return null;
@@ -105,12 +105,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     object parsedValue;
 
-                   
+
                     //checkbox values of true/false within NestedContent is breaking when you're trying to do a restore from Development, it hits into the .ToArtifact() and break
                     if (val != null && propType.PropertyEditorAlias.InvariantEquals("Umbraco.TrueFalse") && val.GetType().Name.InvariantEquals("Int64"))
                     {
-                       int.TryParse(val.ToString(), out var converted);
-                       parsedValue = converted;
+                        int.TryParse(val.ToString(), out var converted);
+                        parsedValue = converted;
                     }
                     else
                     {
@@ -121,17 +121,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     _logger.Debug<NestedContentValueConnector>("Map " + key + " value '" + row.PropertyValues[key] + "' to '" + parsedValue
                         + "' using " + propValueConnector.GetType() + " for " + propType);
 
-                    // test if the value is a json object (thus could be a nested complex editor)
-                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    JToken jtokenValue = parsedValue != null && parsedValue.ToString().DetectIsJson() ? JToken.Parse(parsedValue.ToString()) : null;
-                    if (jtokenValue != null)
-                    {
-                        parsedValue = jtokenValue;
-                    }
-                    else if (parsedValue != null)
-                    {
-                        parsedValue = parsedValue.ToString();
-                    }
+                    parsedValue = parsedValue?.ToString();
 
                     row.PropertyValues[key] = parsedValue;
                 }
