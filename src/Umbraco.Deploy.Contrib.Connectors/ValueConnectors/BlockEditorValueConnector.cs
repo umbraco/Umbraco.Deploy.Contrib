@@ -40,12 +40,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
             var svalue = value as string;
+
+            // nested values will arrive here as JObject - convert to string to enable reuse of same code as when non-nested.
+            if (value is JObject)
+                svalue = value.ToString();
+
             if (string.IsNullOrWhiteSpace(svalue))
                 return null;
 
             if (svalue.DetectIsJson() == false)
                 return null;
-
             var blockEditorValue = JsonConvert.DeserializeObject<BlockEditorValue>(svalue);
 
             if (blockEditorValue == null)
@@ -178,8 +182,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
             }
 
-            value = JsonConvert.SerializeObject(blockEditorValue);
-            return value;
+            return JObject.FromObject(blockEditorValue);
         }
 
         /// <summary>
