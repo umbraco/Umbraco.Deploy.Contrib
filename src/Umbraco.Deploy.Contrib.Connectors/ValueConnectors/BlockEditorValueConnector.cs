@@ -87,7 +87,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (propType == null)
                     {
-                        _logger.Debug<NestedContentValueConnector>($"No property type found with alias {key} on content type {contentType.Alias}");
+                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
                         continue;
                     }
 
@@ -99,8 +99,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     var val = block.PropertyValues[key];
                     object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
 
-                    // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
-                    _logger.Debug<BlockEditorValueConnector>("Map " + key + " value '" + block.PropertyValues[key] + "' to '" + parsedValue + "' using " + propValueConnector.GetType() + " for " + propType);
+                    _logger.Debug<BlockEditorValueConnector>("Map {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropValueConnectorType} for {PropTypeAlias}.", key, block.PropertyValues[key], parsedValue, propValueConnector.GetType(), propType.Alias);
 
                     parsedValue = parsedValue?.ToString();
 
@@ -152,7 +151,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (innerPropertyType == null)
                     {
-                        _logger.Debug<BlockEditorValueConnector>($"No property type found with alias {key} on content type {contentType.Alias}");
+                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
                         continue;
                     }
 
