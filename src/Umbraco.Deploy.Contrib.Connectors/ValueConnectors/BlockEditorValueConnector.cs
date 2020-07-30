@@ -56,7 +56,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
 
             // get all the content types used in block editor items
-            var allContentTypes = blockEditorValue.Data.Select(x => x.ContentTypeKey)
+            var allContentTypes = blockEditorValue.Content.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -77,7 +77,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
-            foreach (var block in blockEditorValue.Data)
+            foreach (var block in blockEditorValue.Content)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -126,7 +126,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allContentTypes = blockEditorValue.Data.Select(x => x.ContentTypeKey)
+            var allContentTypes = blockEditorValue.Content.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -141,7 +141,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            foreach (var block in blockEditorValue.Data)
+            foreach (var block in blockEditorValue.Content)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -194,11 +194,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         ///        "layout": {
         ///            "Umbraco.BlockList": [
         ///            {
-        ///                "udi": "umb://element/b401bb800a4a48f79786d5079bc47718"
+        ///                "contentUdi": "umb://element/b401bb800a4a48f79786d5079bc47718"
         ///            }
         ///            ]
         ///        },
-        ///        "data": [
+        ///        "contentData": [
         ///        {
         ///            "contentTypeKey": "5fe26fff-7163-4805-9eca-960b1f106bb9",
         ///            "udi": "umb://element/b401bb800a4a48f79786d5079bc47718",
@@ -222,14 +222,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             /// <summary>
             /// This contains all the blocks created in the block editor.
             /// </summary>
-            [JsonProperty("data")]
-            public IEnumerable<Block> Data { get; set; }
+            [JsonProperty("contentData")]
+            public IEnumerable<Block> Content { get; set; }
         }
 
         public class Block
         {
             [JsonProperty("contentTypeKey")]
             public string ContentTypeKey { get; set; }
+
             [JsonProperty("udi")]
             public string Udi { get; set; }
 
