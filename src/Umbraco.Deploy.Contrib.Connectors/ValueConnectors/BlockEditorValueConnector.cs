@@ -55,8 +55,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return null;
 
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
+
             // get all the content types used in block editor items
-            var allContentTypes = blockEditorValue.Content.Select(x => x.ContentTypeKey)
+            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -77,7 +79,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
-            foreach (var block in blockEditorValue.Content)
+            foreach (var block in allBlocks)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -126,7 +128,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allContentTypes = blockEditorValue.Content.Select(x => x.ContentTypeKey)
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
+
+            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -141,7 +145,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            foreach (var block in blockEditorValue.Content)
+            foreach (var block in allBlocks)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -206,6 +210,20 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         ///            "text": "hero text",
         ///            "contentpicker": "umb://document/87478d1efa66413698063f8d00fda1d1"
         ///        }
+        ///        ],
+        ///        "settingsData": [
+        ///        {
+        ///            "contentTypeKey": "2e6094ea-7bca-4b7c-a223-375254a194f4",
+        ///            "udi": "umb://element/499cf69f00c84227a59ca10fb4ae4c9a",
+        ///            "textColor": "",
+        ///            "containerWidth": "standard",
+        ///            "textWidth": [],
+        ///            "height": [],
+        ///            "overlayStrength": [],
+        ///            "textAlignment": "left",
+        ///            "verticalTextAlignment": "top",
+        ///            "animate": "0"
+        ///        }
         ///        ]
         ///     }
         /// ]]>
@@ -224,6 +242,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             /// </summary>
             [JsonProperty("contentData")]
             public IEnumerable<Block> Content { get; set; }
+
+            /// <summary>
+            /// This contains the settings associated with the block editor.
+            /// </summary>
+            [JsonProperty("settingsData")]
+            public IEnumerable<Block> Settings { get; set; }
         }
 
         public class Block
