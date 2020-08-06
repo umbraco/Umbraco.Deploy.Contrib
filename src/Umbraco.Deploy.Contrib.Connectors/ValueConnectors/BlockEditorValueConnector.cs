@@ -55,8 +55,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return null;
 
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
+
             // get all the content types used in block editor items
-            var allContentTypes = blockEditorValue.Data.Select(x => x.ContentTypeKey)
+            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -77,7 +79,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
-            foreach (var block in blockEditorValue.Data)
+            foreach (var block in allBlocks)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -126,7 +128,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allContentTypes = blockEditorValue.Data.Select(x => x.ContentTypeKey)
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
+
+            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
                 .ToDictionary(a => a, a =>
                 {
@@ -141,7 +145,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            foreach (var block in blockEditorValue.Data)
+            foreach (var block in allBlocks)
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
@@ -194,17 +198,31 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         ///        "layout": {
         ///            "Umbraco.BlockList": [
         ///            {
-        ///                "udi": "umb://element/b401bb800a4a48f79786d5079bc47718"
+        ///                "contentUdi": "umb://element/b401bb800a4a48f79786d5079bc47718"
         ///            }
         ///            ]
         ///        },
-        ///        "data": [
+        ///        "contentData": [
         ///        {
         ///            "contentTypeKey": "5fe26fff-7163-4805-9eca-960b1f106bb9",
         ///            "udi": "umb://element/b401bb800a4a48f79786d5079bc47718",
         ///            "image": "umb://media/e28a0070890848079d5781774c3c5ffb",
         ///            "text": "hero text",
         ///            "contentpicker": "umb://document/87478d1efa66413698063f8d00fda1d1"
+        ///        }
+        ///        ],
+        ///        "settingsData": [
+        ///        {
+        ///            "contentTypeKey": "2e6094ea-7bca-4b7c-a223-375254a194f4",
+        ///            "udi": "umb://element/499cf69f00c84227a59ca10fb4ae4c9a",
+        ///            "textColor": "",
+        ///            "containerWidth": "standard",
+        ///            "textWidth": [],
+        ///            "height": [],
+        ///            "overlayStrength": [],
+        ///            "textAlignment": "left",
+        ///            "verticalTextAlignment": "top",
+        ///            "animate": "0"
         ///        }
         ///        ]
         ///     }
@@ -222,14 +240,21 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             /// <summary>
             /// This contains all the blocks created in the block editor.
             /// </summary>
-            [JsonProperty("data")]
-            public IEnumerable<Block> Data { get; set; }
+            [JsonProperty("contentData")]
+            public IEnumerable<Block> Content { get; set; }
+
+            /// <summary>
+            /// This contains the settings associated with the block editor.
+            /// </summary>
+            [JsonProperty("settingsData")]
+            public IEnumerable<Block> Settings { get; set; }
         }
 
         public class Block
         {
             [JsonProperty("contentTypeKey")]
             public string ContentTypeKey { get; set; }
+
             [JsonProperty("udi")]
             public string Udi { get; set; }
 
