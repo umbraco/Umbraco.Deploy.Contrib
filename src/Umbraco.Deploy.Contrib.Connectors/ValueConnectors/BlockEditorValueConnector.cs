@@ -39,21 +39,36 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
+            _logger.Info<BlockEditorValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
 
             // nested values will arrive here as JObject - convert to string to enable reuse of same code as when non-nested.
             if (value is JObject)
+            {
+                _logger.Debug<BlockListValueConnector>("Value is a JObject - converting to string.");
                 svalue = value.ToString();
+            }
 
             if (string.IsNullOrWhiteSpace(svalue))
+            {
+                _logger.Warn<BlockEditorValueConnector>($"Value is null or whitespace. Skipping creating artifact.");
                 return null;
+            }
 
             if (svalue.DetectIsJson() == false)
+            {
+                _logger.Warn<BlockListValueConnector>("Value {Value} is not a json string. Skipping creating artifact.",
+                    svalue);
                 return null;
+            }
+
             var blockEditorValue = JsonConvert.DeserializeObject<BlockEditorValue>(svalue);
 
             if (blockEditorValue == null)
+            {
+                _logger.Warn<BlockEditorValueConnector>("Deserialized value is null. Skipping creating artifact.");
                 return null;
+            }
 
             var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
 
@@ -76,6 +91,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             //Ensure that these content types have dependencies added
             foreach (var contentType in allContentTypes.Values)
             {
+                _logger.Debug<BlockEditorValueConnector>("Adding dependency for content type {ContentType}.", contentType.Alias);
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
@@ -89,7 +105,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (propType == null)
                     {
-                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
                         continue;
                     }
 
@@ -101,7 +117,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     var val = block.PropertyValues[key];
                     object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
 
-                    _logger.Debug<BlockEditorValueConnector>("Map {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropValueConnectorType} for {PropTypeAlias}.", key, block.PropertyValues[key], parsedValue, propValueConnector.GetType(), propType.Alias);
+                    _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropValueConnectorType} for {PropTypeAlias}.", key, block.PropertyValues[key], parsedValue, propValueConnector.GetType(), propType.Alias);
 
                     parsedValue = parsedValue?.ToString();
 
@@ -110,7 +126,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             value = JsonConvert.SerializeObject(blockEditorValue);
-            return (string)value;
+            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
+            return (string) value;
         }
 
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
@@ -155,7 +172,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (innerPropertyType == null)
                     {
-                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
                         continue;
                     }
 
