@@ -85,7 +85,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             //Ensure that these content types have dependencies added
             foreach (var contentType in allContentTypes.Values)
             {
-                _logger.Debug<BlockEditorValueConnector>("Adding dependency for content type {ContentType}.", contentType.Alias);
+                _logger.Debug<NestedContentValueConnector>("Adding dependency for content type {ContentType}.", contentType.Alias);
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
@@ -206,12 +206,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         {
                             row.PropertyValues[key] = convertedValue;
                         }
-                        _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
+                        _logger.Debug<NestedContentValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
                     }
                     else
                     {
                         row.PropertyValues[key] = innerValue;
-                        _logger.Debug<BlockEditorValueConnector>("{Key} value was null. Setting value as null without conversion.", key);
+                        _logger.Debug<NestedContentValueConnector>("{Key} value was null. Setting value as null without conversion.", key);
                     }
                 }
             }
@@ -219,7 +219,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             // Note: NestedContent does not use formatting when serializing JSON values.
             value = JArray.FromObject(nestedContent).ToString(Formatting.None);
 
-            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.Info<NestedContentValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return value;
         }
