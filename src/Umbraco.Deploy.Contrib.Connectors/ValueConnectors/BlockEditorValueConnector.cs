@@ -104,7 +104,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (innerPropertyType == null)
                     {
-                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {PropertyTypeAlias} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {PropertyType} on content type {ContentType}.", key, contentType.Alias);
                         continue;
                     }
 
@@ -116,7 +116,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     var innerValue = block.PropertyValues[key];
                     object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies);
 
-                    _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyTypeAlias}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
+                    _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
 
                     parsedValue = parsedValue?.ToString();
 
@@ -131,6 +131,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {
+            _logger.Info<BlockEditorValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
             {
                 return value;
@@ -144,7 +145,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings);
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings).ToList();
 
             var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
@@ -171,20 +172,21 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     if (innerPropertyType == null)
                     {
-                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                        _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentType}.", key, contentType.Alias);
                         continue;
                     }
 
                     // fetch the right value connector from the collection of connectors, intended for use with this property type.
                     // throws if not found - no need for a null check
-                    var propValueConnector = ValueConnectors.Get(innerPropertyType);
+                    var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
 
-                    var propertyValue = block.PropertyValues[key];
+                    var innerValue = block.PropertyValues[key];
 
-                    if (propertyValue != null)
+                    if (innerValue != null)
                     {
                         // pass the artifact value and property type to the connector to get a real value from the artifact
-                        var convertedValue = propValueConnector.FromArtifact(propertyValue.ToString(), innerPropertyType, null);
+                        var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
+
                         if (convertedValue == null)
                         {
                             block.PropertyValues[key] = null;
@@ -193,13 +195,17 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         {
                             block.PropertyValues[key] = convertedValue;
                         }
+                        _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
                     }
                     else
                     {
-                        block.PropertyValues[key] = propertyValue;
+                        block.PropertyValues[key] = innerValue;
+                        _logger.Debug<BlockEditorValueConnector>("{Key} value was null. Setting value as null without conversion.", key);
                     }
                 }
             }
+
+            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return JObject.FromObject(blockEditorValue);
         }
