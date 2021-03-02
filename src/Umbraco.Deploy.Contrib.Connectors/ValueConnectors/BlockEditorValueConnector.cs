@@ -83,30 +83,34 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
-                foreach (var key in block.PropertyValues.Keys.ToArray())
+                if (block.PropertyValues != null)
                 {
-                    var propType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
-
-                    if (propType == null)
+                    foreach (var key in block.PropertyValues.Keys.ToArray())
                     {
-                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
-                        continue;
+                        var propType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
+
+                        if (propType == null)
+                        {
+                            _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                            continue;
+                        }
+
+                        // fetch the right value connector from the collection of connectors, intended for use with this property type.
+                        // throws if not found - no need for a null check
+                        var propValueConnector = ValueConnectors.Get(propType);
+
+                        // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
+                        var val = block.PropertyValues[key];
+                        object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
+
+                        _logger.Debug<BlockEditorValueConnector>("Map {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropValueConnectorType} for {PropTypeAlias}.", key, block.PropertyValues[key], parsedValue, propValueConnector.GetType(), propType.Alias);
+
+                        parsedValue = parsedValue?.ToString();
+
+                        block.PropertyValues[key] = parsedValue;
                     }
-
-                    // fetch the right value connector from the collection of connectors, intended for use with this property type.
-                    // throws if not found - no need for a null check
-                    var propValueConnector = ValueConnectors.Get(propType);
-
-                    // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
-                    var val = block.PropertyValues[key];
-                    object parsedValue = propValueConnector.ToArtifact(val, propType, dependencies);
-
-                    _logger.Debug<BlockEditorValueConnector>("Map {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropValueConnectorType} for {PropTypeAlias}.", key, block.PropertyValues[key], parsedValue, propValueConnector.GetType(), propType.Alias);
-
-                    parsedValue = parsedValue?.ToString();
-
-                    block.PropertyValues[key] = parsedValue;
                 }
+                
             }
 
             value = JsonConvert.SerializeObject(blockEditorValue);
@@ -149,40 +153,45 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             {
                 var contentType = allContentTypes[block.ContentTypeKey];
 
-                foreach (var key in block.PropertyValues.Keys.ToArray())
+                if (block.PropertyValues != null)
                 {
-                    var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
-
-                    if (innerPropertyType == null)
+                    foreach (var key in block.PropertyValues.Keys.ToArray())
                     {
-                        _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
-                        continue;
-                    }
+                        var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
-                    // fetch the right value connector from the collection of connectors, intended for use with this property type.
-                    // throws if not found - no need for a null check
-                    var propValueConnector = ValueConnectors.Get(innerPropertyType);
-
-                    var propertyValue = block.PropertyValues[key];
-
-                    if (propertyValue != null)
-                    {
-                        // pass the artifact value and property type to the connector to get a real value from the artifact
-                        var convertedValue = propValueConnector.FromArtifact(propertyValue.ToString(), innerPropertyType, null);
-                        if (convertedValue == null)
+                        if (innerPropertyType == null)
                         {
-                            block.PropertyValues[key] = null;
+                            _logger.Debug<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentTypeAlias}.", key, contentType.Alias);
+                            continue;
+                        }
+
+                        // fetch the right value connector from the collection of connectors, intended for use with this property type.
+                        // throws if not found - no need for a null check
+                        var propValueConnector = ValueConnectors.Get(innerPropertyType);
+
+                        var propertyValue = block.PropertyValues[key];
+
+                        if (propertyValue != null)
+                        {
+                            // pass the artifact value and property type to the connector to get a real value from the artifact
+                            var convertedValue = propValueConnector.FromArtifact(propertyValue.ToString(), innerPropertyType, null);
+                            if (convertedValue == null)
+                            {
+                                block.PropertyValues[key] = null;
+                            }
+                            else
+                            {
+                                block.PropertyValues[key] = convertedValue;
+                            }
                         }
                         else
                         {
-                            block.PropertyValues[key] = convertedValue;
+                            block.PropertyValues[key] = propertyValue;
                         }
                     }
-                    else
-                    {
-                        block.PropertyValues[key] = propertyValue;
-                    }
                 }
+
+                   
             }
 
             return JObject.FromObject(blockEditorValue);
