@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<MSBuildCommunityTasksPath>..\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 	</PropertyGroup>
-
 	<Import Project=".\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
 
 	<PropertyGroup Condition="'$(BUILD_NUMBER)'!=''">
@@ -79,7 +78,6 @@
 		<MSBuild
 			Projects="../src/Umbraco.Deploy.Contrib.sln"
 			Targets="Clean;Rebuild;"
-			ToolsVersion="15.0"
 			UnloadProjectsOnCompletion="False" BuildInParallel="False"
 			Properties="WarningLevel=0;Configuration=$(BuildConfiguration);PipelineDependsOnBuild=False;OutDir=$(SolutionBinFolderAbsolutePath)" >
 		</MSBuild>
