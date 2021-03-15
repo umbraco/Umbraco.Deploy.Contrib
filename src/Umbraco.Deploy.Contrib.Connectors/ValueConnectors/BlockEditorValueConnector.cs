@@ -37,7 +37,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _logger = logger;
         }
 
-        public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public virtual string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
             var svalue = value as string;
 
@@ -117,7 +117,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             return (string)value;
         }
 
-        public object FromArtifact(string value, PropertyType propertyType, object currentValue)
+        public virtual object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
