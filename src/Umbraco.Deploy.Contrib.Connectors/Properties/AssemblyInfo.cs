@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Umbraco.Deploy.Contrib")]
-[assembly: AssemblyCopyright("Copyright © Umbraco 2019")]
+[assembly: AssemblyCopyright("Copyright © Umbraco 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
