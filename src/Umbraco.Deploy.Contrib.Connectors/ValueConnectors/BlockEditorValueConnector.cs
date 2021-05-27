@@ -134,7 +134,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public virtual object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {
-            _logger.Info<BlockEditorValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.Debug<BlockEditorValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
             {
                 return value;
@@ -211,7 +211,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
             }
 
-            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return JObject.FromObject(blockEditorValue);
         }
