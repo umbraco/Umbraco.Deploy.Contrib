@@ -33,12 +33,12 @@ for /f "usebackq delims=" %%i in (`tools\vswhere -latest -version "[15.0,17.0)" 
 )
 SET MSBUILDPath="%programfiles(x86)%"\MSBuild\14.0\Bin\MsBuild.exe
 
-if exist "%programfiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe" (
-  SET MSBUILDPath="%programfiles(x86)%\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\MSBuild.exe"
-)
-
 if exist "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
   SET MSBUILDPath="%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe"
+)
+
+if exist "%InstallDir%\MSBuild\Current\Bin\MSBuild.exe" (
+  SET MSBUILDPath="%InstallDir%\MSBuild\Current\Bin\MSBuild.exe"
 )
 
 if exist "%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe" (
