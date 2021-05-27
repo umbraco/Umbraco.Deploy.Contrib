@@ -39,7 +39,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public virtual string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
-            _logger.Info<BlockEditorValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.Debug<BlockEditorValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
 
             // nested values will arrive here as JObject - convert to string to enable reuse of same code as when non-nested.
@@ -51,7 +51,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             if (string.IsNullOrWhiteSpace(svalue))
             {
-                _logger.Warn<BlockEditorValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
+                _logger.Debug<BlockEditorValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
                 return null;
             }
 
@@ -128,7 +128,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             value = JsonConvert.SerializeObject(blockEditorValue);
-            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
             return (string) value;
         }
 
