@@ -32,3 +32,5 @@ src/Umbraco.Deploy.Contrib.Connectors/app.config
 /build/UmbracoDeploy.Contrib.*.nupkg
 /build/UmbracoDeploy.Contrib.*.zip
 /src/.idea
+
+MigrationBackup/
