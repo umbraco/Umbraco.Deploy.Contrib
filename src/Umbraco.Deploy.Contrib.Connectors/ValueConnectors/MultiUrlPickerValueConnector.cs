@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Umbraco.Core;
-using Umbraco.Core.Deploy;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Deploy;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -15,7 +17,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     {
         private readonly IEntityService _entityService;
         private readonly IMediaService _mediaService;
-        private readonly ILogger _logger;
+        private readonly ILogger<MultiUrlPickerValueConnector> _logger;
+        private readonly MediaUrlGeneratorCollection _mediaUrlGenerators;
 
         // Used to fetch the udi from a umb://-based url
         private static readonly Regex MediaUdiSrcRegex = new Regex(@"(?<udi>umb://media/[A-z0-9]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -40,16 +43,21 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <param name="entityService">An <see cref="IEntityService"/> implementation.</param>
         /// <param name="mediaService"></param>
         /// <param name="logger"></param>
-        public MultiUrlPickerValueConnector(IEntityService entityService, IMediaService mediaService, ILogger logger)
+        public MultiUrlPickerValueConnector(
+            IEntityService entityService,
+            IMediaService mediaService,
+            ILogger<MultiUrlPickerValueConnector> logger,
+            MediaUrlGeneratorCollection mediaUrlGenerators)
         {
             if (entityService == null) throw new ArgumentNullException(nameof(entityService));
             if (mediaService == null) throw new ArgumentNullException(nameof(mediaService));
             _entityService = entityService;
             _mediaService = mediaService;
             _logger = logger;
+            _mediaUrlGenerators = mediaUrlGenerators;
         }
 
-        public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
             var svalue = value as string;
             if (string.IsNullOrWhiteSpace(svalue))
@@ -92,7 +100,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     }
                     else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                     {
-                        var entity = _entityService.Get(guidUdi.Guid, Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType));
+                        var entity = _entityService.Get(guidUdi.Guid, UdiEntityTypeHelper.ToUmbracoObjectType(guidUdi.EntityType));
                         if (entity == null)
                             continue;
 
@@ -153,7 +161,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
                 else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                 {
-                    var entity = _entityService.Get(guidUdi.Guid, Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType));
+                    var entity = _entityService.Get(guidUdi.Guid, UdiEntityTypeHelper.ToUmbracoObjectType(guidUdi.EntityType));
                     if (entity != null)
                     {
                         // Add the artifact dependency
@@ -184,7 +192,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             return string.Empty;
         }
 
-        public object FromArtifact(string value, PropertyType propertyType, object currentValue)
+        public object FromArtifact(string value, IPropertyType propertyType, object currentValue)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -226,12 +234,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             {
                                 var udiString = match.Groups["udi"].ToString();
                                 GuidUdi foundUdi;
-                                if (GuidUdi.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
+                                if (UdiParser.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
                                 {
                                     // (take care of nulls)
                                     var media = _mediaService.GetById(foundUdi.Guid);
                                     if (media != null)
-                                        return media.GetUrl("umbracoFile", _logger);
+                                        return media.GetUrl("umbracoFile", _mediaUrlGenerators);
                                 }
                                 return string.Empty;
                             });
@@ -271,13 +279,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     {
                         var udiString = match.Groups["udi"].ToString();
                         GuidUdi foundUdi;
-                        if (GuidUdi.TryParse(udiString, out foundUdi) &&
+                        if (UdiParser.TryParse(udiString, out foundUdi) &&
                             foundUdi.EntityType == Constants.UdiEntityType.Media)
                         {
                             // (take care of nulls)
                             var media = _mediaService.GetById(foundUdi.Guid);
                             if (media != null)
-                                return media.GetUrl("umbracoFile", _logger);
+                                return media.GetUrl("umbracoFile", _mediaUrlGenerators);
                         }
 
                         return string.Empty;
@@ -310,7 +318,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (link[attrName] != null)
             {
                 var val = link[attrName].ToString();
-                return GuidUdi.TryParse(val, out attrValue);
+                return UdiParser.TryParse(val, out attrValue);
             }
             attrValue = null;
             return false;
