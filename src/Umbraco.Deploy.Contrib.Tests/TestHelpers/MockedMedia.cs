@@ -1,5 +1,5 @@
 ﻿using System;
-using Umbraco.Core.Models;
+using Umbraco.Cms.Core.Models;
 
 namespace Umbraco.Deploy.Contrib.Tests.TestHelpers
 {

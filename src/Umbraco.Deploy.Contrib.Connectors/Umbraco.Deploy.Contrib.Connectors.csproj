@@ -3,16 +3,10 @@
         <AssemblyName>Umbraco.Deploy.Contrib.Connectors</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <RootNamespace>Umbraco.Deploy.Contrib.Connectors</RootNamespace>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="GridCellValueConnectors\dummy.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="UmbracoDeploy.Core">
-            <Version>4.1.2</Version>
-        </PackageReference>
+        <PackageReference Include="Umbraco.Deploy.Core" Version="9.0.0-beta001" />
     </ItemGroup>
 </Project>

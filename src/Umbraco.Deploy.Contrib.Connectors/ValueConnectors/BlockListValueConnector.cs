@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
-using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Core.Connectors.ValueConnectors.Services;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -13,7 +13,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     {
         public override IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockList" };
 
-        public BlockListValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
+        public BlockListValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger<BlockListValueConnector> logger)
             : base(contentTypeService, valueConnectors, logger)
         { }
     }

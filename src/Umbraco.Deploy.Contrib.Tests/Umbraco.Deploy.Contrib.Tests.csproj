@@ -3,14 +3,8 @@
         <AssemblyName>Umbraco.Deploy.Contrib.Connectors.Tests</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <RootNamespace>Umbraco.Deploy.Contrib.Connectors.Tests</RootNamespace>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="UmbracoDeploy.Core">
-            <Version>4.1.2</Version>
-        </PackageReference>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj" />
