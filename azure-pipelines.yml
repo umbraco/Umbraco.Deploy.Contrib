@@ -1,0 +1,160 @@
+variables:
+    buildConfiguration: Release
+stages:
+    - stage: Unit_Tests
+      displayName: Unit Tests
+      dependsOn: []
+      jobs:
+          - job: Linux_Unit_Tests
+            displayName: Linux
+            pool:
+                vmImage: ubuntu-latest
+            steps:
+                - task: NuGetAuthenticate@0
+                  displayName: NuGet Authenticate
+                - task: UseDotNet@2
+                  displayName: Use .Net Core SDK 5.x
+                  inputs:
+                      version: 5.x
+                - task: DotNetCoreCLI@2
+                  displayName: dotnet test
+                  inputs:
+                      command: test
+                      projects: '**/*.Tests.csproj'
+          - job: MacOS_Unit_Tests
+            displayName: Mac OS
+            pool:
+                vmImage: macOS-latest
+            steps:
+                - task: NuGetAuthenticate@0
+                  displayName: NuGet Authenticate
+                - task: UseDotNet@2
+                  displayName: Use .Net Core SDK 5.x
+                  inputs:
+                      version: 5.x
+                - task: DotNetCoreCLI@2
+                  displayName: dotnet test
+                  inputs:
+                      command: test
+                      projects: '**/*.Tests.csproj'
+          - job: Windows_Unit_Tests
+            displayName: Windows
+            pool:
+                vmImage: windows-latest
+            steps:
+                - task: NuGetAuthenticate@0
+                  displayName: NuGet Authenticate
+                - task: UseDotNet@2
+                  displayName: Use .Net Core SDK 5.x
+                  inputs:
+                      version: 5.x
+                - task: DotNetCoreCLI@2
+                  displayName: dotnet test
+                  inputs:
+                      command: test
+                      projects: '**/*.Tests.csproj'
+    - stage: Artifacts
+      dependsOn: []
+      jobs:
+          - job: Build_Artifacts
+            displayName: Build Artifacts
+            pool:
+                vmImage: windows-latest
+            steps:
+                - task: UseDotNet@2
+                  displayName: Use .Net Core SDK 5.x
+                  inputs:
+                      version: 5.x
+                - task: NuGetAuthenticate@0
+                  displayName: NuGet Authenticate
+                - task: NuGetToolInstaller@1
+                  displayName: Use NuGet Latest
+                - task: NuGetCommand@2
+                  displayName: Restore NuGet Packages
+                  inputs:
+                      restoreSolution: '*\src\Umbraco.Deploy.Contrib.sln'
+                      feedsToUse: config
+                - task: PowerShell@1
+                  displayName: Update Version and Artifact Name
+                  inputs:
+                      scriptType: inlineScript
+                      inlineScript: >
+                        Write-Host "Working folder: $pwd"
+
+                        $ubuild = build/build.ps1 -get -continue
+
+
+                        $version = $ubuild.GetUmbracoVersion()
+
+                        $isRelease = [regex]::matches($env:BUILD_SOURCEBRANCH,"v\d+\/\d+.\d+.*")
+
+
+                        if ($isRelease.Count -gt 0){
+                          $continuous = $version.Semver
+                          Write-Host "##vso[build.addbuildtag]Release build"
+                        }
+                        else
+                        {
+                            $date = (Get-Date).ToString("yyyyMMdd")
+                            $continuous = "$($version.release)-preview$date.$(Build.BuildId)"
+                            $ubuild.SetUmbracoVersion($continuous)
+
+                            Write-Host "##vso[build.addbuildtag]Continuous build"
+                          }
+
+                        Write-Host "##vso[build.updatebuildnumber]$continuous.$(Build.BuildId)"
+
+                        Write-Host "Building: $continuous"
+                - task: PowerShell@1
+                  displayName: Prepare Build
+                  inputs:
+                      scriptType: inlineScript
+                      inlineScript: |
+                          Write-Host "Working folder: $pwd"
+                          $ubuild = build\build.ps1 -get
+
+                          $ubuild.PrepareBuild("vso")
+                - task: PowerShell@1
+                  displayName: Prepare Packages
+                  inputs:
+                      scriptType: inlineScript
+                      inlineScript: |
+                          Write-Host "Working folder: $pwd"
+                          $ubuild = build\build.ps1 -get -continue
+
+                          $ubuild.CompileUmbracoDeployContrib()
+                - task: PowerShell@1
+                  displayName: Package NuGet
+                  inputs:
+                      scriptType: inlineScript
+                      inlineScript: |
+                          Write-Host "Working folder: $pwd"
+                          $ubuild = build\build.ps1 -get -continue
+
+                          $ubuild.PackageNuGet()
+                - task: CopyFiles@2
+                  displayName: Copy NuPkg Files to Staging
+                  inputs:
+                      SourceFolder: build.out
+                      Contents: '*.nupkg'
+                      TargetFolder: $(build.artifactstagingdirectory)
+                      CleanTargetFolder: true
+                - task: PublishBuildArtifacts@1
+                  displayName: Publish NuPkg Files
+                  inputs:
+                      PathtoPublish: $(build.artifactstagingdirectory)
+                      ArtifactName: nupkg
+                - task: CopyFiles@2
+                  displayName: Copy Log Files to Staging
+                  inputs:
+                      SourceFolder: build.tmp
+                      Contents: '*.log'
+                      TargetFolder: $(build.artifactstagingdirectory)
+                      CleanTargetFolder: true
+                  condition: succeededOrFailed()
+                - task: PublishBuildArtifacts@1
+                  displayName: Publish Log Files
+                  inputs:
+                      PathtoPublish: $(build.artifactstagingdirectory)
+                      ArtifactName: logs
+                  condition: succeededOrFailed()
