@@ -10,7 +10,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Deploy.Core.Connectors.ValueConnectors.Services;
 using Umbraco.Extensions;
 
-namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
+namespace Umbraco.Deploy.Contrib.ValueConnectors
 {
     /// <summary>
     /// A Deploy connector for BlockEditor based property editors (ie. BlockList)

@@ -11,7 +11,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Extensions;
 
-namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
+namespace Umbraco.Deploy.Contrib.ValueConnectors
 {
     public class MultiUrlPickerValueConnector : IValueConnector
     {

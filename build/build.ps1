@@ -52,23 +52,23 @@
     Write-Host "Compile Umbraco Deploy Contrib"
     Write-Host "Logging to $log"
 
-    # Umbraco.Deploy.Contrib.Connectors compile
-    &dotnet build "$src\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj" `
+    # Umbraco.Deploy.Contrib compile
+    &dotnet build "$src\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj" `
       --configuration $buildConfiguration `
       --output "$($this.BuildTemp)\bin\\" `
       > $log
 
-    &dotnet publish "$src\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj" `
-      --configuration Release --output "$($this.BuildTemp)\Connectors\bin\\" `
+    &dotnet publish "$src\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj" `
+      --configuration Release --output "$($this.BuildTemp)\bin\\" `
       > $log
 
-    $webAppBin = "$($this.BuildTemp)\Connectors\bin"
+    $webAppBin = "$($this.BuildTemp)\bin"
     $excludeDirs = @("$($webAppBin)\refs","$($webAppBin)\runtimes","$($webAppBin)\Umbraco","$($webAppBin)\wwwroot")
     $excludeFiles = @("$($webAppBin)\appsettings.*","$($webAppBin)\*.deps.json","$($webAppBin)\*.exe","$($webAppBin)\*.config","$($webAppBin)\*.runtimeconfig.json")
     $this.RemoveDirectory($excludeDirs)
     $this.RemoveFile($excludeFiles)
 
-    if (-not $?) { throw "Failed to compile Umbraco.Deploy.Contrib.Connectors." }
+    if (-not $?) { throw "Failed to compile Umbraco.Deploy.Contrib." }
 
     # /p:UmbracoBuild tells the csproj that we are building from PS, not VS
   })

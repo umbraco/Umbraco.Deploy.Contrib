@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Deploy.Core.Connectors.ValueConnectors.Services;
 
-namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
+namespace Umbraco.Deploy.Contrib.ValueConnectors
 {
     /// <summary>
     /// A Deploy connector for the BlockList property editor
