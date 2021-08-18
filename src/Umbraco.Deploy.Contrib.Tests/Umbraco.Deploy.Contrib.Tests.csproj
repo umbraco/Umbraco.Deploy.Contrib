@@ -7,6 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.csproj" />
+        <ProjectReference Include="..\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj" />
     </ItemGroup>
 </Project>
