@@ -1,61 +1,57 @@
-﻿
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using Umbraco.Core;
+using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using Umbraco.Core.Services;
+using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+
 namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 {
-    using Deploy.Connectors.ValueConnectors.Services;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using System;
-    using System.Collections.Generic;
-    using Umbraco.Core;
-    using Umbraco.Core.Deploy;
-    using Umbraco.Core.Logging;
-    using Umbraco.Core.Models;
-    using Umbraco.Core.Services;
-
     public class DocTypeGridEditorCellValueConnector : IGridCellValueConnector
     {
         private readonly ILogger _logger;
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
+
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
         public DocTypeGridEditorCellValueConnector(ILogger logger, IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
         {
-            this._logger = logger;
-            this._contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
-            this._valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
+            _logger = logger;
+            _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            _valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
         }
 
-        public bool IsConnector(string view)
-        {
-            return !string.IsNullOrWhiteSpace(view) && view.Contains("doctypegrideditor");
-        }
+        public bool IsConnector(string view) => !string.IsNullOrWhiteSpace(view) && view.Contains("doctypegrideditor");
 
         public string GetValue(GridValue.GridControl gridControl, ICollection<ArtifactDependency> dependencies)
         {
             // cancel if there's no values
             if (gridControl.Value == null || gridControl.Value.HasValues == false) return null;
 
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Grid Values: {gridControl.Value}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Grid Values: {gridControl.Value}");
 
             var docTypeGridEditorContent = JsonConvert.DeserializeObject<DocTypeGridEditorValue>(gridControl.Value.ToString());
-
 
             // if an 'empty' dtge item has been added - it has no ContentTypeAlias set .. just return and don't throw.
             if (docTypeGridEditorContent == null || string.IsNullOrWhiteSpace(docTypeGridEditorContent.ContentTypeAlias))
             {
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - DTGE Empty without ContentTypeAlias");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - DTGE Empty without ContentTypeAlias");
                 return null;
             }
 
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
 
             // check if the doc type exist - else abort packaging
-            var contentType = this._contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
+            var contentType = _contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
 
             if (contentType == null)
             {
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - Missing ContentType");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - Missing ContentType");
                 throw new InvalidOperationException($"Could not resolve the Content Type for the Doc Type Grid Editor property: {docTypeGridEditorContent.ContentTypeAlias}");
             }
 
@@ -67,45 +63,51 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
             foreach (var propertyType in propertyTypes)
             {
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - PropertyTypeAlias - {propertyType.Alias}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - PropertyTypeAlias - {propertyType.Alias}");
 
                 // test if there's a value for the given property
-                if (this.IsValueNull(docTypeGridEditorContent, propertyType, out var value)) continue;
+                if (IsValueNull(docTypeGridEditorContent, propertyType, out var value))
+                {
+                    continue;
+                }
 
                 // if the value is an Udi then add it as a dependency
-                if (this.AddUdiDependency(dependencies, value)) continue;
+                if (AddUdiDependency(dependencies, value))
+                {
+                    continue;
+                }
 
                 JToken jtokenValue = null;
                 var parsedValue = string.Empty;
 
                 // throws if not found - no need for a null check
-                var propValueConnector = this.ValueConnectors.Get(propertyType);
+                var propValueConnector = ValueConnectors.Get(propertyType);
 
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - PropertyValueConnectorAlias - {propValueConnector.PropertyEditorAliases}");
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - propertyTypeValue - {value}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - PropertyValueConnectorAlias - {propValueConnector.PropertyEditorAliases}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - propertyTypeValue - {value}");
 
                 //properties like MUP / Nested Content seems to be in json and it breaks, so pass it back as jtokenValue right away
-                if (this.IsJson(value))
+                if (IsJson(value))
                 {
-                    jtokenValue = this.GetJTokenValue(value);
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Inner JtokenValue - Eg MUP/NestedContent {jtokenValue}");
+                    jtokenValue = GetJTokenValue(value);
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Inner JtokenValue - Eg MUP/NestedContent {jtokenValue}");
                 }
                 else
                 {
                     parsedValue = propValueConnector.ToArtifact(value, propertyType, dependencies);
 
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ParsedValue - {parsedValue}");
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ParsedValue - {parsedValue}");
 
-                    if (this.IsJson(parsedValue))
+                    if (IsJson(parsedValue))
                     {
                         // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                        jtokenValue = this.GetJTokenValue(parsedValue);
+                        jtokenValue = GetJTokenValue(parsedValue);
                     }
                 }
 
                 if (jtokenValue != null)
                 {
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - JtokenValue - {jtokenValue}");
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - JtokenValue - {jtokenValue}");
                     docTypeGridEditorContent.Value[propertyType.Alias] = jtokenValue;
                 }
                 else
@@ -116,7 +118,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
             var resolvedValue = JsonConvert.SerializeObject(docTypeGridEditorContent);
 
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ResolvedValue - {resolvedValue}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ResolvedValue - {resolvedValue}");
 
             return resolvedValue;
         }
@@ -124,59 +126,64 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
         public void SetValue(GridValue.GridControl gridControl)
         {
             // cancel if there's no values
-            if (string.IsNullOrWhiteSpace(gridControl.Value.ToString())) return;
+            if (string.IsNullOrWhiteSpace(gridControl.Value.ToString()))
+            {
+                return;
+            }
 
             // For some reason the control value isn't properly parsed so we need this extra step to parse it into a JToken
             gridControl.Value = JToken.Parse(gridControl.Value.ToString());
 
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - GridControlValue - {gridControl.Value}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - GridControlValue - {gridControl.Value}");
 
             var docTypeGridEditorContent = JsonConvert.DeserializeObject<DocTypeGridEditorValue>(gridControl.Value.ToString());
 
-            if (docTypeGridEditorContent == null) return;
+            if (docTypeGridEditorContent == null)
+            {
+                return;
+            }
 
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
 
             // check if the doc type exist - else abort packaging
-            var contentType = this._contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
+            var contentType = _contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
 
             if (contentType == null)
+            {
                 throw new InvalidOperationException($"Could not resolve the Content Type for the Doc Type Grid Editor property: {docTypeGridEditorContent.ContentTypeAlias}");
+            }
 
-
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentType - {contentType}");
-
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentType - {contentType}");
 
             // find all properties
             var propertyTypes = contentType.CompositionPropertyTypes;
 
             foreach (var propertyType in propertyTypes)
             {
-                // test if there's a value for the given property
-                object value;
-                object convertedValue;
                 JToken jtokenValue = null;
 
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - PropertyEditorAlias -- {propertyType.PropertyEditorAlias}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - PropertyEditorAlias -- {propertyType.PropertyEditorAlias}");
 
-                if (!docTypeGridEditorContent.Value.TryGetValue(propertyType.Alias, out value) || value == null)
+                if (!docTypeGridEditorContent.Value.TryGetValue(propertyType.Alias, out object value) || value == null)
                 {
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>("SetValue - Value Is Null");
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>("SetValue - Value Is Null");
                     continue;
                 }
 
                 // throws if not found - no need for a null check
-                var propValueConnector = this.ValueConnectors.Get(propertyType);
+                var propValueConnector = ValueConnectors.Get(propertyType);
                 propValueConnector.FromArtifact(value.ToString(), propertyType, "");
 
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - PropertyValueConnecterType - {propValueConnector.GetType()}");
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - Value - {value}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - PropertyValueConnecterType - {propValueConnector.GetType()}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - Value - {value}");
 
+                // test if there's a value for the given property
+                object convertedValue;
                 //don't convert if it's json (MUP/Nested) / udi (Content/Media/Multi Pickers) / guid (form picker) / rte / textstring values
-                if (this.IsJson(value) || this.IsUdi(value) || this.IsGuid(value) || this.IsText(propertyType.PropertyEditorAlias))
+                if (IsJson(value) || IsUdi(value) || IsGuid(value) || IsText(propertyType.PropertyEditorAlias))
                 {
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - IsJsonValue / IsUdiValue / IsGuidValue / IsTextValue - {value}");
-                    convertedValue = this.CleanValue(propertyType.PropertyEditorAlias, value);
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - IsJsonValue / IsUdiValue / IsGuidValue / IsTextValue - {value}");
+                    convertedValue = CleanValue(propertyType.PropertyEditorAlias, value);
                 }
                 else
                 {
@@ -184,7 +191,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                     var mockProperty = new Property(propertyType);
                     var mockContent = new Content("mockContentGrid", -1, new ContentType(-1), new PropertyCollection(new List<Property> { mockProperty }));
                     convertedValue = mockContent.GetValue(mockProperty.Alias);
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ConvertedValue - Before - {convertedValue}");
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ConvertedValue - Before - {convertedValue}");
                 }
 
                 // integers needs to be converted into strings for DTGE to work
@@ -200,18 +207,18 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 }
                 else
                 {
-                    this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ConvertedValue - After - {convertedValue}");
+                    _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ConvertedValue - After - {convertedValue}");
 
-                    if (this.IsJson(convertedValue))
+                    if (IsJson(convertedValue))
                     {
                         // test if the value is a json object (thus could be a nested complex editor)
                         // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                        jtokenValue = this.GetJTokenValue(convertedValue);
+                        jtokenValue = GetJTokenValue(convertedValue);
                     }
 
                     if (jtokenValue != null)
                     {
-                        this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenValue - {jtokenValue}");
+                        _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenValue - {jtokenValue}");
                         docTypeGridEditorContent.Value[propertyType.Alias] = jtokenValue;
                     }
                     else
@@ -222,60 +229,37 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             }
 
             var jtokenObj = JToken.FromObject(docTypeGridEditorContent);
-            this._logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenObject - {jtokenObj}");
+            _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenObject - {jtokenObj}");
             gridControl.Value = jtokenObj;
         }
 
-        #region Private Methods
+        private JToken GetJTokenValue(object value) => value != null && IsJson(value) ? JToken.Parse(value.ToString()) : null;
 
-        private JToken GetJTokenValue(object value)
-        {
-            return value != null && this.IsJson(value) ? JToken.Parse(value.ToString()) : null;
-        }
+        private bool IsJson(object value) => value != null && value.ToString().DetectIsJson();
 
-        private bool IsJson(object value)
-        {
-            return value != null && value.ToString().DetectIsJson();
-        }
+        private bool IsGuid(object value) => Guid.TryParse(value.ToString(), out _);
 
-        private bool IsGuid(object value)
-        {
-            return Guid.TryParse(value.ToString(), out var guidID);
-        }
-
-        private bool IsUdi(object value)
-        {
+        private bool IsUdi(object value) =>
             //for picker like content/media either single or multi, it comes with udi values
-            return value.ToString().Contains("umb://");
-        }
+            value.ToString().Contains("umb://");
 
-        private bool IsText(string editorAlias)
-        {
+        private bool IsText(string editorAlias) =>
             //if it's either RTE / Textstring data type
-            return this.IsRichtext(editorAlias) || this.IsTextstring(editorAlias);
-        }
+            IsRichtext(editorAlias) || IsTextstring(editorAlias);
 
-        private bool IsRichtext(string editorAlias)
-        {
-            return editorAlias.InvariantEquals("Umbraco.TinyMCE");
-        }
+        private bool IsRichtext(string editorAlias) => editorAlias.InvariantEquals("Umbraco.TinyMCE");
 
-        private bool IsTextstring(string editorAlias)
-        {
-            return editorAlias.InvariantEquals("Umbraco.TextBox");
-        }
+        private bool IsTextstring(string editorAlias) => editorAlias.InvariantEquals("Umbraco.TextBox");
 
-        private string CleanValue(string editorAlias, object value)
-        {
+        private string CleanValue(string editorAlias, object value) =>
             //can't tell why textstring have got a weird character 's' in front coming from deploy? so removing first char if that's the case
-            return this.IsTextstring(editorAlias) ? value.ToString().Substring(1) : value.ToString();
-        }
+            IsTextstring(editorAlias) ? value.ToString().Substring(1) : value.ToString();
 
         private bool AddUdiDependency(ICollection<ArtifactDependency> dependencies, object value)
         {
             if (Udi.TryParse(value.ToString(), out var udi))
             {
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Udi Dependency - {udi}");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Udi Dependency - {udi}");
                 dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Match));
                 return true;
             }
@@ -287,16 +271,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
         {
             if (!docTypeGridEditorContent.Value.TryGetValue(propertyType.Alias, out objVal) || objVal == null)
             {
-                this._logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - Value is null");
+                _logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - Value is null");
                 return true;
             }
 
             return false;
         }
 
-        #endregion
-
-        #region DocTypeGridEditor model
         private class DocTypeGridEditorValue
         {
             [JsonProperty("id")]
@@ -308,7 +289,5 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             [JsonProperty("value")]
             public Dictionary<string, object> Value { get; set; }
         }
-
-        #endregion
     }
 }

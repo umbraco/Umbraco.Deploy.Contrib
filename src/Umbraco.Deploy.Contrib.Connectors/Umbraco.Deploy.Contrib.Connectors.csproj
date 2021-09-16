@@ -7,10 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="GridCellValueConnectors\dummy.txt" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="UmbracoDeploy.Core">
             <Version>4.1.2</Version>
         </PackageReference>

@@ -11,7 +11,13 @@ Primarily this project offers connectors for the most popular Umbraco community 
 
 This project offers Umbraco Deploy connectors for the following community packages:
 
-None so far.
+- [Doc Type Grid Editor](https://our.umbraco.com/packages/backoffice-extensions/doc-type-grid-editor/)
+
+Value connectors for certain core property editors are also included:
+
+- Block List
+- Multi URL Picker
+- Nested Content
 
 ---
 

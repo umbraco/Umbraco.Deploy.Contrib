@@ -34,3 +34,7 @@ src/Umbraco.Deploy.Contrib.Connectors/app.config
 /src/.idea
 
 MigrationBackup/
+
+build/temp
+build.out
+build.tmp
