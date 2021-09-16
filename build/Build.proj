@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<MSBuildCommunityTasksPath>..\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
 	</PropertyGroup>
-
 	<Import Project=".\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
 
 	<PropertyGroup Condition="'$(BUILD_NUMBER)'!=''">
@@ -48,30 +47,15 @@
 			This step will update the versions it finds in the packages.config in the Umbraco.Deploy.Contrib.Connectors project.
 			It is used to update the nuspec file.
 		-->
-		<XmlRead
-			XPath="/packages/package[@id='UmbracoCms.Core']/@version"
-			XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\packages.config">
-			<Output TaskParameter="Value" PropertyName="CoreVersion" />
-		</XmlRead>
-		
-		<PropertyGroup>
-			<CoreBaseVersion>$(CoreVersion.Substring(0, 5))</CoreBaseVersion>
-		</PropertyGroup>
-
+        <XmlRead
+                XPath="/Project/ItemGroup/PackageReference[@Include='UmbracoDeploy.Core']/Version"
+                XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj">
+            <Output TaskParameter="Value" PropertyName="CoreVersion" />
+        </XmlRead>
 		<FileUpdate
 			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
-			Regex="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;(.*)?&quot;"
-			ReplacementText="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;$(CoreBaseVersion)&quot;"/>
-		
-		<XmlRead
-			XPath="/packages/package[@id='UmbracoDeploy']/@version"
-			XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\packages.config">
-			<Output TaskParameter="Value" PropertyName="UmbracoDeployVersion" />
-		</XmlRead>
-		<FileUpdate
-			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
-			Regex="dependency id=&quot;UmbracoDeploy&quot; version=&quot;(.*)?,"
-			ReplacementText="dependency id=&quot;UmbracoDeploy&quot; version=&quot;[$(UmbracoDeployVersion),"/>
+			Regex="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;(.*)?,"
+			ReplacementText="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;[$(UmbracoDeployVersion),"/>
 	</Target>
 
 	<Target Name="CompileSolution" DependsOnTargets="UpdateReferencedVersions">
@@ -79,7 +63,6 @@
 		<MSBuild
 			Projects="../src/Umbraco.Deploy.Contrib.sln"
 			Targets="Clean;Rebuild;"
-			ToolsVersion="15.0"
 			UnloadProjectsOnCompletion="False" BuildInParallel="False"
 			Properties="WarningLevel=0;Configuration=$(BuildConfiguration);PipelineDependsOnBuild=False;OutDir=$(SolutionBinFolderAbsolutePath)" >
 		</MSBuild>

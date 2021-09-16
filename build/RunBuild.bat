@@ -1,4 +1,3 @@
-ECHO OFF
 IF NOT EXIST version.txt (
 	ECHO version.txt missing!
 	GOTO :showerror
@@ -36,6 +35,10 @@ SET MSBUILDPath="%programfiles(x86)%"\MSBuild\14.0\Bin\MsBuild.exe
 
 if exist "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
   SET MSBUILDPath="%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe"
+)
+
+if exist "%InstallDir%\MSBuild\Current\Bin\MSBuild.exe" (
+  SET MSBUILDPath="%InstallDir%\MSBuild\Current\Bin\MSBuild.exe"
 )
 
 if exist "%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe" (

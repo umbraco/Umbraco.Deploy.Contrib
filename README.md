@@ -39,7 +39,7 @@ When reporting issues with a connector it will help us a whole lot if you can re
 
 This means try removing anything unnecessary or unrelated to the actual issue, from your setup and also try reducing the steps to reproduce, to only cover exactly what we would need to do in order to see the error you are getting.
 
-Please use the [Umbraco Cloud Issue Tracker (for both Deploy and Deploy.Contrib)](https://github.com/umbraco/Umbraco.Cloud.Issues/issues).
+Please use the [Umbraco Deploy Issue Tracker (for both Deploy and Deploy.Contrib)](https://github.com/umbraco/Umbraco.Deploy.Issues/issues).
 
 ## Credits
 
