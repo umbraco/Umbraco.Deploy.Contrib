@@ -41,7 +41,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
-            _logger.Info<NestedContentValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.Debug<NestedContentValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
 
             if (string.IsNullOrWhiteSpace(svalue))
@@ -126,13 +126,13 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             value = JsonConvert.SerializeObject(nestedContent);
-            _logger.Info<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
             return (string)value;
         }
 
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {
-            _logger.Info<NestedContentValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.Debug<NestedContentValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
             {
                 _logger.Warn<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion from artifact.");
@@ -219,7 +219,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             // Note: NestedContent does not use formatting when serializing JSON values.
             value = JArray.FromObject(nestedContent).ToString(Formatting.None);
 
-            _logger.Info<NestedContentValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.Debug<NestedContentValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return value;
         }
