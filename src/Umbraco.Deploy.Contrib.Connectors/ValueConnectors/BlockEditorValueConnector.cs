@@ -23,6 +23,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockEditor" };
 
+        private enum BlockType
+        {
+            Content,
+            Settings
+        }
+
         // cannot inject ValueConnectorCollection directly as it would cause a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
@@ -69,17 +75,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
             }
 
-            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings).ToList();
+            Dictionary<BlockType, IEnumerable<Block>> allBlocks = GetAllBlocks(blockEditorValue);
 
-            // get all the content types used in block editor items
-            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
-                .Distinct()
-                .ToDictionary(a => a, a =>
-                {
-                    if (!Guid.TryParse(a, out var keyAsGuid))
-                        throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
-                });
+            Dictionary<string, IContentType> allContentTypes = GetAllContentTypes(allBlocks);
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -94,35 +92,50 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
-            foreach (var block in allBlocks)
+            foreach (var allBlockItem in allBlocks)
             {
-                var contentType = allContentTypes[block.ContentTypeKey];
-
-                if (block.PropertyValues != null)
+                foreach (var block in allBlockItem.Value)
                 {
-                    foreach (var key in block.PropertyValues.Keys.ToArray())
+                    var contentType = allContentTypes[block.ContentTypeKey];
+
+                    if (block.PropertyValues != null)
                     {
-                        var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
-
-                        if (innerPropertyType == null)
+                        foreach (var key in block.PropertyValues.Keys.ToArray())
                         {
-                            _logger.Warn<BlockEditorValueConnector>("No property type found with alias {PropertyType} on content type {ContentType}.", key, contentType.Alias);
-                            continue;
+                            var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
+
+                            if (innerPropertyType == null)
+                            {
+                                _logger.Warn<BlockEditorValueConnector>("No property type found with alias {PropertyType} on content type {ContentType}.", key, contentType.Alias);
+                                continue;
+                            }
+
+                            // fetch the right value connector from the collection of connectors, intended for use with this property type.
+                            // throws if not found - no need for a null check
+                            var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
+
+                            // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
+                            var innerValue = block.PropertyValues[key];
+
+                            // JSON serialized values stored on "Settings" are stored as JArray/JObjects rather than strings.
+                            // Hence if we've got a JSON structure we should convert to a string before pass it to the connector.
+                            // Hence if we are dealing with settings, and we've got a JSON structure, we should
+                            // convert it to a string passing it to the connector.
+                            // See: https://github.com/umbraco/Umbraco.Deploy.Issues/issues/86
+                            if (allBlockItem.Key == BlockType.Settings &&
+                                innerValue is JToken innerValueAsJToken)
+                            {
+                                innerValue = innerValueAsJToken.ToString();
+                            }
+
+                            object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies);
+
+                            _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
+
+                            parsedValue = parsedValue?.ToString();
+
+                            block.PropertyValues[key] = parsedValue;
                         }
-
-                        // fetch the right value connector from the collection of connectors, intended for use with this property type.
-                        // throws if not found - no need for a null check
-                        var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
-
-                        // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
-                        var innerValue = block.PropertyValues[key];
-                        object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies);
-
-                        _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
-
-                        parsedValue = parsedValue?.ToString();
-
-                        block.PropertyValues[key] = parsedValue;
                     }
                 }
             }
@@ -148,16 +161,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings).ToList();
+            Dictionary<BlockType, IEnumerable<Block>> allBlocks = GetAllBlocks(blockEditorValue);
 
-            var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
-                .Distinct()
-                .ToDictionary(a => a, a =>
-                {
-                    if (!Guid.TryParse(a, out var keyAsGuid))
-                        throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
-                });
+            Dictionary<string, IContentType> allContentTypes = GetAllContentTypes(allBlocks);
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -165,55 +171,94 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            foreach (var block in allBlocks)
+            foreach (var allBlockItem in allBlocks)
             {
-                var contentType = allContentTypes[block.ContentTypeKey];
-
-                if (block.PropertyValues != null)
+                foreach (var block in allBlockItem.Value)
                 {
-                    foreach (var key in block.PropertyValues.Keys.ToArray())
+                    var contentType = allContentTypes[block.ContentTypeKey];
+
+                    if (block.PropertyValues != null)
                     {
-                        var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
-
-                        if (innerPropertyType == null)
+                        foreach (var key in block.PropertyValues.Keys.ToArray())
                         {
-                            _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentType}.", key, contentType.Alias);
-                            continue;
-                        }
+                            var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
-                        // fetch the right value connector from the collection of connectors, intended for use with this property type.
-                        // throws if not found - no need for a null check
-                        var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
-
-                        var innerValue = block.PropertyValues[key];
-
-                        if (innerValue != null)
-                        {
-                            // pass the artifact value and property type to the connector to get a real value from the artifact
-                            var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
-
-                            if (convertedValue == null)
+                            if (innerPropertyType == null)
                             {
-                                block.PropertyValues[key] = null;
+                                _logger.Warn<BlockEditorValueConnector>("No property type found with alias {Key} on content type {ContentType}.", key, contentType.Alias);
+                                continue;
+                            }
+
+                            // fetch the right value connector from the collection of connectors, intended for use with this property type.
+                            // throws if not found - no need for a null check
+                            var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
+
+                            var innerValue = block.PropertyValues[key];
+
+                            if (innerValue != null)
+                            {
+                                // pass the artifact value and property type to the connector to get a real value from the artifact
+                                var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
+
+                                if (convertedValue == null)
+                                {
+                                    block.PropertyValues[key] = null;
+                                }
+                                else
+                                {
+                                    // JSON serialized values stored on "Settings" are stored as JArray/JObjects rather than strings.
+                                    // Hence if we are dealing with settings, and we've got JSON serialized as a string, we should
+                                    // convert it to a JToken before restoring it.
+                                    // See: https://github.com/umbraco/Umbraco.Deploy.Issues/issues/86
+                                    if (allBlockItem.Key == BlockType.Settings &&
+                                        convertedValue is string convertedValueAsString &&
+                                        convertedValueAsString.DetectIsJson())
+                                    {
+                                        block.PropertyValues[key] = (JToken)convertedValueAsString;
+                                    }
+                                    else
+                                    {
+                                        block.PropertyValues[key] = convertedValue;
+                                    }
+                                }
+
+                                _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
                             }
                             else
                             {
-                                block.PropertyValues[key] = convertedValue;
+                                block.PropertyValues[key] = innerValue;
+                                _logger.Debug<BlockEditorValueConnector>("{Key} value was null. Setting value as null without conversion.", key);
                             }
-                            _logger.Debug<BlockEditorValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
-                        }
-                        else
-                        {
-                            block.PropertyValues[key] = innerValue;
-                            _logger.Debug<BlockEditorValueConnector>("{Key} value was null. Setting value as null without conversion.", key);
                         }
                     }
                 }
             }
 
+
             _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return JObject.FromObject(blockEditorValue);
+        }
+
+        private static Dictionary<BlockType, IEnumerable<Block>> GetAllBlocks(BlockEditorValue blockEditorValue)
+        {
+            return new Dictionary<BlockType, IEnumerable<Block>>
+            {
+                { BlockType.Content, blockEditorValue.Content },
+                { BlockType.Settings, blockEditorValue.Settings }
+            };
+        }
+
+        private Dictionary<string, IContentType> GetAllContentTypes(Dictionary<BlockType, IEnumerable<Block>> allBlocks)
+        {
+            return allBlocks.Values.SelectMany(x => x).Select(x => x.ContentTypeKey)
+                .Distinct()
+                .ToDictionary(a => a, a =>
+                {
+                    if (!Guid.TryParse(a, out var keyAsGuid))
+                        throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
+                    return _contentTypeService.Get(keyAsGuid);
+                });
         }
 
         /// <summary>
