@@ -69,7 +69,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
             }
 
-            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings).ToList();
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings ?? Enumerable.Empty<Block>()).ToList();
 
             // get all the content types used in block editor items
             var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
@@ -148,7 +148,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             if (blockEditorValue == null)
                 return value;
 
-            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings).ToList();
+            var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings ?? Enumerable.Empty<Block>()).ToList();
 
             var allContentTypes = allBlocks.Select(x => x.ContentTypeKey)
                 .Distinct()
