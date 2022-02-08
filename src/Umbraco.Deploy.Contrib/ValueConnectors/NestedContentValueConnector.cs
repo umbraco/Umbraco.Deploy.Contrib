@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -41,12 +41,12 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
         public string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
-            _logger.LogInformation("Converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.LogDebug("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
 
             if (string.IsNullOrWhiteSpace(svalue))
             {
-                _logger.LogWarning($"Value is null or whitespace. Skipping conversion to artifact.");
+                _logger.LogDebug($"Value is null or whitespace. Skipping conversion to artifact.");
                 return null;
             }
 
@@ -126,16 +126,16 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             }
 
             value = JsonConvert.SerializeObject(nestedContent);
-            _logger.LogInformation("Finished converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.LogDebug("Finished converting {PropertyType} to artifact.", propertyType.Alias);
             return (string)value;
         }
 
         public object FromArtifact(string value, IPropertyType propertyType, object currentValue)
         {
-            _logger.LogInformation("Converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.LogDebug("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
             {
-                _logger.LogWarning($"Value is null or whitespace. Skipping conversion from artifact.");
+                _logger.LogDebug($"Value is null or whitespace. Skipping conversion from artifact.");
                 return value;
             }
 
@@ -219,7 +219,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             // Note: NestedContent does not use formatting when serializing JSON values.
             value = JArray.FromObject(nestedContent).ToString(Formatting.None);
 
-            _logger.LogInformation("Finished converting {PropertyType} from artifact.", propertyType.Alias);
+            _logger.LogDebug("Finished converting {PropertyType} from artifact.", propertyType.Alias);
 
             return value;
         }
