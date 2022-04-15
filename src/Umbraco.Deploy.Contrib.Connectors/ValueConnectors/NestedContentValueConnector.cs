@@ -114,7 +114,12 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                     // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
                     var innerValue = row.PropertyValues[key];
-                    object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies);
+
+                    // connectors are expecting strings, not JTokens
+                    object preparedValue = innerValue is JToken
+                        ? innerValue?.ToString()
+                        : innerValue;
+                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies);
 
                     // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
                     _logger.Debug<NestedContentValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, row.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
@@ -201,6 +206,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         else if (convertedValue is int)
                         {
                             row.PropertyValues[key] = convertedValue.ToString();
+                        }
+                        // json strings need to be converted into JTokens
+                        else if (convertedValue is string convertedStringValue && convertedStringValue.DetectIsJson())
+                        {
+                            row.PropertyValues[key] = JToken.Parse(convertedStringValue);
                         }
                         else
                         {
