@@ -91,7 +91,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 docTypeGridEditorContent.Value[propertyType.Alias] = parsedValue;
             }
 
-            var resolvedValue = JsonConvert.SerializeObject(docTypeGridEditorContent);
+            var resolvedValue = JsonConvert.SerializeObject(docTypeGridEditorContent, Formatting.None);
 
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ResolvedValue - {resolvedValue}");
 
