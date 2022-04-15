@@ -145,7 +145,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
                 // throws if not found - no need for a null check
                 var propValueConnector = ValueConnectors.Get(propertyType);
-                var convertedValue = propValueConnector.FromArtifact(value.ToString(), propertyType, "");
+                var convertedValue = propValueConnector.FromArtifact(value.ToString(), propertyType, string.Empty);
 
                 JToken jtokenValue = null;
                 if (IsJson(convertedValue))
