@@ -46,7 +46,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             if (string.IsNullOrWhiteSpace(svalue))
             {
-                _logger.Warn<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
+                _logger.Debug<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
                 return null;
             }
 
@@ -140,7 +140,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _logger.Debug<NestedContentValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
             {
-                _logger.Warn<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion from artifact.");
+                _logger.Debug<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion from artifact.");
                 return value;
             }
 
