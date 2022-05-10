@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
@@ -22,6 +23,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
         private readonly IAppCache _requestCache;
+        private readonly IAppPolicyCache _runtimeCache;
 
         // Our.Umbraco.NestedContent is the original NestedContent package
         // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
@@ -48,6 +50,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _valueConnectorsLazy = valueConnectors;
             _logger = logger;
             _requestCache = appCaches.RequestCache;
+            _runtimeCache = appCaches.RuntimeCache;
     }
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
@@ -154,15 +157,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             // If we've requested this set of content types within the request, get from cache rather than going to the database again.
             // This is useful as this method can be called multiple times in a save/publish operation.
-            var cacheKey = string.Format(DeployContribConstants.CacheKeys.DeployConnectorContentTypeDependenciesFormat, string.Join(",", allContentTypeAliases));
+            var cacheKey = string.Format(DeployContribConstants.CacheKeys.DeployConnectorCacheContentTypesFormat, string.Join(",", allContentTypeAliases));
 
-            // If we're on a background thread (e.g. for a content transfer), the request cache won't exist and we'll fall through to the database retrieval.
-            var contentTypes = _requestCache.GetCacheItem(
-                cacheKey,
-                () => allContentTypeAliases
-                          .ToDictionary(x => x.ToString(), x => _contentTypeService.Get(x)));
-
-            return contentTypes;
+            // If we're on a background thread (e.g. for a content transfer), the request cache won't exist and we would fall through to the database retrieval.
+            // So instead we'll use the runtime cache (which will be cleared by Deploy between each background operation).
+            Func<Dictionary<string, IContentType>> getContentTypes = () =>
+                allContentTypeAliases
+                    .ToDictionary(x => x.ToString(), x => _contentTypeService.Get(x));
+            return HttpContext.Current != null
+                ? _requestCache.GetCacheItem(cacheKey, getContentTypes)
+                : _runtimeCache.GetCacheItem(cacheKey, getContentTypes);
         }
 
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
