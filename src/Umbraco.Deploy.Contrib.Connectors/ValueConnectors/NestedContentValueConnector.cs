@@ -4,6 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -20,6 +21,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
+        private readonly IAppCache _requestCache;
 
         // Our.Umbraco.NestedContent is the original NestedContent package
         // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
@@ -29,15 +31,24 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         // so we have to inject it lazily and use the lazy value when actually needing it
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
+        // TODO (V10): Remove this constructor.
+        [Obsolete("Please use the constructor taking all parameters. This constructor will be removed in a future version.")]
         public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
+            : this(contentTypeService, valueConnectors, logger, Umbraco.Core.Composing.Current.AppCaches)
+        {
+        }
+
+        public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger, AppCaches appCaches)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
             if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
+
             _contentTypeService = contentTypeService;
             _valueConnectorsLazy = valueConnectors;
             _logger = logger;
-        }
+            _requestCache = appCaches.RequestCache;
+    }
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
         {
@@ -72,9 +83,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
             }
 
-            var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
-                .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.Get(a));
+            Dictionary<string, IContentType> allContentTypes = GetAllContentTypesUsedByContent(nestedContent);
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -131,8 +140,29 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             value = JsonConvert.SerializeObject(nestedContent);
-            _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
+            _logger.Debug<NestedContentValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
             return (string)value;
+        }
+
+        private Dictionary<string, IContentType> GetAllContentTypesUsedByContent(IEnumerable<NestedContentValue> nestedContent)
+        {
+            var allContentTypeAliases = nestedContent
+                .Select(x => x.ContentTypeAlias)
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            // If we've requested this set of content types within the request, get from cache rather than going to the database again.
+            // This is useful as this method can be called multiple times in a save/publish operation.
+            var cacheKey = string.Format(DeployContribConstants.CacheKeys.DeployConnectorContentTypeDependenciesFormat, string.Join(",", allContentTypeAliases));
+
+            // If we're on a background thread (e.g. for a content transfer), the request cache won't exist and we'll fall through to the database retrieval.
+            var contentTypes = _requestCache.GetCacheItem(
+                cacheKey,
+                () => allContentTypeAliases
+                          .ToDictionary(x => x.ToString(), x => _contentTypeService.Get(x)));
+
+            return contentTypes;
         }
 
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
@@ -158,9 +188,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return value;
             }
 
-            var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
-                .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.Get(a));
+            Dictionary<string, IContentType> allContentTypes = GetAllContentTypesUsedByContent(nestedContent);
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
