@@ -100,9 +100,11 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     }
                     else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                     {
-                        var entity = _entityService.Get(guidUdi.Guid, UdiEntityTypeHelper.ToUmbracoObjectType(guidUdi.EntityType));
-                        if (entity == null)
+                        var entityExists = _entityService.Exists(guidUdi.Guid);
+                        if (!entityExists)
+                        {
                             continue;
+                        }
 
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
