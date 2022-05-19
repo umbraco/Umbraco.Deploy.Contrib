@@ -8,6 +8,6 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="Umbraco.Deploy.Core" Version="10.0.0-preview20220507.91999" />
+        <PackageReference Include="Umbraco.Deploy.Core" Version="10.0.0-rc1" />
     </ItemGroup>
 </Project>
