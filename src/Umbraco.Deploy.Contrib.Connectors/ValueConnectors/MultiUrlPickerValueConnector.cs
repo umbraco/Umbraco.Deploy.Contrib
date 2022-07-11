@@ -8,6 +8,7 @@ using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Work;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -16,6 +17,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IEntityService _entityService;
         private readonly IMediaService _mediaService;
         private readonly ILogger _logger;
+        private readonly IWorkCacheAdaptor _workCacheAdaptor;
 
         // Used to fetch the udi from a umb://-based url
         private static readonly Regex MediaUdiSrcRegex = new Regex(@"(?<udi>umb://media/[A-z0-9]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -40,13 +42,17 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <param name="entityService">An <see cref="IEntityService"/> implementation.</param>
         /// <param name="mediaService"></param>
         /// <param name="logger"></param>
-        public MultiUrlPickerValueConnector(IEntityService entityService, IMediaService mediaService, ILogger logger)
+        public MultiUrlPickerValueConnector(IEntityService entityService, IMediaService mediaService, ILogger logger, IWorkCacheAdaptor workCacheAdaptor)
         {
             if (entityService == null) throw new ArgumentNullException(nameof(entityService));
             if (mediaService == null) throw new ArgumentNullException(nameof(mediaService));
+            if (logger == null) throw new ArgumentNullException(nameof(logger));
+            if (workCacheAdaptor == null) throw new ArgumentNullException(nameof(workCacheAdaptor));
+
             _entityService = entityService;
             _mediaService = mediaService;
             _logger = logger;
+            _workCacheAdaptor = workCacheAdaptor;
         }
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
@@ -79,7 +85,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             : UmbracoObjectTypes.Document;
                         var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
-                        var guidAttempt = _entityService.GetKey(intId, objectTypeId);
+                        var guidAttempt = _workCacheAdaptor.GetCacheItem(
+                            _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityKey, intId, objectTypeId),
+                            () => _entityService.GetKey(intId, objectTypeId));
                         if (guidAttempt.Success == false)
                             continue;
 
@@ -92,7 +100,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     }
                     else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                     {
-                        var entityExists = _entityService.Exists(guidUdi.Guid);
+                        var entityExists = _workCacheAdaptor.GetCacheItem(
+                            _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityExists, guidUdi.Guid),
+                            () => _entityService.Exists(guidUdi.Guid));
                         if (!entityExists)
                         {
                             continue;
@@ -142,7 +152,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         : UmbracoObjectTypes.Document;
                     var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
-                    var guidAttempt = _entityService.GetKey(intId, objectTypeId);
+                    var guidAttempt = _workCacheAdaptor.GetCacheItem(
+                        _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityKey, intId, objectTypeId),
+                        () => _entityService.GetKey(intId, objectTypeId));
                     if (guidAttempt.Success)
                     {
                         var udi = new GuidUdi(entityType, guidAttempt.Result);
@@ -155,7 +167,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
                 else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                 {
-                    var entity = _entityService.Get(guidUdi.Guid, Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType));
+                    var objectTypeId = Constants.UdiEntityType.ToUmbracoObjectType(guidUdi.EntityType);
+                    var entity = _workCacheAdaptor.GetCacheItem(
+                        _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityByKey, guidUdi.Guid, objectTypeId),
+                        () => _entityService.Get(guidUdi.Guid, objectTypeId));
+
                     if (entity != null)
                     {
                         // Add the artifact dependency
@@ -216,7 +232,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             // Get the Id corresponding to the Guid
                             // it *should* succeed when deploying, due to dependencies management
                             // nevertheless, assume it can fail, and then create an invalid localLink
-                            var idAttempt = _entityService.GetId(udi.Guid, nodeObjectType);
+                            var idAttempt = _workCacheAdaptor.GetCacheItem(
+                                _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityId, udi.Guid, nodeObjectType),
+                                () => _entityService.GetId(udi.Guid, nodeObjectType));
                             if (idAttempt)
                                 link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                         }
@@ -261,7 +279,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // Get the Id corresponding to the Guid
                     // it *should* succeed when deploying, due to dependencies management
                     // nevertheless, assume it can fail, and then create an invalid localLink
-                    var idAttempt = _entityService.GetId(udi.Guid, nodeObjectType);
+                    var idAttempt = _workCacheAdaptor.GetCacheItem(
+                        _workCacheAdaptor.GetCacheKey(WorkCacheKeys.EntityId, udi.Guid, nodeObjectType),
+                        () => _entityService.GetId(udi.Guid, nodeObjectType));
                     if (idAttempt)
                         link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                 }
