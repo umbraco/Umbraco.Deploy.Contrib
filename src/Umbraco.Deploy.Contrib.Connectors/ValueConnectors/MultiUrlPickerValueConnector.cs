@@ -102,9 +102,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     {
                         var entityExists = _workCacheAdaptor.GetCacheItem(
                             WorkCacheKeys.GetCacheKey(WorkCacheKeys.OperationKeys.EntityExists, guidUdi.Guid),
-                            () => {
-                                return _entityService.Exists(guidUdi.Guid);
-                            });
+                            () => _entityService.Exists(guidUdi.Guid));
                         if (!entityExists)
                         {
                             continue;
