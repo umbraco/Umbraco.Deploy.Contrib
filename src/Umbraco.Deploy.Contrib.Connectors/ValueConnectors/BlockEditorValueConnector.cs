@@ -4,11 +4,13 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+using Umbraco.Deploy.Work;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -20,6 +22,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
+        private readonly IWorkCacheAdaptor _workCacheAdaptor;
 
         public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockEditor" };
 
@@ -27,14 +30,36 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         // so we have to inject it lazily and use the lazy value when actually needing it
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
-        public BlockEditorValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
+        // TODO (V11): Remove obsolete constructor.
+
+        [Obsolete("Please use the constructor taking all paramenters. This constructor will be removed in a future version.")]
+        public BlockEditorValueConnector(
+            IContentTypeService contentTypeService,
+            Lazy<ValueConnectorCollection> valueConnectors,
+            ILogger logger)
+            : this(
+                contentTypeService,
+                valueConnectors,
+                logger,
+                Current.Factory.GetInstance<IWorkCacheAdaptor>())
+        {
+        }
+
+        public BlockEditorValueConnector(
+            IContentTypeService contentTypeService,
+            Lazy<ValueConnectorCollection> valueConnectors,
+            ILogger logger,
+            IWorkCacheAdaptor workCacheAdaptor)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
             if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
+            if (workCacheAdaptor == null) throw new ArgumentNullException(nameof(workCacheAdaptor));
+
             _contentTypeService = contentTypeService;
             _valueConnectorsLazy = valueConnectors;
             _logger = logger;
+            _workCacheAdaptor = workCacheAdaptor;
         }
 
         public virtual string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
@@ -78,7 +103,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
+                    return GetContentType(keyAsGuid);
                 });
 
             //Ensure all of these content types are found
@@ -131,6 +156,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
             return (string) value;
         }
+
+        private IContentType GetContentType(Guid key) =>
+            _workCacheAdaptor.GetCacheItem(
+                    WorkCacheKeys.GetCacheKey(WorkCacheKeys.OperationKeys.DocumentTypeByKey, key),
+                    () => _contentTypeService.Get(key));
 
         public virtual object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {

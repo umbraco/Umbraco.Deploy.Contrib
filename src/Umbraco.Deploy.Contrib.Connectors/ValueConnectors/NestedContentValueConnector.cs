@@ -4,11 +4,13 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+using Umbraco.Deploy.Work;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -20,6 +22,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
+        private readonly IWorkCacheAdaptor _workCacheAdaptor;
 
         // Our.Umbraco.NestedContent is the original NestedContent package
         // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
@@ -29,14 +32,36 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         // so we have to inject it lazily and use the lazy value when actually needing it
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
-        public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
+        // TODO (V11): Remove obsolete constructor.
+
+        [Obsolete("Please use the constructor taking all paramenters. This constructor will be removed in a future version.")]
+        public NestedContentValueConnector(
+            IContentTypeService contentTypeService,
+            Lazy<ValueConnectorCollection> valueConnectors,
+            ILogger logger)
+            : this(
+                contentTypeService,
+                valueConnectors,
+                logger,
+                Current.Factory.GetInstance<IWorkCacheAdaptor>())
+        {
+        }
+
+        public NestedContentValueConnector(
+            IContentTypeService contentTypeService,
+            Lazy<ValueConnectorCollection> valueConnectors,
+            ILogger logger,
+            IWorkCacheAdaptor workCacheAdaptor)
         {
             if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
             if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
             if (logger == null) throw new ArgumentNullException(nameof(logger));
+            if (workCacheAdaptor == null) throw new ArgumentNullException(nameof(workCacheAdaptor));
+
             _contentTypeService = contentTypeService;
             _valueConnectorsLazy = valueConnectors;
             _logger = logger;
+            _workCacheAdaptor = workCacheAdaptor;
         }
 
         public string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
@@ -74,7 +99,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
                 .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.Get(a));
+                .ToDictionary(a => a, a => GetContentType(a));
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -135,6 +160,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             return (string)value;
         }
 
+        private IContentType GetContentType(string alias) =>
+            _workCacheAdaptor.GetCacheItem(
+                    WorkCacheKeys.GetCacheKey(WorkCacheKeys.OperationKeys.DocumentTypeByAlias, alias),
+                    () => _contentTypeService.Get(alias));
+
         public object FromArtifact(string value, PropertyType propertyType, object currentValue)
         {
             _logger.Debug<NestedContentValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
@@ -178,7 +208,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
                         continue;
-                    
+
                     var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
                     if (innerPropertyType == null)
