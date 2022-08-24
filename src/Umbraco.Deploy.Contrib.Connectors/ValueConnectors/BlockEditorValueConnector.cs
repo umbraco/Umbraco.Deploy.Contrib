@@ -8,20 +8,26 @@ using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+using Umbraco.Deploy.Core;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
     /// <summary>
     /// A Deploy connector for BlockEditor based property editors (ie. BlockList)
     /// </summary>
-    public abstract class BlockEditorValueConnector : IValueConnector
+    public abstract class BlockEditorValueConnector : ValueConnectorBase
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger _logger;
 
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockEditor" };
+        /// <inheritdoc />
+        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
+        {
+            "Umbraco.BlockEditor"
+        };
 
         // cannot inject ValueConnectorCollection directly as it would cause a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
@@ -37,7 +43,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             _logger = logger;
         }
 
-        public virtual string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public sealed override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.Debug<BlockEditorValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
@@ -78,7 +84,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
+                    return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
             //Ensure all of these content types are found
@@ -132,7 +138,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             return (string) value;
         }
 
-        public virtual object FromArtifact(string value, PropertyType propertyType, object currentValue)
+        public sealed override object FromArtifact(string value, PropertyType propertyType, object currentValue, IContextCache contextCache)
         {
             _logger.Debug<BlockEditorValueConnector>("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
@@ -156,7 +162,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
+                    return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
             //Ensure all of these content types are found
