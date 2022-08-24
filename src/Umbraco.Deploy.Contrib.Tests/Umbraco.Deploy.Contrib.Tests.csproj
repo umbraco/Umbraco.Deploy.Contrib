@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="UmbracoDeploy.Core">
-            <Version>4.1.2</Version>
+            <Version>4.7.0-alpha11437</Version>
         </PackageReference>
     </ItemGroup>
 
