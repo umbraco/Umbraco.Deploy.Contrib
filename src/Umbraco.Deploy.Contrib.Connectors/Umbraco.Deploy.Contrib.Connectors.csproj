@@ -6,6 +6,8 @@
         <TargetFramework>net472</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Deploy-V4\src\Umbraco.Deploy\Umbraco.Deploy.csproj" />
+        <PackageReference Include="UmbracoDeploy.Core">
+            <Version>4.1.2</Version>
+        </PackageReference>
     </ItemGroup>
 </Project>
