@@ -25,7 +25,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <inheritdoc />
         public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
         {
-            "RJP.MultiUrlPicker",
             "Umbraco.MultiUrlPicker"
         };
 

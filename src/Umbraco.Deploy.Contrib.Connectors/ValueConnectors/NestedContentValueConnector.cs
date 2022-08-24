@@ -31,7 +31,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// </remarks>
         public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
         {
-            "Our.Umbraco.NestedContent",
             "Umbraco.NestedContent"
         };
 
