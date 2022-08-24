@@ -45,6 +45,10 @@ if exist "%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15
   SET MSBUILDPath="%programfiles(x86)%\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MsBuild.exe"
 )
 
+if exist "%programfiles%\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe" (
+  SET MSBUILDPath="%programfiles%\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+)
+
 ECHO MSBUILD is here %MSBUILDPath%
 %MSBUILDPath% "Build.proj" /p:BUILD_RELEASE=%release% /p:BUILD_COMMENT=%comment%
 
