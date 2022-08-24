@@ -25,7 +25,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <inheritdoc />
         public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
         {
-            "RJP.MultiUrlPicker",
             "Umbraco.MultiUrlPicker"
         };
 
@@ -164,8 +163,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
                 else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                 {
-                    var entityExists = contextCache.EntityExists(_entityService, guidUdi.Guid);
-                    if (entityExists)
+                    if (contextCache.EntityExists(_entityService, guidUdi.Guid))
                     {
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
