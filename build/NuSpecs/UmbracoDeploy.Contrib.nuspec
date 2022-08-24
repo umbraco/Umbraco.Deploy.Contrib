@@ -17,7 +17,7 @@
 		<language>en-US</language>
 		<tags>umbraco</tags>
 		<dependencies>
-			<dependency id="UmbracoDeploy.Core" version="4.1.2" />
+			<dependency id="UmbracoDeploy.Core" version="4.7.0-alpha11437" />
 		</dependencies>
 	</metadata>
 	<files>
