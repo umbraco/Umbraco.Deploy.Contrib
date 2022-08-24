@@ -8,6 +8,7 @@ using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
@@ -128,7 +129,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     object preparedValue = innerValue is JToken
                         ? innerValue?.ToString()
                         : innerValue;
-                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies);
+                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies, contextCache);
 
                     // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
                     _logger.Debug<NestedContentValueConnector>("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, row.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
@@ -205,7 +206,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     if (innerValue != null)
                     {
                         // pass the artifact value and property type to the connector to get a real value from the artifact
-                        var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
+                        var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null, contextCache);
 
                         if (convertedValue == null)
                         {
