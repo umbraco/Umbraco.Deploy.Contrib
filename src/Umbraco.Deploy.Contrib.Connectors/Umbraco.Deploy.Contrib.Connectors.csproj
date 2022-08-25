@@ -5,10 +5,9 @@
         <RootNamespace>Umbraco.Deploy.Contrib.Connectors</RootNamespace>
         <TargetFramework>net472</TargetFramework>
     </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="UmbracoDeploy.Core">
-            <Version>4.1.2</Version>
+            <Version>4.7.0-alpha11437</Version>
         </PackageReference>
     </ItemGroup>
 </Project>

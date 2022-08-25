@@ -1,17 +1,20 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
+using Umbraco.Deploy.Connectors;
+using Umbraco.Deploy.Connectors.GridCellValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
+using Umbraco.Deploy.Core;
 
 namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 {
-    public class DocTypeGridEditorCellValueConnector : IGridCellValueConnector
+    public class DocTypeGridEditorCellValueConnector : GridCellValueConnectorBase2
     {
         private readonly ILogger _logger;
         private readonly IContentTypeService _contentTypeService;
@@ -26,9 +29,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
         }
 
-        public bool IsConnector(string view) => !string.IsNullOrWhiteSpace(view) && view.Contains("doctypegrideditor");
+        public sealed override bool IsConnector(string view)
+            => !string.IsNullOrWhiteSpace(view) && view.Contains("doctypegrideditor");
 
-        public string GetValue(GridValue.GridControl gridControl, ICollection<ArtifactDependency> dependencies)
+        public sealed override string GetValue(GridValue.GridControl gridControl, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             // cancel if there's no values
             if (gridControl.Value == null || gridControl.Value.HasValues == false) return null;
@@ -47,8 +51,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
 
             // check if the doc type exist - else abort packaging
-            var contentType = _contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
-
+            var contentType = contextCache.GetContentTypeByAlias(_contentTypeService, docTypeGridEditorContent.ContentTypeAlias);
             if (contentType == null)
             {
                 _logger.Debug<DocTypeGridEditorCellValueConnector>("GetValue - Missing ContentType");
@@ -84,7 +87,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - propertyTypeValue - {value}");
 
                 //properties like MUP / Nested Content are JSON, we need to convert to string for the conversion to artifact
-                string parsedValue = propValueConnector.ToArtifact(IsJson(value) ? value.ToString() : value, propertyType, dependencies);
+                string parsedValue = propValueConnector.ToArtifact(IsJson(value) ? value.ToString() : value, propertyType, dependencies, contextCache);
 
                 _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ParsedValue - {parsedValue}");
 
@@ -98,7 +101,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             return resolvedValue;
         }
 
-        public void SetValue(GridValue.GridControl gridControl)
+        public sealed override void SetValue(GridValue.GridControl gridControl, IContextCache contextCache)
         {
             // cancel if there's no values
             if (string.IsNullOrWhiteSpace(gridControl.Value.ToString()))
@@ -121,8 +124,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
 
             // check if the doc type exist - else abort packaging
-            var contentType = _contentTypeService.Get(docTypeGridEditorContent.ContentTypeAlias);
-
+            var contentType = contextCache.GetContentTypeByAlias(_contentTypeService, docTypeGridEditorContent.ContentTypeAlias);
             if (contentType == null)
             {
                 throw new InvalidOperationException($"Could not resolve the Content Type for the Doc Type Grid Editor property: {docTypeGridEditorContent.ContentTypeAlias}");
@@ -145,7 +147,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
                 // throws if not found - no need for a null check
                 var propValueConnector = ValueConnectors.Get(propertyType);
-                var convertedValue = propValueConnector.FromArtifact(value.ToString(), propertyType, string.Empty);
+                var convertedValue = propValueConnector.FromArtifact(value.ToString(), propertyType, string.Empty, contextCache);
 
                 JToken jtokenValue = null;
                 if (IsJson(convertedValue))
