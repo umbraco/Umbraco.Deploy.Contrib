@@ -7,6 +7,9 @@ using System.Linq;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Core.Connectors;
+using Umbraco.Deploy.Core.Connectors.ValueConnectors;
 using Umbraco.Deploy.Core.Connectors.ValueConnectors.Services;
 using Umbraco.Extensions;
 
@@ -15,15 +18,21 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
     /// <summary>
     /// A Deploy connector for the NestedContent property editor
     /// </summary>
-    public class NestedContentValueConnector : IValueConnector
+    public class NestedContentValueConnector : ValueConnectorBase
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger<NestedContentValueConnector> _logger;
 
-        // Our.Umbraco.NestedContent is the original NestedContent package
-        // Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Our.Umbraco.NestedContent", "Umbraco.NestedContent" };
+        /// <inheritdoc />
+        /// <remarks>
+        /// Our.Umbraco.NestedContent is the original NestedContent package
+        ///  Umbraco.NestedContent is Core NestedContent (introduced in v7.7)
+        /// </remarks>
+        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
+        {
+            "Umbraco.NestedContent"
+        };
 
         // cannot inject ValueConnectorCollection as it creates a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
@@ -39,7 +48,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             _logger = logger;
         }
 
-        public string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public sealed override string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
@@ -74,7 +83,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
                 .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.Get(a));
+                .ToDictionary(a => a, a => contextCache.GetContentTypeByAlias(_contentTypeService, a));
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -119,7 +128,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     object preparedValue = innerValue is JToken
                         ? innerValue?.ToString()
                         : innerValue;
-                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies);
+                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies, contextCache);
 
                     // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
                     _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, row.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
@@ -135,7 +144,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             return (string)value;
         }
 
-        public object FromArtifact(string value, IPropertyType propertyType, object currentValue)
+        public sealed override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
@@ -160,7 +169,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             var allContentTypes = nestedContent.Select(x => x.ContentTypeAlias)
                 .Distinct()
-                .ToDictionary(a => a, a => _contentTypeService.Get(a));
+                .ToDictionary(a => a, a => contextCache.GetContentTypeByAlias(_contentTypeService, a));
 
             //Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
@@ -196,7 +205,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     if (innerValue != null)
                     {
                         // pass the artifact value and property type to the connector to get a real value from the artifact
-                        var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
+                        var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null, contextCache);
 
                         if (convertedValue == null)
                         {

@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Core.Connectors.ValueConnectors;
 using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.ValueConnectors
 {
-    public class MultiUrlPickerValueConnector : IValueConnector
+    public class MultiUrlPickerValueConnector : ValueConnectorBase
     {
         private readonly IEntityService _entityService;
         private readonly IMediaService _mediaService;
@@ -22,6 +24,12 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
         // Used to fetch the udi from a umb://-based url
         private static readonly Regex MediaUdiSrcRegex = new Regex(@"(?<udi>umb://media/[A-z0-9]+)", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+        /// <inheritdoc />
+        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
+        {
+            "Umbraco.MultiUrlPicker"
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiUrlPickerValueConnector"/> class.
@@ -57,7 +65,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             _mediaUrlGenerators = mediaUrlGenerators;
         }
 
-        public string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public sealed override string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             var svalue = value as string;
             if (string.IsNullOrWhiteSpace(svalue))
@@ -75,11 +83,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 foreach (var link in links)
                 {
                     var isMedia = link["isMedia"] != null;
-                    int intId;
-                    string url;
-                    GuidUdi guidUdi;
+
                     // Only do processing if the Id is set on the element. OR if the url is set and its a media item
-                    if (TryParseJTokenAttr(link, "id", out intId))
+                    if (TryParseJTokenAttr(link, "id", out int intId))
                     {
                         // Checks weather we are resolving a media item or a document
                         var objectTypeId = isMedia
@@ -92,15 +98,16 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                             continue;
 
                         var udi = new GuidUdi(entityType, guidAttempt.Result);
+
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
 
                         // Set the Id attribute to the udi
                         link["id"] = udi.ToString();
                     }
-                    else if (TryParseJTokenAttr(link, "udi", out guidUdi))
+                    else if (TryParseJTokenAttr(link, "udi", out GuidUdi guidUdi))
                     {
-                        var entityExists = _entityService.Exists(guidUdi.Guid);
+                        var entityExists = contextCache.EntityExists(_entityService, guidUdi.Guid);
                         if (!entityExists)
                         {
                             continue;
@@ -109,7 +116,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
                     }
-                    else if (isMedia && TryParseJTokenAttr(link, "url", out url))
+                    else if (isMedia && TryParseJTokenAttr(link, "url", out string url))
                     {
                         // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on), 
                         // where you edit a media link, and just hit "Select". 
@@ -150,10 +157,11 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                         : UmbracoObjectTypes.Document;
                     var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
-                    var guidAttempt = _entityService.GetKey(intId, objectTypeId);
+                    var guidAttempt = contextCache.GetEntityKeyById(_entityService, intId, objectTypeId);
                     if (guidAttempt.Success)
                     {
                         var udi = new GuidUdi(entityType, guidAttempt.Result);
+
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(udi, false, ArtifactDependencyMode.Exist));
 
@@ -163,8 +171,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 }
                 else if (TryParseJTokenAttr(link, "udi", out guidUdi))
                 {
-                    var entity = _entityService.Get(guidUdi.Guid, UdiEntityTypeHelper.ToUmbracoObjectType(guidUdi.EntityType));
-                    if (entity != null)
+                    if (contextCache.EntityExists(_entityService, guidUdi.Guid))
                     {
                         // Add the artifact dependency
                         dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
@@ -194,7 +201,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             return string.Empty;
         }
 
-        public object FromArtifact(string value, IPropertyType propertyType, object currentValue)
+        public sealed override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
         {
             if (string.IsNullOrWhiteSpace(value))
             {
@@ -224,7 +231,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                             // Get the Id corresponding to the Guid
                             // it *should* succeed when deploying, due to dependencies management
                             // nevertheless, assume it can fail, and then create an invalid localLink
-                            var idAttempt = _entityService.GetId(udi.Guid, nodeObjectType);
+                            var idAttempt = contextCache.GetEntityIdByKey(_entityService, udi.Guid, nodeObjectType);
                             if (idAttempt)
                                 link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                         }
@@ -269,7 +276,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     // Get the Id corresponding to the Guid
                     // it *should* succeed when deploying, due to dependencies management
                     // nevertheless, assume it can fail, and then create an invalid localLink
-                    var idAttempt = _entityService.GetId(udi.Guid, nodeObjectType);
+                    var idAttempt = contextCache.GetEntityIdByKey(_entityService, udi.Guid, nodeObjectType);
                     if (idAttempt)
                         link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                 }
@@ -300,9 +307,6 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             return value;
         }
-
-        /// <inheritdoc/>
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "RJP.MultiUrlPicker", "Umbraco.MultiUrlPicker" };
 
         private bool TryParseJTokenAttr(JToken link, string attrName, out int attrValue)
         {

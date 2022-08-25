@@ -7,6 +7,9 @@ using System.Linq;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Core.Connectors;
+using Umbraco.Deploy.Core.Connectors.ValueConnectors;
 using Umbraco.Deploy.Core.Connectors.ValueConnectors.Services;
 using Umbraco.Extensions;
 
@@ -15,13 +18,17 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
     /// <summary>
     /// A Deploy connector for BlockEditor based property editors (ie. BlockList)
     /// </summary>
-    public abstract class BlockEditorValueConnector : IValueConnector
+    public abstract class BlockEditorValueConnector : ValueConnectorBase
     {
         private readonly IContentTypeService _contentTypeService;
         private readonly Lazy<ValueConnectorCollection> _valueConnectorsLazy;
         private readonly ILogger<BlockEditorValueConnector> _logger;
 
-        public virtual IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockEditor" };
+        /// <inheritdoc />
+        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
+        {
+            "Umbraco.BlockEditor"
+        };
 
         // cannot inject ValueConnectorCollection directly as it would cause a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
@@ -37,7 +44,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             _logger = logger;
         }
 
-        public virtual string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies)
+        public override string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} to artifact.", propertyType.Alias);
             var svalue = value as string;
@@ -78,7 +85,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
+
+                    return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
             //Ensure all of these content types are found
@@ -116,7 +124,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
                         // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
                         var innerValue = block.PropertyValues[key];
-                        object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies);
+                        object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies, contextCache);
 
                         _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
 
@@ -132,7 +140,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             return (string) value;
         }
 
-        public virtual object FromArtifact(string value, IPropertyType propertyType, object currentValue)
+        public override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
@@ -156,7 +164,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
-                    return _contentTypeService.Get(keyAsGuid);
+
+                    return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
             //Ensure all of these content types are found
@@ -190,7 +199,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                         if (innerValue != null)
                         {
                             // pass the artifact value and property type to the connector to get a real value from the artifact
-                            var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null);
+                            var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null, contextCache);
 
                             if (convertedValue == null)
                             {
