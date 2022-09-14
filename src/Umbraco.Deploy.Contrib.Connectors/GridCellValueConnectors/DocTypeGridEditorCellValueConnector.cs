@@ -11,6 +11,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.GridCellValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 {
@@ -176,7 +177,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
         private JToken GetJTokenValue(object value) => value != null && IsJson(value) ? JToken.Parse(value.ToString()) : null;
 
-        private bool IsJson(object value) => value != null && value.ToString().DetectIsJson();
+        private bool IsJson(object value) => value != null && value.ToString().DetectIsJsonExact();
 
         private bool AddUdiDependency(ICollection<ArtifactDependency> dependencies, object value)
         {

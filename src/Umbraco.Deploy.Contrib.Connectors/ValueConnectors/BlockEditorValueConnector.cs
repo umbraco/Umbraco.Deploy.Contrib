@@ -12,6 +12,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -62,7 +63,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
             }
 
-            if (svalue.DetectIsJson() == false)
+            if (svalue.DetectIsJsonExact() == false)
             {
                 _logger.Warn<BlockListValueConnector>("Value '{Value}' is not a json string. Skipping conversion to artifact.", svalue);
                 return null;
@@ -148,7 +149,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return value;
             }
 
-            if (value.DetectIsJson() == false)
+            if (value.DetectIsJsonExact() == false)
                 return value;
 
             var blockEditorValue = JsonConvert.DeserializeObject<BlockEditorValue>(value);

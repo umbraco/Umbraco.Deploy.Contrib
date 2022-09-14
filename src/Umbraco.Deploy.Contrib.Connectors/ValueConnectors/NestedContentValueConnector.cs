@@ -12,6 +12,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -59,7 +60,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return null;
             }
 
-            if (svalue.DetectIsJson() == false)
+            if (svalue.DetectIsJsonExact() == false)
             {
                 _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a json string. Skipping conversion to artifact.", svalue);
                 return null;
@@ -153,7 +154,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return value;
             }
 
-            if (value.DetectIsJson() == false)
+            if (value.DetectIsJsonExact() == false)
             {
                 _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a json string. Skipping conversion from artifact.", value);
                 return value;
@@ -217,7 +218,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             row.PropertyValues[key] = convertedValue.ToString();
                         }
                         // json strings need to be converted into JTokens
-                        else if (convertedValue is string convertedStringValue && convertedStringValue.DetectIsJson())
+                        else if (convertedValue is string convertedStringValue && convertedStringValue.DetectIsJsonExact())
                         {
                             row.PropertyValues[key] = JToken.Parse(convertedStringValue);
                         }
