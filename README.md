@@ -25,7 +25,9 @@ Value connectors for certain core property editors are also included:
 
 ### Installation
 
-You can install the NuGet package using `Install-Package UmbracoDeploy.Contrib`.
+You can install the NuGet package using `Install-Package UmbracoDeploy.Contrib` for Umbraco 7 and 8
+
+or using `Install-Package Umbraco.Deploy.Contrib` for Umbraco 9 and above.
 
 ---
 ## Contributing to this project
