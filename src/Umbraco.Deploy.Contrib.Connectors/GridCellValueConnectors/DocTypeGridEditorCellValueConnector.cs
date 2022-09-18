@@ -11,6 +11,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.GridCellValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 {
@@ -87,7 +88,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - propertyTypeValue - {value}");
 
                 //properties like MUP / Nested Content are JSON, we need to convert to string for the conversion to artifact
-                string parsedValue = propValueConnector.ToArtifact(IsJson(value) ? value.ToString() : value, propertyType, dependencies, contextCache);
+                string parsedValue = propValueConnector.ToArtifact(value != null && value.ToString().TryParseJson(out JToken _) ? value.ToString() : value, propertyType, dependencies, contextCache);
 
                 _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - ParsedValue - {parsedValue}");
 
@@ -149,15 +150,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
                 var propValueConnector = ValueConnectors.Get(propertyType);
                 var convertedValue = propValueConnector.FromArtifact(value.ToString(), propertyType, string.Empty, contextCache);
 
-                JToken jtokenValue = null;
-                if (IsJson(convertedValue))
-                {
-                    // test if the value is a json object (thus could be a nested complex editor)
-                    // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
-                    jtokenValue = GetJTokenValue(convertedValue);
-                }
-
-                if (jtokenValue != null)
+                // test if the value is a json object (thus could be a nested complex editor)
+                // if that's the case we'll need to add it as a json object instead of string to avoid it being escaped
+                if (convertedValue != null && convertedValue.ToString().TryParseJson(out JToken jtokenValue))
                 {
                     _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenValue - {jtokenValue}");
                     docTypeGridEditorContent.Value[propertyType.Alias] = jtokenValue;
@@ -173,10 +168,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - jtokenObject - {jtokenObj}");
             gridControl.Value = jtokenObj;
         }
-
-        private JToken GetJTokenValue(object value) => value != null && IsJson(value) ? JToken.Parse(value.ToString()) : null;
-
-        private bool IsJson(object value) => value != null && value.ToString().DetectIsJson();
 
         private bool AddUdiDependency(ICollection<ArtifactDependency> dependencies, object value)
         {

@@ -12,6 +12,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -47,28 +48,26 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         public override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.Debug<BlockEditorValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
-            var svalue = value as string;
+            var valueAsString = value as string;
 
             // nested values will arrive here as JObject - convert to string to enable reuse of same code as when non-nested.
             if (value is JObject)
             {
                 _logger.Debug<BlockListValueConnector>("Value is a JObject - converting to string.");
-                svalue = value.ToString();
+                valueAsString = value.ToString();
             }
 
-            if (string.IsNullOrWhiteSpace(svalue))
+            if (string.IsNullOrWhiteSpace(valueAsString))
             {
                 _logger.Debug<BlockEditorValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
                 return null;
             }
 
-            if (svalue.DetectIsJson() == false)
+            if (!valueAsString.TryParseJson(out BlockEditorValue blockEditorValue))
             {
-                _logger.Warn<BlockListValueConnector>("Value '{Value}' is not a json string. Skipping conversion to artifact.", svalue);
+                _logger.Warn<BlockListValueConnector>("Value '{Value}' is not a JSON string. Skipping conversion to artifact.", valueAsString);
                 return null;
             }
-
-            var blockEditorValue = JsonConvert.DeserializeObject<BlockEditorValue>(svalue);
 
             if (blockEditorValue == null)
             {
@@ -148,13 +147,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return value;
             }
 
-            if (value.DetectIsJson() == false)
+            if (!value.TryParseJson(out BlockEditorValue blockEditorValue))
+            {
                 return value;
-
-            var blockEditorValue = JsonConvert.DeserializeObject<BlockEditorValue>(value);
+            }
 
             if (blockEditorValue == null)
+            {
                 return value;
+            }
 
             var allBlocks = blockEditorValue.Content.Concat(blockEditorValue.Settings ?? Enumerable.Empty<Block>()).ToList();
 

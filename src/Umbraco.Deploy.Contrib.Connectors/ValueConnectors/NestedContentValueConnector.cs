@@ -12,6 +12,7 @@ using Umbraco.Deploy.Connectors;
 using Umbraco.Deploy.Connectors.ValueConnectors;
 using Umbraco.Deploy.Connectors.ValueConnectors.Services;
 using Umbraco.Deploy.Core;
+using Umbraco.Deploy.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
@@ -51,28 +52,38 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         public sealed override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.Debug<NestedContentValueConnector>("Converting {PropertyType} to artifact.", propertyType.Alias);
-            var svalue = value as string;
+            var valueAsString = value as string;
 
-            if (string.IsNullOrWhiteSpace(svalue))
+            if (string.IsNullOrWhiteSpace(valueAsString))
             {
                 _logger.Debug<NestedContentValueConnector>($"Value is null or whitespace. Skipping conversion to artifact.");
                 return null;
             }
 
-            if (svalue.DetectIsJson() == false)
-            {
-                _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a json string. Skipping conversion to artifact.", svalue);
-                return null;
-            }
-
             var nestedContent = new List<NestedContentValue>();
-            if (svalue.Trim().StartsWith("{"))
+            if (valueAsString.Trim().StartsWith("{"))
             {
-                nestedContent.Add(JsonConvert.DeserializeObject<NestedContentValue>(svalue));
+                if (valueAsString.TryParseJson(out NestedContentValue nestedContentObjectValue))
+                {
+                    nestedContent.Add(nestedContentObjectValue);
+                }
+                else
+                {
+                    _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a JSON string. Skipping conversion to artifact.", valueAsString);
+                    return null;
+                }
             }
             else
             {
-                nestedContent.AddRange(JsonConvert.DeserializeObject<NestedContentValue[]>(svalue));
+                if (valueAsString.TryParseJson(out NestedContentValue[] nestedContentCollectionValue))
+                {
+                    nestedContent.AddRange(nestedContentCollectionValue);
+                }
+                else
+                {
+                    _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a JSON string. Skipping conversion to artifact.", valueAsString);
+                    return null;
+                }
             }
 
             if (nestedContent.All(x => x == null))
@@ -153,13 +164,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 return value;
             }
 
-            if (value.DetectIsJson() == false)
+            if (!value.TryParseJson(out NestedContentValue[] nestedContent))
             {
                 _logger.Warn<NestedContentValueConnector>("Value '{Value}' is not a json string. Skipping conversion from artifact.", value);
                 return value;
             }
-
-            var nestedContent = JsonConvert.DeserializeObject<NestedContentValue[]>(value);
 
             if (nestedContent == null || nestedContent.All(x => x == null))
             {
@@ -187,7 +196,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
                         continue;
-                    
+
                     var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
                     if (innerPropertyType == null)
@@ -217,9 +226,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             row.PropertyValues[key] = convertedValue.ToString();
                         }
                         // json strings need to be converted into JTokens
-                        else if (convertedValue is string convertedStringValue && convertedStringValue.DetectIsJson())
+                        else if (convertedValue is string convertedStringValue && convertedStringValue.TryParseJson(out JToken valueAsJToken))
                         {
-                            row.PropertyValues[key] = JToken.Parse(convertedStringValue);
+                            row.PropertyValues[key] = valueAsJToken;
                         }
                         else
                         {
