@@ -2,10 +2,17 @@
 
 # Umbraco Deploy Contrib
 
-This project contains community contributions for Umbraco Deploy targetted for version 8.
+This project contains community contributions for Umbraco Deploy targetted for version 8 and above.
 
 Primarily this project offers connectors for the most popular Umbraco community packages - these are used by Deploy to aid with the deployment and transferring of content/property-data between environments on [Umbraco Cloud](https://umbraco.com/cloud).
 
+## Branching
+
+The main branches corresponding to the Umbraco and Umbraco Deploy major releases are:
+
+- Umbraco 8/Deploy 4: `v4/dev`
+- Umbraco 9/Deploy 9: `v9/dev`
+- Umbraco 10/Deploy 10: `v10/dev`
 
 ## Connectors
 
@@ -25,7 +32,9 @@ Value connectors for certain core property editors are also included:
 
 ### Installation
 
-You can install the NuGet package using `Install-Package UmbracoDeploy.Contrib`.
+When working with Umbraco 8, you can install the NuGet package using `Install-Package UmbracoDeploy.Contrib`.
+
+For Umbraco 9+ the package is available for install by: `Install-Package Umbraco.Deploy.Contrib`
 
 ---
 ## Contributing to this project
