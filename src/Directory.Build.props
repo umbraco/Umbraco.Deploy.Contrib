@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Version>10.1.0</Version>
     <AssemblyVersion>10.1.0</AssemblyVersion>
-    <InformationalVersion>10.1.0-rc001</InformationalVersion>
+    <InformationalVersion>10.1.0</InformationalVersion>
     <FileVersion>10.1.0</FileVersion>
     <LangVersion Condition="'$(LangVersion)' == ''">10.0</LangVersion>
     <NeutralLanguage>en-US</NeutralLanguage>
