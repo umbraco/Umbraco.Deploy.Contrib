@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Umbraco.Deploy.Contrib.Connectors.Tests</AssemblyName>
+        <AssemblyName>Umbraco.Deploy.Contrib.Tests</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <RootNamespace>Umbraco.Deploy.Contrib.Connectors.Tests</RootNamespace>
+        <RootNamespace>Umbraco.Deploy.Contrib.Tests</RootNamespace>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
