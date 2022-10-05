@@ -1,4 +1,4 @@
-[![Build Status](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_apis/build/status/Umbraco%20Deploy%20Contrib%20v3%20-%20Release?branchName=master-v3)](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_build/latest?definitionId=185&branchName=master-v3) [![NuGet release](https://img.shields.io/nuget/v/UmbracoDeploy.Contrib.svg)](https://www.nuget.org/packages/UmbracoDeploy.Contrib)
+[![Build Status](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_apis/build/status/Umbraco%20Deploy%20Contrib%20v9%20(Continuous)?branchName=v10%2Fdev)](https://dev.azure.com/umbraco/Umbraco%20Deploy%20Contrib/_build/latest?definitionId=345&branchName=v10%2Fdev) [![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
 
 # Umbraco Deploy Contrib
 
@@ -18,7 +18,7 @@ The main branches corresponding to the Umbraco and Umbraco Deploy major releases
 
 This project offers Umbraco Deploy connectors for the following community packages:
 
-- 
+- (none)
 
 Value connectors for certain core property editors are also included:
 
@@ -35,6 +35,15 @@ Value connectors for certain core property editors are also included:
 When working with Umbraco 8, you can install the NuGet package using `Install-Package UmbracoDeploy.Contrib`.
 
 For Umbraco 9+ the package is available for install by: `Install-Package Umbraco.Deploy.Contrib`
+
+### Building and packaging
+
+```powershell
+dotnet restore Umbraco.Deploy.Contrib.sln
+dotnet build Umbraco.Deploy.Contrib.sln --configuration Release --no-restore
+dotnet pack Umbraco.Deploy.Contrib.sln --configuration Release --no-build -p:BuildProjectReferences=false --output build.out
+```
+
 
 ---
 ## Contributing to this project
