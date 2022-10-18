@@ -1,40 +1,51 @@
+#
+# Umbraco Deploy .gitignore
+#
+
+# Common files
+*.obj
+*.pdb
+*.user
+*.aps
+*.pch
+*.vspscc
+*.orig
+*.suo
+*.vs10x
+*.ndproj
+*.ignorer.*
+
+# Common directories
 .DS_Store
 ._.DS_Store
-
-*.aps
-*.obj
-*.orig
-*.pch
-*.pdb
-*.suo
-*.user
-*.vspscc
-*.[Pp]ublish.xml
-[Bb]uild[Ll]og.*
-
 .vs/
+.idea/
+
+# Build directories
 [Bb]in/
-[Db]ebug*/
 [Oo]bj/
-[Rr]elease*/
+[Db]ebug/
+[Rr]elease/
+
+# Tools
 _ReSharper*/
+_NCrunch_*/
+*.ncrunchsolution
+*.ncrunchsolution.user
+*.ncrunchproject
+*.crunchsolution.cache
+tools/NDepend/
 [Tt]est[Rr]esult*
-packages/
-[Aa]pp_[Dd]ata/
-bower_components/
-node_modules/
-Umbraco.Deploy.UI.Client/build/
-build/Tools/nuget.exe
+[Bb]uild[Ll]og.*
+[Ss]ource
+[Ss]andbox
+node_modules
+lib-bower
+*.psess
+*.vspx
+NDependOut/
+QueryResult.htm
+tools/docfx/
 
-src/Umbraco.Deploy.Contrib.Connectors/App_Plugins/*
-src/Umbraco.Deploy.Contrib.Connectors/Config/*
-src/Umbraco.Deploy.Contrib.Connectors/app.config
-/build/UmbracoDeploy.Contrib.*.nupkg
-/build/UmbracoDeploy.Contrib.*.zip
-/src/.idea
-
-MigrationBackup/
-
-build.tmp
-build.out
-build/temp
+# Build
+/build.out/
