@@ -7,7 +7,7 @@ parameters:
     default: false
 
 variables:
-  dotnetVersion: 6.x
+  dotnetVersion: 7.x
   solution: Umbraco.Deploy.Contrib.sln
   buildConfiguration: Release
   DOTNET_NOLOGO: true
@@ -34,6 +34,7 @@ stages:
             inputs:
               version: $(dotnetVersion)
               performMultiLevelLookup: true
+              allowPrerelease: true
 
           # Cache and restore NuGet packages
           - task: Cache@2
