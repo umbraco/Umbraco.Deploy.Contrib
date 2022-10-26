@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "dependencies": {
     "net6.0": {
       "Microsoft.SourceLink.GitHub": {
@@ -38,7 +38,7 @@
       },
       "Umbraco.Deploy.Infrastructure": {
         "type": "Direct",
-        "requested": "[10.1.0, )",
+        "requested": "[10.1.0, 11.0.0)",
         "resolved": "10.1.0",
         "contentHash": "xX3//I/oqzhsaQYNrI0tIfxJT6fc17UU3oX2BZh1JFH6Oa3XmG1mWHVjxIlaSgLzbquIVCMdmyinPBCI5uiQJw==",
         "dependencies": {
