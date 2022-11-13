@@ -5,6 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Deploy.Infrastructure" Version="11.0.0-rc1" />
+    <PackageReference Include="Umbraco.Deploy.Infrastructure" Version="11.0.0-rc2" />
   </ItemGroup>
 </Project>
