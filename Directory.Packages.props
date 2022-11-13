@@ -18,6 +18,7 @@
     <!-- Added explicitly to avoid version conflicts. -->
     <PackageVersion Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Extensions.FileProviders.Embedded" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />    
+    <PackageVersion Include="Microsoft.Extensions.FileProviders.Physical" Version="7.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0" />
   </ItemGroup>
 </Project>
