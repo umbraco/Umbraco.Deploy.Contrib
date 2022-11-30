@@ -2314,15 +2314,15 @@
       },
       "Umbraco.Cms.Web.BackOffice": {
         "type": "Transitive",
-        "resolved": "11.0.0-rc6",
-        "contentHash": "RrEbKqBWw4Pkn6C19RqearFstcXEf3G8XpIPPPiVyHb6T+zJTKh+ElnIEcFw6EN3ql8x6fd/Z1xs95uyHlbOhA==",
+        "resolved": "11.0.0",
+        "contentHash": "P4RJ0a83FgXM8cOCsZkap7dtRfrsR91UVwT0BI7JxHm99HdZ+T53J20EZ1+KtVXU4BaNzKwcRIG6CY19zl7uLA==",
         "dependencies": {
-          "Newtonsoft.Json": "13.0.1",
+          "Newtonsoft.Json": "13.0.2",
           "Serilog.AspNetCore": "6.0.1",
-          "Umbraco.Cms.Core": "11.0.0-rc6",
-          "Umbraco.Cms.Examine.Lucene": "11.0.0-rc6",
-          "Umbraco.Cms.Infrastructure": "11.0.0-rc6",
-          "Umbraco.Cms.Web.Common": "11.0.0-rc6"
+          "Umbraco.Cms.Core": "11.0.0",
+          "Umbraco.Cms.Examine.Lucene": "11.0.0",
+          "Umbraco.Cms.Infrastructure": "11.0.0",
+          "Umbraco.Cms.Web.Common": "11.0.0"
         }
       },
       "Umbraco.Cms.Web.Common": {
@@ -2344,10 +2344,10 @@
       },
       "Umbraco.Deploy.Core": {
         "type": "Transitive",
-        "resolved": "11.0.0-rc3",
-        "contentHash": "kZaxEf3Q8NDtxw+3XC+DBAToKT3wDR8OxiGEUnqyrZ2jbDHoS6FwFys/4p+iUdZEuZ+ynV9kiO7tkjZSACkW9A==",
+        "resolved": "11.0.0",
+        "contentHash": "cBZGYhR5/+s8Gh3L7SPiY/3m+Xnkz14YB7edtOMRA7Jh7oEWF76uHiLfg1Dx83jhgOc2+SAiqMgwYU5wCAWDUQ==",
         "dependencies": {
-          "Umbraco.Cms.Core": "[11.0.0-rc6, 12.0.0)"
+          "Umbraco.Cms.Core": "[11.0.0, 12.0.0)"
         }
       },
       "Umbraco.Licensing": {
@@ -2364,17 +2364,17 @@
       "umbraco.deploy.contrib": {
         "type": "Project",
         "dependencies": {
-          "Umbraco.Deploy.Infrastructure": "[11.0.0-rc3, 12.0.0)"
+          "Umbraco.Deploy.Infrastructure": "[11.0.0, 12.0.0)"
         }
       },
       "Umbraco.Deploy.Infrastructure": {
         "type": "CentralTransitive",
         "requested": "[11.0.0, 12.0.0)",
-        "resolved": "11.0.0-rc3",
-        "contentHash": "zeCIvQQ51Xg2Wk4W+llAfoJP/RAAnfMLfpgF1xUwiHZe5t+Zet7UihduXIZqsVrStwFMBac6SqLy6M26zUAbPg==",
+        "resolved": "11.0.0",
+        "contentHash": "4GqN2/O4wzOLMNcE191VY7dn7gF2Mg/yfb+a1Ox7kg0fQmOAowtbhPNw84NUTBK0/LE2QkpKlaiqSOPun5AqFA==",
         "dependencies": {
-          "Umbraco.Cms.Web.BackOffice": "[11.0.0-rc6, 12.0.0)",
-          "Umbraco.Deploy.Core": "11.0.0-rc3",
+          "Umbraco.Cms.Web.BackOffice": "[11.0.0, 12.0.0)",
+          "Umbraco.Deploy.Core": "11.0.0",
           "Umbraco.Licensing": "4.0.0"
         }
       }
