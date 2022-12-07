@@ -4,10 +4,9 @@ parameters:
   - name: cache_nuget
     displayName: Cache NuGet packages
     type: boolean
-    default: false
+    default: true
 
 variables:
-  dotnetVersion: 6.x
   solution: Umbraco.Deploy.Contrib.sln
   buildConfiguration: Release
   DOTNET_NOLOGO: true
@@ -30,40 +29,30 @@ stages:
 
           # Setup build environment
           - task: UseDotNet@2
-            displayName: Use .NET $(dotnetVersion)
+            displayName: Use .NET SDK from global.json
             inputs:
-              version: $(dotnetVersion)
-              performMultiLevelLookup: true
+              useGlobalJson: true
 
           # Cache and restore NuGet packages
           - task: Cache@2
             condition: ${{ parameters.cache_nuget }}
             displayName: Cache NuGet packages
             inputs:
-              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
+              key: 'nuget | "$(Agent.OS)" | **/packages.lock.json, !**/bin/**, !**/obj/**'
               restoreKeys: |
                 nuget | "$(Agent.OS)"
                 nuget
               path: $(NUGET_PACKAGES)
-              cacheHitVar: 'CACHE_NUGET_RESTORED'
 
-          - script: dotnet restore $(solution)
-            condition: or(not(${{ parameters.cache_nuget }}), ne(variables.CACHE_NUGET_RESTORED, true))
+          - script: dotnet restore $(solution) --locked-mode
             displayName: Restore NuGet packages
 
           # Build
           - script: dotnet build $(solution) --configuration $(buildConfiguration) --no-restore -p:ContinuousIntegrationBuild=true
             displayName: Run dotnet build
 
-          - script: |
-              sha="$(Build.SourceVersion)"
-              sha=${sha:0:7}
-              buildnumber="$(Build.BuildNumber)_$(Build.BuildId)_$sha"
-              echo "##vso[build.updatebuildnumber]$buildnumber"
-            displayName: Update build number
-
           # Pack
-          - script: dotnet pack $(solution) --configuration $(buildConfiguration) --no-build -p:BuildProjectReferences=false --output $(Build.ArtifactStagingDirectory)/nupkg
+          - script: dotnet pack $(solution) --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)/nupkg
             displayName: Run dotnet pack
 
           # Publish
@@ -103,10 +92,9 @@ stages:
               path: $(Build.SourcesDirectory)
 
           - task: UseDotNet@2
-            displayName: Use .NET $(dotnetVersion)
+            displayName: Use .NET SDK from global.json
             inputs:
-              version: $(dotnetVersion)
-              performMultiLevelLookup: true
+              useGlobalJson: true
 
           # Test
           - script: dotnet test $(solution) --configuration $(buildConfiguration) --no-build --logger trx --results-directory $(Build.ArtifactStagingDirectory)/tests
