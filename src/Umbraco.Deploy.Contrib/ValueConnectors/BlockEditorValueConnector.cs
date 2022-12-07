@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -69,7 +69,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 return null;
             }
 
-            if (blockEditorValue == null)
+            if (blockEditorValue?.Content == null)
             {
                 _logger.LogWarning("Deserialized value is null. Skipping conversion to artifact.");
                 return null;
