@@ -26,10 +26,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly ILogger _logger;
 
         /// <inheritdoc />
-        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
-        {
-            "Umbraco.BlockEditor"
-        };
+        public override IEnumerable<string> PropertyEditorAliases { get; } = Enumerable.Empty<string>();
 
         // cannot inject ValueConnectorCollection directly as it would cause a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
