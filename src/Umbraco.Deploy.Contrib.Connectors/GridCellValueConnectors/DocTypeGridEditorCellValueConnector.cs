@@ -25,7 +25,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
         public DocTypeGridEditorCellValueConnector(ILogger logger, IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
         {
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
             _valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
         }

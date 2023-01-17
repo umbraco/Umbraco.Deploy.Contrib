@@ -41,12 +41,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public NestedContentValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
         {
-            if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
-            if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
-            if (logger == null) throw new ArgumentNullException(nameof(logger));
-            _contentTypeService = contentTypeService;
-            _valueConnectorsLazy = valueConnectors;
-            _logger = logger;
+            _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            _valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public sealed override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)

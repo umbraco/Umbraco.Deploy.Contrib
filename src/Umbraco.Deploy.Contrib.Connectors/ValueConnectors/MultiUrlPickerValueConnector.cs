@@ -50,11 +50,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         /// <param name="logger"></param>
         public MultiUrlPickerValueConnector(IEntityService entityService, IMediaService mediaService, ILogger logger)
         {
-            if (entityService == null) throw new ArgumentNullException(nameof(entityService));
-            if (mediaService == null) throw new ArgumentNullException(nameof(mediaService));
-            _entityService = entityService;
-            _mediaService = mediaService;
-            _logger = logger;
+            _entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
+            _mediaService = mediaService ?? throw new ArgumentNullException(nameof(mediaService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public sealed override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
