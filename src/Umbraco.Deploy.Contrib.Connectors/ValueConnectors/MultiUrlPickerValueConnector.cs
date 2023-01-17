@@ -85,7 +85,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             : UmbracoObjectTypes.Document;
                         var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
-                        var guidAttempt = _entityService.GetKey(intId, objectTypeId);
+                        var guidAttempt = contextCache.GetEntityKeyById(_entityService, intId, objectTypeId);
                         if (guidAttempt.Success == false)
                             continue;
 
