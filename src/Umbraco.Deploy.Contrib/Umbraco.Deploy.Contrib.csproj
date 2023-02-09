@@ -1,12 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <AssemblyName>Umbraco.Deploy.Contrib</AssemblyName>
-        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <RootNamespace>Umbraco.Deploy.Contrib</RootNamespace>
-        <TargetFramework>net5.0</TargetFramework>
-    </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Title>Umbraco Deploy - Contrib</Title>
+    <Description>Umbraco Deploy Contrib provides community contributions for Umbraco Deploy. This package can be used with Umbraco CMS version 9 and higher, for version 8 or below, use https://www.nuget.org/packages/UmbracoDeploy.Contrib/ instead.</Description>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Umbraco.Deploy.Infrastructure" Version="9.5.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Deploy.Infrastructure" Version="9.5.0" />
+  </ItemGroup>
 </Project>
