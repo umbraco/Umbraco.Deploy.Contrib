@@ -91,11 +91,4 @@
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0003</DiagnosticId>
-    <Target>Umbraco.Deploy.Contrib, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
 </Suppressions>

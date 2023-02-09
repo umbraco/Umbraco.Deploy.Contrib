@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "dependencies": {
     "net6.0": {
       "Microsoft.NET.Test.Sdk": {
@@ -45,7 +45,7 @@
       },
       "Umbraco.Cms.Tests": {
         "type": "Direct",
-        "requested": "[10.1.0, 11.0.0)",
+        "requested": "[10.1.0, )",
         "resolved": "10.1.0",
         "contentHash": "Ov0vvPS+40Jxj1nli/nM6fpjaYcUglcZEhM3/3OYEf1D3Mq1YBb81BqfU2FBcQVNqCM0EJl3veKeQ9RwKPCtRw==",
         "dependencies": {
@@ -2088,6 +2088,16 @@
           "Umbraco.Cms.Core": "[10.0.0, 11.0.0)"
         }
       },
+      "Umbraco.Deploy.Infrastructure": {
+        "type": "Transitive",
+        "resolved": "10.1.0",
+        "contentHash": "xX3//I/oqzhsaQYNrI0tIfxJT6fc17UU3oX2BZh1JFH6Oa3XmG1mWHVjxIlaSgLzbquIVCMdmyinPBCI5uiQJw==",
+        "dependencies": {
+          "Umbraco.Cms.Web.BackOffice": "[10.0.0, 11.0.0)",
+          "Umbraco.Deploy.Core": "10.1.0",
+          "Umbraco.Licensing": "4.0.0"
+        }
+      },
       "Umbraco.Licensing": {
         "type": "Transitive",
         "resolved": "4.0.0",
@@ -2103,17 +2113,6 @@
         "type": "Project",
         "dependencies": {
           "Umbraco.Deploy.Infrastructure": "[10.1.0, 11.0.0)"
-        }
-      },
-      "Umbraco.Deploy.Infrastructure": {
-        "type": "CentralTransitive",
-        "requested": "[10.1.0, 11.0.0)",
-        "resolved": "10.1.0",
-        "contentHash": "xX3//I/oqzhsaQYNrI0tIfxJT6fc17UU3oX2BZh1JFH6Oa3XmG1mWHVjxIlaSgLzbquIVCMdmyinPBCI5uiQJw==",
-        "dependencies": {
-          "Umbraco.Cms.Web.BackOffice": "[10.0.0, 11.0.0)",
-          "Umbraco.Deploy.Core": "10.1.0",
-          "Umbraco.Licensing": "4.0.0"
         }
       }
     }
