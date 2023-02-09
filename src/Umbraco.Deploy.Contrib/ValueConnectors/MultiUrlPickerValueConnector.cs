@@ -57,11 +57,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             ILogger<MultiUrlPickerValueConnector> logger,
             MediaUrlGeneratorCollection mediaUrlGenerators)
         {
-            if (entityService == null) throw new ArgumentNullException(nameof(entityService));
-            if (mediaService == null) throw new ArgumentNullException(nameof(mediaService));
-            _entityService = entityService;
-            _mediaService = mediaService;
-            _logger = logger;
+            _entityService = entityService ?? throw new ArgumentNullException(nameof(entityService));
+            _mediaService = mediaService ?? throw new ArgumentNullException(nameof(mediaService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mediaUrlGenerators = mediaUrlGenerators;
         }
 
@@ -93,7 +91,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                             : UmbracoObjectTypes.Document;
                         var entityType = isMedia ? Constants.UdiEntityType.Media : Constants.UdiEntityType.Document;
 
-                        var guidAttempt = _entityService.GetKey(intId, objectTypeId);
+                        var guidAttempt = contextCache.GetEntityKeyById(_entityService, intId, objectTypeId);
                         if (guidAttempt.Success == false)
                             continue;
 
