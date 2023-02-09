@@ -11,7 +11,10 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
     /// </summary>
     public class BlockListValueConnector : BlockEditorValueConnector
     {
-        public override IEnumerable<string> PropertyEditorAliases => new[] { "Umbraco.BlockList" };
+        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
+        {
+            "Umbraco.BlockList"
+        };
 
         public BlockListValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger<BlockListValueConnector> logger)
             : base(contentTypeService, valueConnectors, logger)
