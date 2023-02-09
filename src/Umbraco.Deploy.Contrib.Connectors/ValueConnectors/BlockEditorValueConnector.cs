@@ -26,10 +26,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         private readonly ILogger _logger;
 
         /// <inheritdoc />
-        public override IEnumerable<string> PropertyEditorAliases { get; } = new[]
-        {
-            "Umbraco.BlockEditor"
-        };
+        public override IEnumerable<string> PropertyEditorAliases { get; } = Enumerable.Empty<string>();
 
         // cannot inject ValueConnectorCollection directly as it would cause a circular (recursive) dependency,
         // so we have to inject it lazily and use the lazy value when actually needing it
@@ -37,12 +34,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
         public BlockEditorValueConnector(IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors, ILogger logger)
         {
-            if (contentTypeService == null) throw new ArgumentNullException(nameof(contentTypeService));
-            if (valueConnectors == null) throw new ArgumentNullException(nameof(valueConnectors));
-            if (logger == null) throw new ArgumentNullException(nameof(logger));
-            _contentTypeService = contentTypeService;
-            _valueConnectorsLazy = valueConnectors;
-            _logger = logger;
+            _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
+            _valueConnectorsLazy = valueConnectors ?? throw new ArgumentNullException(nameof(valueConnectors));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public override string ToArtifact(object value, PropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
