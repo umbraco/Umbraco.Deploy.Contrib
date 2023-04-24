@@ -69,6 +69,17 @@
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "4.0.1"
         }
       },
+      "Umbraco.Deploy.Infrastructure": {
+        "type": "Direct",
+        "requested": "[12.0.0--rc.preview.1.gf3f2138, 13.0.0)",
+        "resolved": "12.0.0--rc.preview.1.gf3f2138",
+        "contentHash": "Eq85H1JtRRyUsgocMdxye1IxSRjm5AFUhOZsXxbYcox/P6uwCZ1UwtnQhLd/ZEFbAl7hncQDHkZ5r76ZJqux8w==",
+        "dependencies": {
+          "Umbraco.Cms.Web.BackOffice": "[12.0.0--rc.preview.1.gfe11f3c, 13.0.0)",
+          "Umbraco.Deploy.Core": "12.0.0--rc.preview.1.gf3f2138",
+          "Umbraco.Licensing": "4.0.0"
+        }
+      },
       "Umbraco.GitVersioning.Extensions": {
         "type": "Direct",
         "requested": "[0.2.0, )",
@@ -1111,6 +1122,22 @@
         "resolved": "2.12.0",
         "contentHash": "xaiJLIdu6rYMKfQMYUZgTy8YK7SMZjB4Yk50C/u//Z4OsvxkUfSPJy4nknfvwAC34yr13q7kcyh4grbwhSxyZg=="
       },
+      "Serilog.AspNetCore": {
+        "type": "Transitive",
+        "resolved": "6.1.0",
+        "contentHash": "iMwFUJDN+/yWIPz4TKCliagJ1Yn//SceCYCzgdPwe/ECYUwb5/WUL8cTzRKV+tFwxGjLEV/xpm0GupS5RwbhSQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.0",
+          "Microsoft.Extensions.Logging": "5.0.0",
+          "Serilog": "2.10.0",
+          "Serilog.Extensions.Hosting": "5.0.1",
+          "Serilog.Formatting.Compact": "1.1.0",
+          "Serilog.Settings.Configuration": "3.3.0",
+          "Serilog.Sinks.Console": "4.0.1",
+          "Serilog.Sinks.Debug": "2.0.0",
+          "Serilog.Sinks.File": "5.0.0"
+        }
+      },
       "Serilog.Enrichers.Process": {
         "type": "Transitive",
         "resolved": "2.0.2",
@@ -1189,6 +1216,22 @@
         "contentHash": "csHYIqAwI4Gy9oAhXYRwxGrQEAtBg3Ep7WaCzsnA1cZuBZjVAU0n7hWaJhItjO7hbLHh/9gRVxALCUB4Dv+gZw==",
         "dependencies": {
           "Serilog": "2.9.0"
+        }
+      },
+      "Serilog.Sinks.Console": {
+        "type": "Transitive",
+        "resolved": "4.0.1",
+        "contentHash": "apLOvSJQLlIbKlbx+Y2UDHSP05kJsV7mou+fvJoRGs/iR+jC22r8cuFVMjjfVxz/AD4B2UCltFhE1naRLXwKNw==",
+        "dependencies": {
+          "Serilog": "2.10.0"
+        }
+      },
+      "Serilog.Sinks.Debug": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "Y6g3OBJ4JzTyyw16fDqtFcQ41qQAydnEvEqmXjhwhgjsnG/FaJ8GUqF5ldsC/bVkK8KYmqrPhDO+tm4dF6xx4A==",
+        "dependencies": {
+          "Serilog": "2.10.0"
         }
       },
       "Serilog.Sinks.File": {
@@ -1718,6 +1761,17 @@
           "System.Threading": "4.3.0"
         }
       },
+      "System.Private.ServiceModel": {
+        "type": "Transitive",
+        "resolved": "4.8.1",
+        "contentHash": "neXeXhKIlCUBCg5rxKpYnae4vQSiMWjhqeTgsMedHvKKUTsmP98je+G8oPmDdY9uZVruvxqRGjcljn1XYNhC+w==",
+        "dependencies": {
+          "System.Numerics.Vectors": "4.5.0",
+          "System.Reflection.DispatchProxy": "4.7.1",
+          "System.Security.Cryptography.Xml": "4.7.0",
+          "System.Security.Principal.Windows": "4.7.0"
+        }
+      },
       "System.Reflection": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1729,6 +1783,11 @@
           "System.Reflection.Primitives": "4.3.0",
           "System.Runtime": "4.3.0"
         }
+      },
+      "System.Reflection.DispatchProxy": {
+        "type": "Transitive",
+        "resolved": "4.7.1",
+        "contentHash": "C1sMLwIG6ILQ2bmOT4gh62V6oJlyF4BlHcVMrOoor49p0Ji2tA8QAoqyMcIhAdH6OHKJ8m7BU+r4LK2CUEOKqw=="
       },
       "System.Reflection.Emit": {
         "type": "Transitive",
@@ -2053,6 +2112,23 @@
         "resolved": "5.0.0",
         "contentHash": "t0MGLukB5WAVU9bO3MGzvlGnyJPgUlcwerXn1kzBRjwLKixT96XV0Uza41W49gVd8zEMFu9vQEFlv0IOrytICA=="
       },
+      "System.ServiceModel.Http": {
+        "type": "Transitive",
+        "resolved": "4.8.1",
+        "contentHash": "yrfGQJ5joGXnZx3G340KDfgpmOSYzRMHP3zJkcwiV3CP750AEsvesVIXc+PXYFzU7v3JKLEw6GLrH7kPiZJa/g==",
+        "dependencies": {
+          "System.Private.ServiceModel": "4.8.1",
+          "System.ServiceModel.Primitives": "4.8.1"
+        }
+      },
+      "System.ServiceModel.Primitives": {
+        "type": "Transitive",
+        "resolved": "4.8.1",
+        "contentHash": "XjzGCqvWZBHnw2ym8t9PVeTm5Tsp7lSDKEwhDZAU4Jnw+6+zEDu/2ZQYQbRqBR0t/KpfNA4Aya/5aONKJnuyEw==",
+        "dependencies": {
+          "System.Private.ServiceModel": "4.8.1"
+        }
+      },
       "System.Text.Encoding": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -2242,6 +2318,16 @@
           "Umbraco.Cms.Infrastructure": "12.0.0--rc.preview.1.gfe11f3c"
         }
       },
+      "Umbraco.Cms.Web.BackOffice": {
+        "type": "Transitive",
+        "resolved": "12.0.0--rc.preview.1.gfe11f3c",
+        "contentHash": "9cAO2gXeSvscMtQAwgI0IvPgLNEFd9xWrYBrsVo3QoZYWMySpZAAlbEnCMgV13F7rP4j3NJqnkrihB23q8P+PQ==",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.2",
+          "Serilog.AspNetCore": "6.1.0",
+          "Umbraco.Cms.Web.Common": "12.0.0--rc.preview.1.gfe11f3c"
+        }
+      },
       "Umbraco.Cms.Web.Common": {
         "type": "Transitive",
         "resolved": "12.0.0--rc.preview.1.gfe11f3c",
@@ -2261,6 +2347,25 @@
         "type": "Transitive",
         "resolved": "15.0.0",
         "contentHash": "YSDIkxq44VMy2N3jBTwJBJ/ZjGyuyb0GRyfQAUIma07dCHIbjXgKXjZaAxVa6ik3XTqgcyATvwYJL0EBtAClwA=="
+      },
+      "Umbraco.Deploy.Core": {
+        "type": "Transitive",
+        "resolved": "12.0.0--rc.preview.1.gf3f2138",
+        "contentHash": "Ap+toYg3UXn2ssUq+7mBTR9kQY3hTj8b2E5k7EIgsEuolsDjUgjDKC7c36NEaZI/MkU+r/HuNA4ISibAgN4/sA==",
+        "dependencies": {
+          "Umbraco.Cms.Core": "[12.0.0--rc.preview.1.gfe11f3c, 13.0.0)"
+        }
+      },
+      "Umbraco.Licensing": {
+        "type": "Transitive",
+        "resolved": "4.0.0",
+        "contentHash": "sBuTVyPnwEJ3LdgLN4cGCNrw88Urr+PKPkrzLlVxqd3H6+xmk51bECLwb4/pCFhUTMwBaj48z+H1bbG/V19eog==",
+        "dependencies": {
+          "Microsoft.Win32.Registry": "5.0.0",
+          "System.ServiceModel.Http": "4.8.1",
+          "System.ServiceModel.Primitives": "4.8.1",
+          "Umbraco.Cms.Web.Common": "9.0.0"
+        }
       },
       "umbraco.deploy.contrib": {
         "type": "Project",

@@ -9,6 +9,7 @@
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Umbraco.Cms.Tests" />
+    <PackageReference Include="Umbraco.Deploy.Infrastructure" />
   </ItemGroup>
   
   <ItemGroup>
