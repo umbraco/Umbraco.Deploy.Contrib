@@ -21,7 +21,9 @@
 
   <!-- NuGet packages lock -->
   <PropertyGroup>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!-- TODO (V12): When 12.0.0 is released, update the below to that version and remove all CompatibilitySuppressions.xml files. -->
+    <PackageValidationBaselineVersion>11.0.1</PackageValidationBaselineVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DefaultItemExcludes>$(DefaultItemExcludes);packages.lock.json</DefaultItemExcludes>
   </PropertyGroup>
