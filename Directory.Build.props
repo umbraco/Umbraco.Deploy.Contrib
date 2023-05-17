@@ -21,9 +21,6 @@
 
   <!-- NuGet packages lock -->
   <PropertyGroup>
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <!-- TODO (V12): When 12.0.0 is released, update the below to that version and remove all CompatibilitySuppressions.xml files. -->
-    <PackageValidationBaselineVersion>11.0.1</PackageValidationBaselineVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <DefaultItemExcludes>$(DefaultItemExcludes);packages.lock.json</DefaultItemExcludes>
   </PropertyGroup>
@@ -38,8 +35,10 @@
 
   <!-- Package Validation -->
   <PropertyGroup>
+    <GenerateCompatibilitySuppressionFile>false</GenerateCompatibilitySuppressionFile>
     <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>10.0.0</PackageValidationBaselineVersion>
+    <!-- TODO (V12): When 12.0.0 is released, update the below to that version and remove all CompatibilitySuppressions.xml files. -->
+    <PackageValidationBaselineVersion>11.0.1</PackageValidationBaselineVersion>
     <EnableStrictModeForCompatibleFrameworksInPackage>true</EnableStrictModeForCompatibleFrameworksInPackage>
     <EnableStrictModeForCompatibleTfms>true</EnableStrictModeForCompatibleTfms>
   </PropertyGroup>
