@@ -4,15 +4,15 @@
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" />
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.5.119" />
-    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.435" />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
     <GlobalPackageReference Include="Umbraco.Code" Version="2.0.0" />
     <GlobalPackageReference Include="Umbraco.GitVersioning.Extensions" Version="0.2.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageVersion Include="NUnit3TestAdapter" Version="4.4.2" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="[12.0.0-rc3, 13)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[12.0.0-rc2, 13)" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="[12.0.0-rc4, 13)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[12.0.0-rc3, 13)" />
   </ItemGroup>
 </Project>
