@@ -38,12 +38,12 @@
       },
       "Umbraco.Deploy.Infrastructure": {
         "type": "Direct",
-        "requested": "[13.0.0-rc1, 14.0.0)",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "+ONsGyLWwEP3X8XkwOSzCGlU3gdWoY6e35oYuX421P9/GH2c9VYa25+DScvyh9ZHhMhE+lVprAiWHBO9eTu8oA==",
+        "requested": "[13.0.0-rc2, 14.0.0)",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "6YJDcUt0nk7KYTSfjBJ+evp9IBqB5/e80oRnkyzjWH63Ysjkd9u76Vq4I7P4rmG+qTwJBcI0JMhvtRVdHQUWdQ==",
         "dependencies": {
-          "Umbraco.Cms.Web.BackOffice": "[13.0.0-rc1, 14.0.0)",
-          "Umbraco.Deploy.Core": "13.0.0-rc1"
+          "Umbraco.Cms.Web.BackOffice": "[13.0.0-rc2, 14.0.0)",
+          "Umbraco.Deploy.Core": "13.0.0-rc2"
         }
       },
       "Umbraco.GitVersioning.Extensions": {
@@ -741,8 +741,8 @@
       },
       "Microsoft.NETCore.Targets": {
         "type": "Transitive",
-        "resolved": "1.1.3",
-        "contentHash": "3Wrmi0kJDzClwAC+iBdUBpEKmEle8FQNsCs77fkiOIw/9oYA07bL1EZNX0kQ2OMN3xpwvl0vAtOCYY3ndDNlhQ=="
+        "resolved": "1.1.0",
+        "contentHash": "aOZA3BWfz9RXjpzt0sRJJMjAscAUm3Hoa4UWAfceV9UTYxgwZ1lZt5nO2myFf+/jetYQo4uTP7zS8sJY67BBxg=="
       },
       "Microsoft.SourceLink.Common": {
         "type": "Transitive",
@@ -766,6 +766,14 @@
         "dependencies": {
           "System.Security.AccessControl": "5.0.0",
           "System.Security.Principal.Windows": "5.0.0"
+        }
+      },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "Bh6blKG8VAKvXiLe2L+sEsn62nc1Ij34MrNxepD2OCrS5cpCwQa9MeLyhVQPQ/R4Wlzwuy6wMK8hLb11QPDRsQ==",
+        "dependencies": {
+          "Microsoft.NETCore.Platforms": "5.0.0"
         }
       },
       "MimeKit": {
@@ -908,18 +916,18 @@
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "7VSGO0URRKoMEAq0Sc9cRz8mb6zbyx/BZDEWhgPdzzpmFhkam3fJ1DAGWFXBI4nGlma+uPKpfuMQP5LXRnOH5g=="
+        "resolved": "4.3.0",
+        "contentHash": "HdSSp5MnJSsg08KMfZThpuLPJpPwE5hBXvHwoKWosyHHfe8Mh5WKT0ylEOf6yNzX6Ngjxe4Whkafh5q7Ymac4Q=="
       },
       "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "0oAaTAm6e2oVH+/Zttt0cuhGaePQYKII1dY8iaqP7CvOpVKgLybKRFvQjXR2LtxXOXTVPNv14j0ot8uV+HrUmw=="
+        "resolved": "4.3.0",
+        "contentHash": "+yH1a49wJMy8Zt4yx5RhJrxO/DBDByAiCzNwiETI+1S4mPdCu0OY4djdciC7Vssk0l22wQaDLrXxXkp+3+7bVA=="
       },
       "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "G24ibsCNi5Kbz0oXWynBoRgtGvsw5ZSVEWjv13/KiCAM8C6wz9zzcCniMeQFIkJ2tasjo2kXlvlBZhplL51kGg=="
+        "resolved": "4.3.0",
+        "contentHash": "c3YNH1GQJbfIPJeCnr4avseugSqPrxwIqzthYyZDN6EuOyNOzq+y2KSUfRcXauya1sF4foESTgwM5e1A8arAKw=="
       },
       "runtime.native.System": {
         "type": "Transitive",
@@ -958,30 +966,30 @@
       },
       "runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "QR1OwtwehHxSeQvZKXe+iSd+d3XZNkEcuWMFYa2i0aG1l+lR739HPicKMlTbJst3spmeekDVBUS7SeS26s4U/g==",
+        "resolved": "4.3.0",
+        "contentHash": "NS1U+700m4KFRHR5o4vo9DSlTmlCKu/u7dtE5sUHVIPB+xpXxYQvgBgA6wEIeCz6Yfn0Z52/72WYsToCEPJnrw==",
         "dependencies": {
-          "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2",
-          "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2"
+          "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0",
+          "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0"
         }
       },
       "runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "I+GNKGg2xCHueRd1m9PzeEW7WLbNNLznmTuEi8/vZX71HudUbx1UTwlGkiwMri7JLl8hGaIAWnA/GONhu+LOyQ=="
+        "resolved": "4.3.0",
+        "contentHash": "b3pthNgxxFcD+Pc0WSEoC0+md3MyhRS6aCEeenvNE3Fdw1HyJ18ZhRFVJJzIeR/O/jpxPboB805Ho0T3Ul7w8A=="
       },
       "runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "1Z3TAq1ytS1IBRtPXJvEUZdVsfWfeNEhBkbiOCGEl9wwAfsjP2lz3ZFDx5tq8p60/EqbS0HItG5piHuB71RjoA=="
+        "resolved": "4.3.0",
+        "contentHash": "KeLz4HClKf+nFS7p/6Fi/CqyLXh81FpiGzcmuS8DGi9lUqSnZ6Es23/gv2O+1XVGfrbNmviF7CckBpavkBoIFQ=="
       },
       "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple": {
         "type": "Transitive",
@@ -990,28 +998,28 @@
       },
       "runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "6mU/cVmmHtQiDXhnzUImxIcDL48GbTk+TsptXyJA+MIOG9LRjPoAQC/qBFB7X+UNyK86bmvGwC8t+M66wsYC8w=="
+        "resolved": "4.3.0",
+        "contentHash": "X7IdhILzr4ROXd8mI1BUCQMSHSQwelUlBjF1JyTKCjXaOGn2fB4EKBxQbCK2VjO3WaWIdlXZL3W6TiIVnrhX4g=="
       },
       "runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "vjwG0GGcTW/PPg6KVud8F9GLWYuAV1rrw1BKAqY0oh4jcUqg15oYF1+qkGR2x2ZHM4DQnWKQ7cJgYbfncz/lYg=="
+        "resolved": "4.3.0",
+        "contentHash": "nyFNiCk/r+VOiIqreLix8yN+q3Wga9+SE8BCgkf+2BwEKiNx6DyvFjCgkfV743/grxv8jHJ8gUK4XEQw7yzRYg=="
       },
       "runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "7KMFpTkHC/zoExs+PwP8jDCWcrK9H6L7soowT80CUx3e+nxP/AFnq0AQAW5W76z2WYbLAYCRyPfwYFG6zkvQRw=="
+        "resolved": "4.3.0",
+        "contentHash": "ytoewC6wGorL7KoCAvRfsgoJPJbNq+64k2SqW6JcOAebWsFUvCCYgfzQMrnpvPiEl4OrblUlhF2ji+Q1+SVLrQ=="
       },
       "runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "xrlmRCnKZJLHxyyLIqkZjNXqgxnKdZxfItrPkjI+6pkRo5lHX8YvSZlWrSI5AVwLMi4HbNWP7064hcAWeZKp5w=="
+        "resolved": "4.3.0",
+        "contentHash": "I8bKw2I8k58Wx7fMKQJn2R8lamboCAiHfHeV/pS65ScKWMMI0+wJkLYlEKvgW1D/XvSl/221clBoR2q9QNNM7A=="
       },
       "runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "leXiwfiIkW7Gmn7cgnNcdtNAU70SjmKW3jxGj1iKHOvdn0zRWsgv/l2OJUO5zdGdiv2VRFnAsxxhDgMzofPdWg=="
+        "resolved": "4.3.0",
+        "contentHash": "VB5cn/7OzUfzdnC8tqAIMQciVLiq2epm2NrAm1E9OjNRyG4lVhfR61SMcLizejzQP8R8Uf/0l5qOIbUEi+RdEg=="
       },
       "Serilog": {
         "type": "Transitive",
@@ -1252,11 +1260,6 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.ComponentModel.Annotations": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
-      },
       "System.ComponentModel.Primitives": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1450,6 +1453,14 @@
           "System.Runtime": "4.3.0"
         }
       },
+      "System.Drawing.Common": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "SztFwAnpfKC8+sEKXAFxCBWhKQaEd97EiOL7oZJZP56zbqnLpmxACWA8aGseaUExciuEAUuR9dY8f7HkTRAdnw==",
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "5.0.0"
+        }
+      },
       "System.Dynamic.Runtime": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1473,8 +1484,8 @@
       },
       "System.Formats.Asn1": {
         "type": "Transitive",
-        "resolved": "8.0.0-rc.2.23479.6",
-        "contentHash": "A1p1/ATQf4KawXEDccim1SUrZBlEg/fEzQ9U8WnmY63xe3PIIxNRDa0sz+D7SOiMJvA/7Z3TzuTdpg4qQqJj2w=="
+        "resolved": "7.0.0",
+        "contentHash": "+nfpV0afLmvJW8+pLlHxRjz3oZJw4fkyU9MMEaMhCsHi/SN9bGF9q79ROubDiwTiCHezmK0uCWkPP7tGFP/4yg=="
       },
       "System.Globalization": {
         "type": "Transitive",
@@ -1575,15 +1586,6 @@
           "System.Threading.Tasks": "4.3.0"
         }
       },
-      "System.IO.FileSystem.AccessControl": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "SxHB3nuNrpptVk+vZ/F+7OHEpoHUIKKMl02bUmYHQr1r+glbZQxs7pRtsf4ENO29TVm2TH3AEeep2fJcy92oYw==",
-        "dependencies": {
-          "System.Security.AccessControl": "5.0.0",
-          "System.Security.Principal.Windows": "5.0.0"
-        }
-      },
       "System.IO.FileSystem.Primitives": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1645,10 +1647,10 @@
       },
       "System.Net.Http": {
         "type": "Transitive",
-        "resolved": "4.3.4",
-        "contentHash": "aOa2d51SEbmM+H+Csw7yJOuNZoHkrP2XnAurye5HWYgGVVU54YZDvsLUYRv6h18X3sPnjNCANmN7ZhIPiqMcjA==",
+        "resolved": "4.3.0",
+        "contentHash": "sYg+FtILtRQuYWSIAuNOELwVuVsxVyJGWQyOnlAzhV4xvhyFnON1bAzYYC+jjRW8JREM45R0R5Dgi8MTC5sEwA==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Platforms": "1.1.0",
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
           "System.Diagnostics.DiagnosticSource": "4.3.0",
@@ -1673,7 +1675,7 @@
           "System.Threading.Tasks": "4.3.0",
           "runtime.native.System": "4.3.0",
           "runtime.native.System.Net.Http": "4.3.0",
-          "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.2"
+          "runtime.native.System.Security.Cryptography.OpenSsl": "4.3.0"
         }
       },
       "System.Net.Primitives": {
@@ -1800,11 +1802,11 @@
       },
       "System.Runtime": {
         "type": "Transitive",
-        "resolved": "4.3.1",
-        "contentHash": "abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
+        "resolved": "4.3.0",
+        "contentHash": "JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
-          "Microsoft.NETCore.Targets": "1.1.3"
+          "Microsoft.NETCore.Platforms": "1.1.0",
+          "Microsoft.NETCore.Targets": "1.1.0"
         }
       },
       "System.Runtime.Caching": {
@@ -1983,10 +1985,10 @@
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",
-        "resolved": "8.0.0-rc.2.23479.6",
-        "contentHash": "2es7eO33NRs8q639HHhwF45WV1L/gPuR2c43gTRFD0uwIM/iFQr7VK13PQoYPPxh/8AczRvEPXGwjwXJ+KQ7yw==",
+        "resolved": "7.0.2",
+        "contentHash": "xhFNJOcQSWhpiVGLLBQYoxAltQSQVycMkwaX1z7I7oEdT9Wr0HzSM1yeAbfoHaERIYd5s6EpLSOLs2qMchSKlA==",
         "dependencies": {
-          "System.Formats.Asn1": "8.0.0-rc.2.23479.6"
+          "System.Formats.Asn1": "7.0.0"
         }
       },
       "System.Security.Cryptography.Primitives": {
@@ -2042,10 +2044,20 @@
       },
       "System.Security.Cryptography.Xml": {
         "type": "Transitive",
-        "resolved": "8.0.0-rc.2.23479.6",
-        "contentHash": "KMZO15nAqQjDx81k2mA7ewG0UPmsiopTnaAA05tf7bwAP8/7AM5BHfrqVCksd3Lh2aoOgV/bzEn/BMkottgxkw==",
+        "resolved": "5.0.0",
+        "contentHash": "MYmkHtCW+paFmPGFDktnLdOeH3zUrNchbZNki87E1ejNSMm9enSRbJokmvFrsWUrDE4bRE1lVeAle01+t6SGhA==",
         "dependencies": {
-          "System.Security.Cryptography.Pkcs": "8.0.0-rc.2.23479.6"
+          "System.Security.Cryptography.Pkcs": "5.0.0",
+          "System.Security.Permissions": "5.0.0"
+        }
+      },
+      "System.Security.Permissions": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "uE8juAhEkp7KDBCdjDIE3H9R1HJuEHqeqX8nLX9gmYKWwsqk3T5qZlPx8qle5DPKimC/Fy3AFTdV7HamgCh9qQ==",
+        "dependencies": {
+          "System.Security.AccessControl": "5.0.0",
+          "System.Windows.Extensions": "5.0.0"
         }
       },
       "System.Security.Principal.Windows": {
@@ -2094,10 +2106,10 @@
       },
       "System.Text.RegularExpressions": {
         "type": "Transitive",
-        "resolved": "4.3.1",
-        "contentHash": "N0kNRrWe4+nXOWlpLT4LAY5brb8caNFlUuIRpraCVMDLYutKkol1aV079rQjLuSxKMJT2SpBQsYX9xbcTMmzwg==",
+        "resolved": "4.3.0",
+        "contentHash": "RpT2DA+L660cBt1FssIE9CAGpLFdFPuheB7pLpKpn6ZXNby7jDERe8Ua/Ne2xGiwLVG2JOqziiaVCGDon5sKFA==",
         "dependencies": {
-          "System.Runtime": "4.3.1"
+          "System.Runtime": "4.3.0"
         }
       },
       "System.Threading": {
@@ -2128,11 +2140,6 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "System.Threading.Tasks.Dataflow": {
-        "type": "Transitive",
-        "resolved": "8.0.0-rc.2.23479.6",
-        "contentHash": "+MLkFYgZ8xqviMHUwzvfXXo/jKeHbfDG//td+FW17n0Wb2VtHUjCAVbESaF/5CC+sdT8cE9J87AacReEV2zpZg=="
-      },
       "System.Threading.Tasks.Extensions": {
         "type": "Transitive",
         "resolved": "4.5.4",
@@ -2161,6 +2168,14 @@
           "Microsoft.NETCore.Platforms": "1.1.0",
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
+        }
+      },
+      "System.Windows.Extensions": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "c1ho9WU9ZxMZawML+ssPKZfdnrg/OjR3pe0m9v8230z3acqphwvPJqzAkH54xRYm5ntZHGG1EPP3sux9H3qSPg==",
+        "dependencies": {
+          "System.Drawing.Common": "5.0.0"
         }
       },
       "System.Xml.ReaderWriter": {
@@ -2206,8 +2221,8 @@
       },
       "Umbraco.Cms.Core": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "+QVdQEAnsYZhanvYepvq3qT4D5dNAGJdBSFffEWxHljqBFaBUBlsWqyyhNYw9ahRUbVc/1JxkHbDG6+ERWLhTA==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "qx0DTui4T2T1mY0WyrFhrvZQjMiZRUEH1lXcgOjxonJ6c5WScYxRN68hVWyeC9v+iTCHSBL9HQeRpTGbu5BjVA==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "8.0.0-rc.2.23479.6",
           "Microsoft.Extensions.FileProviders.Embedded": "8.0.0-rc.2.23480.2",
@@ -2218,27 +2233,22 @@
           "Microsoft.Extensions.Options": "8.0.0-rc.2.23479.6",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0-rc.2.23479.6",
           "Microsoft.Extensions.Options.DataAnnotations": "8.0.0-rc.2.23479.6",
-          "System.ComponentModel.Annotations": "5.0.0",
-          "System.Net.Http": "4.3.4",
-          "System.Reflection.Emit.Lightweight": "4.7.0",
-          "System.Runtime.Caching": "8.0.0-rc.2.23479.6",
-          "System.Security.Cryptography.Xml": "8.0.0-rc.2.23479.6",
-          "System.Text.RegularExpressions": "4.3.1"
+          "System.Runtime.Caching": "8.0.0-rc.2.23479.6"
         }
       },
       "Umbraco.Cms.Examine.Lucene": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "KYlbgiOljBKMWllO5k3dloZmql8iJvCu7bn3DypvOGeo2CDTnk08e3E1b83N47LiCjTzKwCCSqLxRatAYB09xQ==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "XKlVn1YoebiAPU1st44Pu1GcEymIkSaO+4d7r7VCiEHTEKFSst8A16FfEBiMTyXcgSH0xWhXOQxSmR2Vi2mdQQ==",
         "dependencies": {
           "Examine": "3.1.0",
-          "Umbraco.Cms.Infrastructure": "13.0.0-rc1"
+          "Umbraco.Cms.Infrastructure": "13.0.0-rc2"
         }
       },
       "Umbraco.Cms.Infrastructure": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "rLfai1szRKKe5cee+iwhwHgZYomRVBcckiYi2xU1Qbwae/MSrrmSsGepDShHPoXP+NpMoMbDbc0Gw/5WrF/oQg==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "z6q8ApMlNx+AbNgZdxinwJfIAZsRTGOUQ2I5DcUganE6qnHa0PAB8Pt0RawB88w4wTDEuLvTaBWOYQw6vhP+RQ==",
         "dependencies": {
           "Examine.Core": "3.1.0",
           "HtmlAgilityPack": "1.11.54",
@@ -2265,40 +2275,36 @@
           "Serilog.Sinks.Async": "1.5.0",
           "Serilog.Sinks.File": "5.0.0",
           "Serilog.Sinks.Map": "1.0.2",
-          "System.IO.FileSystem.AccessControl": "5.0.0",
-          "System.Security.Cryptography.Pkcs": "8.0.0-rc.2.23479.6",
-          "System.Threading.Tasks.Dataflow": "8.0.0-rc.2.23479.6",
-          "Umbraco.Cms.Core": "13.0.0-rc1",
+          "Umbraco.Cms.Core": "13.0.0-rc2",
           "ncrontab": "3.3.3"
         }
       },
       "Umbraco.Cms.PublishedCache.NuCache": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "nzIrxeLJRR+f6/kwuoqLHy/YSQrrSMv81F7pBYgo7r4rWNQ1Nf2CmhZsDyzTuPU8JwkrDoSomZLEdCkq7w9G2A==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "z1Iy/cKbTcxkWto/pwpGUndTCm16kzwJCfikM3wMWByC7F9MfGAMh36pO8Yh5y6IrG6XQL88SiFbr2QTqooYXw==",
         "dependencies": {
           "K4os.Compression.LZ4": "1.3.6",
           "MessagePack": "2.5.124",
           "Newtonsoft.Json": "13.0.3",
           "Umbraco.CSharpTest.Net.Collections": "15.0.0",
-          "Umbraco.Cms.Infrastructure": "13.0.0-rc1"
+          "Umbraco.Cms.Infrastructure": "13.0.0-rc2"
         }
       },
       "Umbraco.Cms.Web.BackOffice": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "6iBDcvCf8mfBjrMj54uJlhEcKUKm37TGiSl9iN5zZZhlLuFgu8aMyK0oGFBzVWWC23MLerKXbTAWYBNvBbXRLw==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "X6Tg5rswqSWo1e+oyYTRkWtNaJdDElESxjQhnOaVQUNciEIn0oeNQrXItdhBtkWJgC/QOYV3J0g/PzhkClW0uA==",
         "dependencies": {
-          "Markdown": "2.2.1",
           "Newtonsoft.Json": "13.0.3",
           "Serilog.AspNetCore": "7.0.0",
-          "Umbraco.Cms.Web.Common": "13.0.0-rc1"
+          "Umbraco.Cms.Web.Common": "13.0.0-rc2"
         }
       },
       "Umbraco.Cms.Web.Common": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "bcawLLKIPemN44xUHvQHQzp6WeblsR59f/duxyLBXWYEkzmU/7zp9oDgvrlAxHx3xNNl1KVhs9qqqFw+wgw+5w==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "g0e539LrLw2Sy7gPnhO9LaUDi7eGwcYX5ePb3DNJ3p8d308mZ7FTQb6ktDw4y+SkHblr5SNPih8+lF7ud4pWUQ==",
         "dependencies": {
           "Asp.Versioning.Mvc": "7.1.0",
           "Asp.Versioning.Mvc.ApiExplorer": "7.1.0",
@@ -2308,8 +2314,8 @@
           "MiniProfiler.AspNetCore.Mvc": "4.3.8",
           "Smidge.InMemory": "4.3.0",
           "Smidge.Nuglify": "4.3.0",
-          "Umbraco.Cms.Examine.Lucene": "13.0.0-rc1",
-          "Umbraco.Cms.PublishedCache.NuCache": "13.0.0-rc1"
+          "Umbraco.Cms.Examine.Lucene": "13.0.0-rc2",
+          "Umbraco.Cms.PublishedCache.NuCache": "13.0.0-rc2"
         }
       },
       "Umbraco.CSharpTest.Net.Collections": {
@@ -2319,10 +2325,10 @@
       },
       "Umbraco.Deploy.Core": {
         "type": "Transitive",
-        "resolved": "13.0.0-rc1",
-        "contentHash": "HyoplVhUVl3ZGX00KZnAqr9IzZ75ckWGWezWZ9SgdHtgfvOkWGR8iwRDxyPUiPuOJoKqAmZS7b+FmOG4T6SkTQ==",
+        "resolved": "13.0.0-rc2",
+        "contentHash": "y7MFbPlszv2hbj3AbPaqCI4hygbZlZCrxPxdcLP+SqZYPZFpD9dB+TAztGZIuTPRULqHSaAJL0b3dW4Z0PVYZQ==",
         "dependencies": {
-          "Umbraco.Cms.Core": "[13.0.0-rc1, 14.0.0)"
+          "Umbraco.Cms.Core": "[13.0.0-rc2, 14.0.0)"
         }
       }
     }
