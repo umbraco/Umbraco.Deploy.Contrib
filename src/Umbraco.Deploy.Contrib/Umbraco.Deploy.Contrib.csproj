@@ -2,6 +2,9 @@
   <PropertyGroup>
     <Title>Umbraco Deploy - Contrib</Title>
     <Description>Umbraco Deploy Contrib provides community contributions for Umbraco Deploy. This package can be used with Umbraco CMS version 9 and higher, for version 8 or below, use https://www.nuget.org/packages/UmbracoDeploy.Contrib/ instead.</Description>
+    <!-- Deploy Contrib currently doesn't contain any code, skip including empty assembly -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
 
   <ItemGroup>
