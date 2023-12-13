@@ -10,7 +10,7 @@ parameters:
   - name: cache_nuget
     displayName: Cache NuGet packages
     type: boolean
-    default: true
+    default: false # As long as we're overwriting versions on MyGet, we can't cache NuGet packages
 
 variables:
   solution: Umbraco.Deploy.Contrib.sln
