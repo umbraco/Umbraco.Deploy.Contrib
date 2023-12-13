@@ -11,7 +11,7 @@
   <ItemGroup>
     <PackageVersion Include="NUnit3TestAdapter" Version="4.5.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="[13.0.0-rc4, 14)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[13.0.0-rc4, 14)" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="[13.0.0, 14)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[13.0.0, 14)" />
   </ItemGroup>
 </Project>
