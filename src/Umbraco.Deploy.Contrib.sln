@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Deploy.Contrib.Connectors", "Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj", "{42FB2213-0815-41CD-94F8-DFB0EC1D8061}"
 EndProject
@@ -9,9 +9,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Umbraco.Deploy.Contrib.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7AF3C28D-DBD0-4771-9A78-D6E982094DCC}"
 	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
+		..\.gitattributes = ..\.gitattributes
+		..\.gitignore = ..\.gitignore
 		..\CONTRIBUTING.md = ..\CONTRIBUTING.md
 		..\LICENSE.md = ..\LICENSE.md
 		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoDeploy.Contrib.Export", "UmbracoDeploy.Contrib.Export\UmbracoDeploy.Contrib.Export.csproj", "{60AF13D9-3576-4E8C-8111-090D28DFBF60}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{2BD8E58D-6094-4D89-B045-54E6966DF784}"
+	ProjectSection(SolutionItems) = preProject
+		..\build\version.txt = ..\build\version.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecs", "NuSpecs", "{5B965111-230E-4B9A-A780-1A49D59D4FC2}"
+	ProjectSection(SolutionItems) = preProject
+		..\build\NuSpecs\UmbracoDeploy.Contrib.nuspec = ..\build\NuSpecs\UmbracoDeploy.Contrib.nuspec
 	EndProjectSection
 EndProject
 Global
@@ -28,9 +43,16 @@ Global
 		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AF13D9-3576-4E8C-8111-090D28DFBF60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AF13D9-3576-4E8C-8111-090D28DFBF60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AF13D9-3576-4E8C-8111-090D28DFBF60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AF13D9-3576-4E8C-8111-090D28DFBF60}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B965111-230E-4B9A-A780-1A49D59D4FC2} = {2BD8E58D-6094-4D89-B045-54E6966DF784}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20357E31-FA18-4D77-B38B-6C878A179849}
