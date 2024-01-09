@@ -21,11 +21,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbracoDeploy.Contrib.Expor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{2BD8E58D-6094-4D89-B045-54E6966DF784}"
 	ProjectSection(SolutionItems) = preProject
+		..\build\Build.proj = ..\build\Build.proj
+		..\build\readme.txt = ..\build\readme.txt
+		..\build\RunBuild.bat = ..\build\RunBuild.bat
+		..\build\RunContinuousBuild.bat = ..\build\RunContinuousBuild.bat
 		..\build\version.txt = ..\build\version.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpecs", "NuSpecs", "{5B965111-230E-4B9A-A780-1A49D59D4FC2}"
 	ProjectSection(SolutionItems) = preProject
+		..\build\NuSpecs\UmbracoDeploy.Contrib.Export.nuspec = ..\build\NuSpecs\UmbracoDeploy.Contrib.Export.nuspec
 		..\build\NuSpecs\UmbracoDeploy.Contrib.nuspec = ..\build\NuSpecs\UmbracoDeploy.Contrib.nuspec
 	EndProjectSection
 EndProject

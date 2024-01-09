@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+	<metadata>
+		<id>UmbracoDeploy.Contrib.Export</id>
+		<version>0.0.0</version>
+		<title>Umbraco Deploy Contrib Export</title>
+		<authors>Umbraco HQ</authors>
+		<owners>Umbraco HQ</owners>
+		<copyright>Umbraco HQ</copyright>
+		<iconUrl>http://umbraco.com/media/357769/100px_transparent.png</iconUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    	<projectUrl>https://github.com/umbraco/Umbraco.Deploy.Contrib</projectUrl>
+		<description>Umbraco Deploy Community Contributions for export</description>
+		<language>en-US</language>
+		<tags>umbraco</tags>
+		<dependencies>
+			<dependency id="UmbracoCms.Core" version="7.6.4" />
+			<dependency id="UmbracoDeploy" version="1.0.17" />
+		</dependencies>
+	</metadata>
+	<files>
+		<file src="..\_BuildOutput\Deploy\bin\Umbraco.Deploy.Contrib.Export.dll" target="lib\net45\Umbraco.Deploy.Contrib.Export.dll" />
+	</files>
+</package>

@@ -34,12 +34,15 @@
 	<Target Name="SetVersionNumber" DependsOnTargets="CleanUp" Condition="'$(BUILD_RELEASE)'!=''">		
 		<!--This updates the copyright year-->
 		<FileUpdate
-			Files="..\src\Umbraco.Deploy.Contrib.Connectors\Properties\AssemblyInfo.cs"
+			Files="..\src\Umbraco.Deploy.Contrib.Connectors\Properties\AssemblyInfo.cs;..\src\Umbraco.Deploy.Contrib.Export\Properties\AssemblyInfo.cs"
 			Regex="AssemblyCopyright\(&quot;(.+)?&quot;\)"
 			ReplacementText="AssemblyCopyright(&quot;Copyright © Umbraco $([System.DateTime]::Now.ToString(`yyyy`))&quot;)"/>
 		<!--This updates the assembly versions-->
 		<AssemblyInfo CodeLanguage="CS"
 			OutputFile="..\src\Umbraco.Deploy.Contrib.Connectors\Properties\VersionInfo.cs"
+			AssemblyVersion="$(BUILD_RELEASE)" AssemblyInformationalVersion="$(DECIMAL_BUILD_NUMBER)" />
+        <AssemblyInfo CodeLanguage="CS"
+			OutputFile="..\src\Umbraco.Deploy.Contrib.Export\Properties\VersionInfo.cs"
 			AssemblyVersion="$(BUILD_RELEASE)" AssemblyInformationalVersion="$(DECIMAL_BUILD_NUMBER)" />
 	</Target>
 
@@ -59,7 +62,7 @@
 		</PropertyGroup>
 
 		<FileUpdate
-			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
+			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec;NuSpecs\UmbracoDeploy.Export.nuspec"
 			Regex="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;(.*)?&quot;"
 			ReplacementText="dependency id=&quot;UmbracoCms.Core&quot; version=&quot;$(CoreBaseVersion)&quot;"/>
 		
@@ -69,7 +72,7 @@
 			<Output TaskParameter="Value" PropertyName="UmbracoDeployVersion" />
 		</XmlRead>
 		<FileUpdate
-			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
+			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec;NuSpecs\UmbracoDeploy.Export.nuspec"
 			Regex="dependency id=&quot;UmbracoDeploy&quot; version=&quot;(.*)?,"
 			ReplacementText="dependency id=&quot;UmbracoDeploy&quot; version=&quot;[$(UmbracoDeployVersion),"/>
 	</Target>
