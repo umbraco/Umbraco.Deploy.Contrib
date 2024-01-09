@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Umbraco.Deploy.Contrib.Connectors</RootNamespace>
     <AssemblyName>Umbraco.Deploy.Contrib.Connectors</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,8 +39,8 @@
     <Reference Include="businesslogic, Version=1.0.6396.36624, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\businesslogic.dll</HintPath>
     </Reference>
-    <Reference Include="ClientDependency.Core, Version=1.9.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ClientDependency.1.9.2\lib\net45\ClientDependency.Core.dll</HintPath>
+    <Reference Include="ClientDependency.Core, Version=1.9.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClientDependency.1.9.9\lib\net45\ClientDependency.Core.dll</HintPath>
     </Reference>
     <Reference Include="ClientDependency.Core.Mvc, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
@@ -72,6 +72,15 @@
     <Reference Include="interfaces, Version=1.0.6396.36619, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="LightInject, Version=4.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.4.1.5\lib\net45\LightInject.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.Annotation, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.Annotation.1.1.0\lib\net45\LightInject.Annotation.dll</HintPath>
+    </Reference>
+    <Reference Include="LightInject.Web, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LightInject.Web.1.1.0\lib\net45\LightInject.Web.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\log4net.dll</HintPath>
     </Reference>
@@ -102,6 +111,9 @@
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.3.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
@@ -120,8 +132,8 @@
     <Reference Include="MiniProfiler, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data, Version=6.9.12.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.12\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -130,7 +142,7 @@
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="Semver, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\semver.1.1.2\lib\net45\Semver.dll</HintPath>
+      <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6396.36627, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\SQLCE4Umbraco.dll</HintPath>
@@ -151,6 +163,9 @@
       <HintPath>..\packages\System.Threading.Tasks.Dataflow.4.7.0\lib\portable-net45+win8+wpa81\System.Threading.Tasks.Dataflow.dll</HintPath>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
@@ -192,7 +207,12 @@
     </Reference>
     <Reference Include="Umbraco.Deploy, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="Umbraco.Deploy.Cloud, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.Cloud.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Deploy.UI, Version=1.0.17.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoDeploy.1.0.17\lib\net45\Umbraco.Deploy.UI.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.6396.36634, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.6.4\lib\net45\umbraco.editorControls.dll</HintPath>
@@ -233,7 +253,70 @@
     <Compile Include="ValueConnectors\UrlPickerValueConnector.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="App_Plugins\Deploy\package.manifest" />
+    <None Include="Config\UmbracoDeploy.config" />
+    <None Include="Config\UmbracoDeploy.Settings.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\Deploy\assets\css\deploy.css" />
+    <Content Include="App_Plugins\Deploy\js\deploy.components.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.controllers.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.decorators.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.filters.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.modules.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.resources.js" />
+    <Content Include="App_Plugins\Deploy\js\deploy.services.js" />
+    <Content Include="App_Plugins\Deploy\js\nonodes.bootstrap.js" />
+    <Content Include="App_Plugins\Deploy\js\nonodes.modules.js" />
+    <Content Include="App_Plugins\Deploy\lang\cs-CZ.xml" />
+    <Content Include="App_Plugins\Deploy\lang\da-DK.xml" />
+    <Content Include="App_Plugins\Deploy\lang\de-DE.xml" />
+    <Content Include="App_Plugins\Deploy\lang\en-GB.xml" />
+    <Content Include="App_Plugins\Deploy\lang\en-US.xml" />
+    <Content Include="App_Plugins\Deploy\lang\es-ES.xml" />
+    <Content Include="App_Plugins\Deploy\lang\fr-FR.xml" />
+    <Content Include="App_Plugins\Deploy\lang\he-IL.xml" />
+    <Content Include="App_Plugins\Deploy\lang\it-IT.xml" />
+    <Content Include="App_Plugins\Deploy\lang\ja-JP.xml" />
+    <Content Include="App_Plugins\Deploy\lang\ko-KR.xml" />
+    <Content Include="App_Plugins\Deploy\lang\nb-NO.xml" />
+    <Content Include="App_Plugins\Deploy\lang\nl-NL.xml" />
+    <Content Include="App_Plugins\Deploy\lang\pl-PL.xml" />
+    <Content Include="App_Plugins\Deploy\lang\pt-BR.xml" />
+    <Content Include="App_Plugins\Deploy\lang\ru-RU.xml" />
+    <Content Include="App_Plugins\Deploy\lang\sv-SE.xml" />
+    <Content Include="App_Plugins\Deploy\lang\zh-CN.xml" />
+    <Content Include="App_Plugins\Deploy\lib\signalr\jquery.signalR.min.js" />
+    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeploycomplete\uddeploycomplete.html" />
+    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeployprogress\uddeployprogress.html" />
+    <Content Include="App_Plugins\Deploy\views\components\deploy\uddeployqueue\uddeployqueue.html" />
+    <Content Include="App_Plugins\Deploy\views\components\errors\udcollisionerror\udcollisionerror.html" />
+    <Content Include="App_Plugins\Deploy\views\components\errors\uddeployschemamismatcherror\uddeployschemamismatcherror.html" />
+    <Content Include="App_Plugins\Deploy\views\components\errors\udrestoreschemamismatcherror\udrestoreschemamismatcherror.html" />
+    <Content Include="App_Plugins\Deploy\views\components\restore\udrestorecomplete\udrestorecomplete.html" />
+    <Content Include="App_Plugins\Deploy\views\components\restore\udrestoreprogress\udrestoreprogress.html" />
+    <Content Include="App_Plugins\Deploy\views\components\udconnectlocal\udconnectlocal.html" />
+    <Content Include="App_Plugins\Deploy\views\components\udcontentflow\udcontentflow.html" />
+    <Content Include="App_Plugins\Deploy\views\components\uderror\uderror.html" />
+    <Content Include="App_Plugins\Deploy\views\components\udinfobox\udinfobox.html" />
+    <Content Include="App_Plugins\Deploy\views\components\udstarterkitselector\udstarterkitselector.html" />
+    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspaceadd\udworkspaceadd.html" />
+    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspaceinfo\udworkspaceinfo.html" />
+    <Content Include="App_Plugins\Deploy\views\components\workspace\udworkspace\udworkspace.html" />
+    <Content Include="App_Plugins\Deploy\views\dashboards\dashboard.html" />
+    <Content Include="App_Plugins\Deploy\views\dialogs\addtoqueue.html" />
+    <Content Include="App_Plugins\Deploy\views\dialogs\deploy.html" />
+    <Content Include="App_Plugins\Deploy\views\dialogs\partial-restore.html" />
+    <Content Include="App_Plugins\Deploy\views\dialogs\restore.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\add-workspace.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\done-deploy.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\flow.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\progress.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\queue.html" />
+    <Content Include="App_Plugins\Deploy\views\partials\workspace-info.html" />
+    <Content Include="Config\splashes\noNodes.aspx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
