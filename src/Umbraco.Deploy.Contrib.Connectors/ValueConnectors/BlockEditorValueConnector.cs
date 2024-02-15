@@ -77,7 +77,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 .ToDictionary(a => a, a =>
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
+                    {
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
+                    }
 
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
@@ -130,7 +132,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
             value = JsonConvert.SerializeObject(blockEditorValue);
             _logger.Debug<BlockEditorValueConnector>("Finished converting {PropertyType} to artifact.", propertyType.Alias);
-            return (string) value;
+            return (string)value;
         }
 
         public override object FromArtifact(string value, PropertyType propertyType, object currentValue, IContextCache contextCache)
@@ -158,7 +160,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 .ToDictionary(a => a, a =>
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
+                    {
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
+                    }
 
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });

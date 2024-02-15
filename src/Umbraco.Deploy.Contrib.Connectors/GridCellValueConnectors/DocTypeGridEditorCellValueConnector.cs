@@ -36,7 +36,10 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
         public sealed override string GetValue(GridValue.GridControl gridControl, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             // cancel if there's no values
-            if (gridControl.Value == null || gridControl.Value.HasValues == false) return null;
+            if (gridControl.Value == null || gridControl.Value.HasValues == false)
+            {
+                return null;
+            }
 
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"GetValue - Grid Values: {gridControl.Value}");
 
@@ -116,7 +119,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - GridControlValue - {gridControl.Value}");
 
             var docTypeGridEditorContent = JsonConvert.DeserializeObject<DocTypeGridEditorValue>(gridControl.Value.ToString());
-
             if (docTypeGridEditorContent == null)
             {
                 return;

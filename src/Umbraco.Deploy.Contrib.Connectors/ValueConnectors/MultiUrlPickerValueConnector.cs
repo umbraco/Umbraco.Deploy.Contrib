@@ -59,7 +59,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
         {
             var svalue = value as string;
             if (string.IsNullOrWhiteSpace(svalue))
+            {
                 return null;
+            }
 
             var valueAsJToken = JToken.Parse(svalue);
 
@@ -68,7 +70,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 // Multiple links, parse as JArray
                 var links = JsonConvert.DeserializeObject<JArray>(svalue);
                 if (links == null)
+                {
                     return null;
+                }
 
                 foreach (var link in links)
                 {
@@ -85,7 +89,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                         var guidAttempt = contextCache.GetEntityKeyById(_entityService, intId, objectTypeId);
                         if (guidAttempt.Success == false)
+                        {
                             continue;
+                        }
 
                         var udi = new GuidUdi(entityType, guidAttempt.Result);
 
@@ -114,7 +120,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         // a dependency to the package. If we can't find it, we abort(aka continue)
                         var entry = _mediaService.GetMediaByPath(url);
                         if (entry == null)
+                        {
                             continue;
+                        }
 
                         // Add the artifact dependency
                         var udi = entry.GetUdi();
@@ -132,7 +140,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 // Single link, parse as JToken
                 var link = JsonConvert.DeserializeObject<JToken>(svalue);
                 if (link == null)
+                {
                     return string.Empty;
+                }
 
                 var isMedia = link["isMedia"] != null;
                 int intId;
@@ -223,7 +233,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             // nevertheless, assume it can fail, and then create an invalid localLink
                             var idAttempt = contextCache.GetEntityIdByKey(_entityService, udi.Guid, nodeObjectType);
                             if (idAttempt)
+                            {
                                 link["id"] = idAttempt.Success ? idAttempt.Result : 0;
+                            }
                         }
                         else if (TryParseJTokenAttr(link, "url", out url))
                         {
@@ -238,7 +250,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                                     // (take care of nulls)
                                     var media = _mediaService.GetById(foundUdi.Guid);
                                     if (media != null)
+                                    {
                                         return media.GetUrl("umbracoFile", _logger);
+                                    }
                                 }
                                 return string.Empty;
                             });
@@ -268,7 +282,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     // nevertheless, assume it can fail, and then create an invalid localLink
                     var idAttempt = contextCache.GetEntityIdByKey(_entityService, udi.Guid, nodeObjectType);
                     if (idAttempt)
+                    {
                         link["id"] = idAttempt.Success ? idAttempt.Result : 0;
+                    }
                 }
                 else if (TryParseJTokenAttr(link, "url", out url))
                 {
@@ -284,7 +300,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                             // (take care of nulls)
                             var media = _mediaService.GetById(foundUdi.Guid);
                             if (media != null)
+                            {
                                 return media.GetUrl("umbracoFile", _logger);
+                            }
                         }
 
                         return string.Empty;
