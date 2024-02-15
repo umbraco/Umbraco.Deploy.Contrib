@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Deploy.Contrib", "src\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj", "{42FB2213-0815-41CD-94F8-DFB0EC1D8061}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Deploy.Contrib.Tests", "tests\Umbraco.Deploy.Contrib.Tests\Umbraco.Deploy.Contrib.Tests.csproj", "{48B09241-9C44-47EF-B4DF-397B39A631DC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7AF3C28D-DBD0-4771-9A78-D6E982094DCC}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.globalconfig = .globalconfig
+		CONTRIBUTING.md = CONTRIBUTING.md
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		icon.png = icon.png
+		LICENSE.md = LICENSE.md
+		nuget.config = nuget.config
+		README.md = README.md
+		version.json = version.json
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{71D68BC9-0940-4644-8342-4806401B4ACD}"
+	ProjectSection(SolutionItems) = preProject
+		tests\.editorconfig = tests\.editorconfig
+		tests\codeanalysis.ruleset = tests\codeanalysis.ruleset
+		tests\Directory.Build.props = tests\Directory.Build.props
+		tests\Directory.Packages.props = tests\Directory.Packages.props
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{42FB2213-0815-41CD-94F8-DFB0EC1D8061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{42FB2213-0815-41CD-94F8-DFB0EC1D8061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{42FB2213-0815-41CD-94F8-DFB0EC1D8061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{42FB2213-0815-41CD-94F8-DFB0EC1D8061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B09241-9C44-47EF-B4DF-397B39A631DC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{48B09241-9C44-47EF-B4DF-397B39A631DC} = {71D68BC9-0940-4644-8342-4806401B4ACD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {20357E31-FA18-4D77-B38B-6C878A179849}
+	EndGlobalSection
+EndGlobal
