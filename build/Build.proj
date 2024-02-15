@@ -48,14 +48,14 @@
 			It is used to update the nuspec file.
 		-->
         <XmlRead
-                XPath="/Project/ItemGroup/PackageReference[@Include='UmbracoDeploy.Core']/Version"
+                XPath="/Project/ItemGroup/PackageReference[@Include='UmbracoDeploy.Core']/@Version"
                 XmlFileName="..\src\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj">
-            <Output TaskParameter="Value" PropertyName="CoreVersion" />
+            <Output TaskParameter="Value" PropertyName="UmbracoDeployVersion" />
         </XmlRead>
-		<FileUpdate
+        <FileUpdate
 			Files="NuSpecs\UmbracoDeploy.Contrib.nuspec"
-			Regex="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;(.*)?,"
-			ReplacementText="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;[$(UmbracoDeployVersion),"/>
+			Regex="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;&quot;"
+			ReplacementText="dependency id=&quot;UmbracoDeploy.Core&quot; version=&quot;$(UmbracoDeployVersion)&quot;"/>
 	</Target>
 
 	<Target Name="CompileSolution" DependsOnTargets="UpdateReferencedVersions">

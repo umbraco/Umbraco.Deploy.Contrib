@@ -1,3 +1,5 @@
+@ECHO OFF
+
 IF NOT EXIST version.txt (
 	ECHO version.txt missing!
 	GOTO :showerror
