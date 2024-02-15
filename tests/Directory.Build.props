@@ -4,8 +4,10 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Build.props, $(MSBuildThisFileDirectory)..))" />
 
   <PropertyGroup>
-    <!-- Disable packaging for test projects -->
+    <!-- Disable packaging and validation for test projects to fix benchmarks (that auto-generates boilerplate code) -->
     <IsPackable>false</IsPackable>
+    <BaseEnablePackageValidation>$(EnablePackageValidation)</BaseEnablePackageValidation>
+    <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
   
   <!-- Specify rule set for all test projects -->

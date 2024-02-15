@@ -1,14 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <PackageId>UmbracoDeploy.Contrib.Export</PackageId>
-    <Version>2.0.0</Version>
+    <Title>Umbraco Deploy - Contrib - Export</Title>
     <Description>Umbraco Deploy Community Contributions for exporting schema and content to a ZIP archive.</Description>
+    <AssemblyName>Umbraco.Deploy.Contrib.Export</AssemblyName>
+    <RootNamespace>Umbraco.Deploy.Contrib.Export</RootNamespace>
+    <!-- TODO: Enable when final version is shipped (because there's currently no previous version) -->
+    <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
+  
   <ItemGroup>
-    <PackageReference Include="UmbracoCms.Core" Version="7.6.4" />
-    <PackageReference Include="UmbracoDeploy" Version="1.0.17" />
+    <PackageReference Include="UmbracoCms.Core" />
+    <PackageReference Include="UmbracoDeploy" />
   </ItemGroup>
+  
   <ItemGroup>
-    <ProjectReference Include="..\Umbraco.Deploy.Contrib.Connectors\Umbraco.Deploy.Contrib.Connectors.csproj" />
+    <ProjectReference Include="..\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj" />
   </ItemGroup>
 </Project>
