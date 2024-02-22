@@ -133,12 +133,12 @@ stages:
               configuration: $(buildConfiguration)
 
   - stage: ReleaseMyGet
-    displayName: Release to pre-release/nightly MyGet feed
+    displayName: MyGet release
     dependsOn: Test
     condition: and(succeeded(), or(eq(dependencies.Build.outputs['Build.build.NBGV_PublicRelease'], 'True'), ${{ parameters.release_myget }}))
     jobs:
       - job:
-        displayName: Push to MyGet feed
+        displayName: Release to pre-release/nightly MyGet feed
         steps:
           - checkout: none
           - task: DownloadPipelineArtifact@2
@@ -158,12 +158,12 @@ stages:
                 publishFeedCredentials: 'MyGet - Pre-releases'
 
   - stage: ReleaseNuGet
-    displayName: Release to public NuGet feed
+    displayName: NuGet release
     dependsOn: ReleaseMyGet
     condition: and(succeeded(), or(eq(dependencies.Build.outputs['Build.build.NBGV_PublicRelease'], 'True'), ${{ parameters.release_nuget }}))
     jobs:
       - job:
-        displayName: Push to MyGet feed
+        displayName: Release to public NuGet feed
         steps:
           - checkout: none
           - task: DownloadPipelineArtifact@2
