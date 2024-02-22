@@ -9,10 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Deploy.Contrib.Test
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7AF3C28D-DBD0-4771-9A78-D6E982094DCC}"
 	ProjectSection(SolutionItems) = preProject
+		.artifactignore = .artifactignore
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		.globalconfig = .globalconfig
+		azure-pipelines.yml = azure-pipelines.yml
 		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
