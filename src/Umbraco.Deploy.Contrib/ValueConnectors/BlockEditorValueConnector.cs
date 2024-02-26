@@ -39,7 +39,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public override string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
+        public override string? ToArtifact(object? value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} to artifact.", propertyType.Alias);
             var valueAsString = value as string;
@@ -57,7 +57,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 return null;
             }
 
-            if (!valueAsString.TryParseJson(out BlockEditorValue blockEditorValue))
+            if (!valueAsString.TryParseJson(out BlockEditorValue? blockEditorValue))
             {
                 _logger.LogWarning("Value '{Value}' is not a JSON string. Skipping conversion to artifact.", valueAsString);
                 return null;
@@ -84,14 +84,14 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
-            //Ensure all of these content types are found
+            // Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
             {
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
             }
 
-            //Ensure that these content types have dependencies added
-            foreach (var contentType in allContentTypes.Values)
+            // Ensure that these content types have dependencies added
+            foreach (var contentType in allContentTypes.Values.WhereNotNull())
             {
                 _logger.LogDebug("Adding dependency for content type {ContentType}.", contentType.Alias);
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
@@ -99,7 +99,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             foreach (var block in allBlocks)
             {
-                var contentType = allContentTypes[block.ContentTypeKey];
+                var contentType = allContentTypes[block.ContentTypeKey]
+                    ?? throw new InvalidOperationException($"Could not find content type with alias '{block.ContentTypeKey}'.");
 
                 if (block.PropertyValues != null)
                 {
@@ -119,7 +120,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
                         // pass the value, property type and the dependencies collection to the connector to get a "artifact" value
                         var innerValue = block.PropertyValues[key];
-                        object parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies, contextCache);
+                        object? parsedValue = propertyValueConnector.ToArtifact(innerValue, innerPropertyType, dependencies, contextCache);
 
                         _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, block.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
 
@@ -135,7 +136,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             return (string)value;
         }
 
-        public override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
+        public override object? FromArtifact(string? value, IPropertyType propertyType, object? currentValue, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
@@ -143,7 +144,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 return value;
             }
 
-            if (!value.TryParseJson(out BlockEditorValue blockEditorValue))
+            if (!value.TryParseJson(out BlockEditorValue? blockEditorValue))
             {
                 return value;
             }
@@ -167,7 +168,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
 
-            //Ensure all of these content types are found
+            // Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
             {
                 throw new InvalidOperationException($"Could not resolve these content types for the Block Editor property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}");
@@ -175,7 +176,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             foreach (var block in allBlocks)
             {
-                var contentType = allContentTypes[block.ContentTypeKey];
+                var contentType = allContentTypes[block.ContentTypeKey]
+                    ?? throw new InvalidOperationException($"Could not find content type with alias '{block.ContentTypeKey}'.");
 
                 if (block.PropertyValues != null)
                 {
@@ -194,7 +196,6 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                         var propertyValueConnector = ValueConnectors.Get(innerPropertyType);
 
                         var innerValue = block.PropertyValues[key];
-
                         if (innerValue != null)
                         {
                             // pass the artifact value and property type to the connector to get a real value from the artifact
@@ -208,11 +209,13 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                             {
                                 block.PropertyValues[key] = convertedValue;
                             }
+
                             _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
                         }
                         else
                         {
                             block.PropertyValues[key] = innerValue;
+
                             _logger.LogDebug("{Key} value was null. Setting value as null without conversion.", key);
                         }
                     }
@@ -271,35 +274,35 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             /// JObject is fine for transferring this over.
             /// </summary>
             [JsonProperty("layout")]
-            public JObject Layout { get; set; }
+            public JObject? Layout { get; set; }
 
             /// <summary>
             /// This contains all the blocks created in the block editor.
             /// </summary>
             [JsonProperty("contentData")]
-            public IEnumerable<Block> Content { get; set; }
+            public IEnumerable<Block> Content { get; set; } = Array.Empty<Block>();
 
             /// <summary>
             /// This contains the settings associated with the block editor.
             /// </summary>
             [JsonProperty("settingsData")]
-            public IEnumerable<Block> Settings { get; set; }
+            public IEnumerable<Block> Settings { get; set; } = Array.Empty<Block>();
         }
 
         public class Block
         {
             [JsonProperty("contentTypeKey")]
-            public string ContentTypeKey { get; set; }
+            public string ContentTypeKey { get; set; } = string.Empty;
 
             [JsonProperty("udi")]
-            public string Udi { get; set; }
+            public string Udi { get; set; } = string.Empty;
 
             /// <summary>
             /// This is the property values defined on the block.
             /// These can be anything so we have to use a dictionary to represent them and JsonExtensionData attribute ensures all otherwise unmapped properties are stored here.
             /// </summary>
             [JsonExtensionData]
-            public IDictionary<string, object> PropertyValues { get; set; }
+            public IDictionary<string, object?> PropertyValues { get; set; } = new Dictionary<string, object?>();
         }
     }
 }

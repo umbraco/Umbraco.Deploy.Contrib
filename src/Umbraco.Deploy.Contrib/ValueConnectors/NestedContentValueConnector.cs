@@ -46,7 +46,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public sealed override string ToArtifact(object value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
+        public sealed override string? ToArtifact(object? value, IPropertyType propertyType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} to artifact.", propertyType.Alias);
             var valueAsString = value as string;
@@ -60,7 +60,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             var nestedContent = new List<NestedContentValue>();
             if (valueAsString.Trim().StartsWith("{"))
             {
-                 if (valueAsString.TryParseJson(out NestedContentValue nestedContentObjectValue))
+                 if (valueAsString.TryParseJson(out NestedContentValue? nestedContentObjectValue) &&
+                    nestedContentObjectValue is not null)
                 {
                     nestedContent.Add(nestedContentObjectValue);
                 }
@@ -72,7 +73,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             }
             else
             {
-                if (valueAsString.TryParseJson(out NestedContentValue[] nestedContentCollectionValue))
+                if (valueAsString.TryParseJson(out NestedContentValue[]? nestedContentCollectionValue) &&
+                    nestedContentCollectionValue is not null)
                 {
                     nestedContent.AddRange(nestedContentCollectionValue);
                 }
@@ -93,22 +95,24 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 .Distinct()
                 .ToDictionary(a => a, a => contextCache.GetContentTypeByAlias(_contentTypeService, a));
 
-            //Ensure all of these content types are found
+            // Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
             {
                 throw new InvalidOperationException($"Could not resolve these content types for the Nested Content property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}.");
             }
 
-            //Ensure that these content types have dependencies added
-            foreach (var contentType in allContentTypes.Values)
+            // Ensure that these content types have dependencies added
+            foreach (var contentType in allContentTypes.Values.WhereNotNull())
             {
                 _logger.LogDebug("Adding dependency for content type {ContentType}.", contentType.Alias);
+
                 dependencies.Add(new ArtifactDependency(contentType.GetUdi(), false, ArtifactDependencyMode.Match));
             }
 
             foreach (var row in nestedContent)
             {
-                var contentType = allContentTypes[row.ContentTypeAlias];
+                var contentType = allContentTypes[row.ContentTypeAlias]
+                    ?? throw new InvalidOperationException($"Could not find content type with alias '{row.ContentTypeAlias}'.");
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
@@ -135,10 +139,10 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     var innerValue = row.PropertyValues[key];
 
                     // connectors are expecting strings, not JTokens
-                    object preparedValue = innerValue is JToken
+                    object? preparedValue = innerValue is JToken
                         ? innerValue?.ToString()
                         : innerValue;
-                    object parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies, contextCache);
+                    object? parsedValue = propertyValueConnector.ToArtifact(preparedValue, innerPropertyType, dependencies, contextCache);
 
                     // getting Map image value umb://media/43e7401fb3cd48ceaa421df511ec703c to (nothing) - why?!
                     _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ParsedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, row.PropertyValues[key], parsedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
@@ -154,7 +158,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             return (string)value;
         }
 
-        public sealed override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
+        public sealed override object? FromArtifact(string? value, IPropertyType propertyType, object? currentValue, IContextCache contextCache)
         {
             _logger.LogDebug("Converting {PropertyType} from artifact.", propertyType.Alias);
             if (string.IsNullOrWhiteSpace(value))
@@ -163,7 +167,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 return value;
             }
 
-            if (!value.TryParseJson(out NestedContentValue[] nestedContent))
+            if (!value.TryParseJson(out NestedContentValue[]? nestedContent))
             {
                 _logger.LogWarning("Value '{Value}' is not a json string. Skipping conversion from artifact.", value);
                 return value;
@@ -179,7 +183,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 .Distinct()
                 .ToDictionary(a => a, a => contextCache.GetContentTypeByAlias(_contentTypeService, a));
 
-            //Ensure all of these content types are found
+            // Ensure all of these content types are found
             if (allContentTypes.Values.Any(contentType => contentType == null))
             {
                 throw new InvalidOperationException($"Could not resolve these content types for the Nested Content property: {string.Join(",", allContentTypes.Where(x => x.Value == null).Select(x => x.Key))}.");
@@ -187,7 +191,8 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             foreach (var row in nestedContent)
             {
-                var contentType = allContentTypes[row.ContentTypeAlias];
+                var contentType = allContentTypes[row.ContentTypeAlias]
+                    ?? throw new InvalidOperationException($"Could not find content type with alias '{row.ContentTypeAlias}'.");
 
                 foreach (var key in row.PropertyValues.Keys.ToArray())
                 {
@@ -216,30 +221,31 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     {
                         // pass the artifact value and property type to the connector to get a real value from the artifact
                         var convertedValue = propertyValueConnector.FromArtifact(innerValue.ToString(), innerPropertyType, null, contextCache);
-
                         if (convertedValue == null)
                         {
                             row.PropertyValues[key] = null;
                         }
-                        // integers needs to be converted into strings
                         else if (convertedValue is int)
                         {
+                            // integers needs to be converted into strings
                             row.PropertyValues[key] = convertedValue.ToString();
                         }
-                        // json strings need to be converted into JTokens
-                        else if (convertedValue is string convertedStringValue && convertedStringValue.TryParseJson(out JToken valueAsJToken))
+                        else if (convertedValue is string convertedStringValue && convertedStringValue.TryParseJson(out JToken? valueAsJToken))
                         {
+                            // json strings need to be converted into JTokens
                             row.PropertyValues[key] = valueAsJToken;
                         }
                         else
                         {
                             row.PropertyValues[key] = convertedValue;
                         }
+
                         _logger.LogDebug("Mapped {Key} value '{PropertyValue}' to '{ConvertedValue}' using {PropertyValueConnectorType} for {PropertyType}.", key, innerValue, convertedValue, propertyValueConnector.GetType(), innerPropertyType.Alias);
                     }
                     else
                     {
                         row.PropertyValues[key] = innerValue;
+
                         _logger.LogDebug("{Key} value was null. Setting value as null without conversion.", key);
                     }
                 }
@@ -268,10 +274,10 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
         public class NestedContentValue
         {
             [JsonProperty("name")]
-            public string Name { get; set; }
+            public string Name { get; set; } = string.Empty;
 
             [JsonProperty("ncContentTypeAlias")]
-            public string ContentTypeAlias { get; set; }
+            public string ContentTypeAlias { get; set; } = string.Empty;
 
             /// <summary>
             /// The remaining properties will be serialized to a dictionary
@@ -283,7 +289,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
             ///   "stringValue":"Some String","numericValue":125,"otherNumeric":null
             /// </remarks>
             [JsonExtensionData]
-            public IDictionary<string, object> PropertyValues { get; set; }
+            public IDictionary<string, object?> PropertyValues { get; set; } = new Dictionary<string, object?>();
         }
     }
 }
