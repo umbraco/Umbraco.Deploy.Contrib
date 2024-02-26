@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy

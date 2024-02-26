@@ -1,4 +1,3 @@
-﻿using System;
 using Newtonsoft.Json.Linq;
 using Semver;
 using Umbraco.Core.Models;
@@ -23,36 +22,26 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         {
             var schedule = new JArray();
 
-            var releaseDate = artifactJson["ReleaseDate"];
-            if (releaseDate != null)
+            if (artifactJson["ReleaseDate"] is JValue releaseDate &&
+                releaseDate.Value != null)
             {
-                if (DateTime.TryParse(releaseDate.Value<string>(), out var releaseDateValue))
+                schedule.Add(new JObject()
                 {
-                    schedule.Add(new JObject()
-                    {
-                        ["Date"] = releaseDateValue,
-                        ["Culture"] = string.Empty,
-                        ["Action"] = nameof(ContentScheduleAction.Release)
-                    });
-                }
-
-                releaseDate.Remove();
+                    ["Date"] = releaseDate.Value<string>(),
+                    ["Culture"] = string.Empty,
+                    ["Action"] = nameof(ContentScheduleAction.Release)
+                });
             }
 
-            var expireDate = artifactJson["ExpireDate"];
-            if (expireDate != null)
+            if (artifactJson["ExpireDate"] is JValue expireDate &&
+                expireDate.Value != null)
             {
-                if (DateTime.TryParse(expireDate.Value<string>(), out var expireDateValue))
+                schedule.Add(new JObject()
                 {
-                    schedule.Add(new JObject()
-                    {
-                        ["Date"] = expireDateValue,
-                        ["Culture"] = string.Empty,
-                        ["Action"] = nameof(ContentScheduleAction.Expire)
-                    });
-                }
-
-                expireDate.Remove();
+                    ["Date"] = expireDate,
+                    ["Culture"] = string.Empty,
+                    ["Action"] = nameof(ContentScheduleAction.Expire)
+                });
             }
 
             artifactJson["Schedule"] = schedule;

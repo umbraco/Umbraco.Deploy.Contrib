@@ -1,16 +1,15 @@
-﻿using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
-using Umbraco.Web.PropertyEditors;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {
     /// <summary>
-    /// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.TextArea" /> and the configuration from Umbraco 7 to <see cref="TextAreaConfiguration" />.
+    /// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.TextArea" />.
     /// </summary>
-    public class TextboxMultipleDataTypeArtifactMigrator : ReplaceDataTypeArtifactMigratorBase<TextAreaConfiguration>
+    public class TextboxMultipleDataTypeArtifactMigrator : ReplaceDataTypeArtifactMigratorBase
     {
         private const string FromEditorAlias = "Umbraco.TextboxMultiple";
 
@@ -21,25 +20,5 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         public TextboxMultipleDataTypeArtifactMigrator(PropertyEditorCollection propertyEditors)
             : base(FromEditorAlias, Constants.PropertyEditors.Aliases.TextArea, propertyEditors)
             => MaxVersion = new SemVersion(3, 0, 0);
-
-        /// <inheritdoc />
-        protected override TextAreaConfiguration MigrateConfiguration(IDictionary<string, object> fromConfiguration)
-        {
-            var toConfiguration = new TextAreaConfiguration();
-
-            if (fromConfiguration.TryGetValue("maxChars", out var maxChars) &&
-                int.TryParse(maxChars?.ToString(), out var maxCharsValue))
-            {
-                toConfiguration.MaxChars = maxCharsValue;
-            }
-
-            if (fromConfiguration.TryGetValue("rows", out var rows) &&
-                int.TryParse(rows?.ToString(), out var rowsValue))
-            {
-                toConfiguration.Rows = rowsValue;
-            }
-
-            return toConfiguration;
-        }
     }
 }

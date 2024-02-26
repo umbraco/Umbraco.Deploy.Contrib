@@ -1,5 +1,7 @@
-﻿using Umbraco.Core;
+using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
+using Umbraco.Web.PropertyEditors;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {

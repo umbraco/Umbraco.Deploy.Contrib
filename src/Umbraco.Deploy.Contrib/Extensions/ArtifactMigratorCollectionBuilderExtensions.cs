@@ -1,4 +1,4 @@
-﻿using Umbraco.Deploy.Contrib.Migrators.Legacy;
+using Umbraco.Deploy.Contrib.Migrators.Legacy;
 using Umbraco.Deploy.Migrators;
 
 namespace Umbraco.Extensions
@@ -19,9 +19,7 @@ namespace Umbraco.Extensions
                 // Release/expire dates to schedule
                 .Append<DocumentArtifactJsonMigrator>()
                 // Allowed at root and child content types to permissions
-                .Append<DocumentTypeArtifactJsonMigrator>()
-                .Append<MediaTypeArtifactJsonMigrator>()
-                .Append<MemberTypeArtifactJsonMigrator>()
+                .Append<ContentTypeArtifactJsonMigrator>()
                 // Data types
                 .Append<CheckBoxListDataTypeArtifactMigrator>()
                 .Append<ColorPickerAliasDataTypeArtifactMigrator>()
@@ -33,16 +31,12 @@ namespace Umbraco.Extensions
                 .Append<DropdownlistMultiplePublishKeysDataTypeArtifactMigrator>()
                 .Append<DropdownlistPublishingKeysDataTypeArtifactMigrator>()
                 .Append<DropDownMultipleDataTypeArtifactMigrator>()
-                .Append<GridDataTypeArtifactMigrator>()
-                .Append<ImageCropperDataTypeArtifactMigrator>()
-                .Append<ListViewDataTypeArtifactMigrator>()
                 .Append<MediaPicker2DataTypeArtifactMigrator>()
                 .Append<MediaPickerDataTypeArtifactMigrator>()
                 .Append<MemberPicker2DataTypeArtifactMigrator>()
                 .Append<MultiNodeTreePicker2DataTypeArtifactMigrator>()
                 .Append<MultiNodeTreePickerDataTypeArtifactMigrator>()
                 .Append<MultipleMediaPickerDataTypeArtifactMigrator>()
-                .Append<NestedContentDataTypeArtifactMigrator>()
                 .Append<NoEditDataTypeArtifactMigrator>()
                 .Append<RadioButtonListDataTypeArtifactMigrator>()
                 .Append<RelatedLinks2DataTypeArtifactMigrator>()

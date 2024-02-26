@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.Models;

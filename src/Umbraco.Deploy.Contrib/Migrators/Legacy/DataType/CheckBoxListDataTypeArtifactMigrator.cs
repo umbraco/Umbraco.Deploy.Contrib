@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
@@ -22,7 +22,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         /// <inheritdoc />
         protected override ValueListConfiguration MigrateConfiguration(IDictionary<string, object> fromConfiguration)
         {
-            var toConfiguration = GetDefaultConfiguration();
+            var toConfiguration = new ValueListConfiguration();
 
             foreach (var (key, value) in fromConfiguration)
             {

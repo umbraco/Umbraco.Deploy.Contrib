@@ -1,4 +1,6 @@
-﻿using Umbraco.Core.PropertyEditors;
+using Umbraco.Core;
+using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {

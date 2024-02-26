@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
+using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
-using Umbraco.Web.PropertyEditors;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {
     /// <summary>
-    /// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="Constants.PropertyEditors.Aliases.MediaPicker" /> editor configuration from Umbraco 7 to <see cref="MediaPickerConfiguration" />.
+    /// Migrates the <see cref="DataTypeArtifact" /> to update the <see cref="Constants.PropertyEditors.Aliases.MediaPicker" /> editor configuration.
     /// </summary>
-    public class MediaPickerDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase<MediaPickerConfiguration>
+    public class MediaPickerDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaPickerDataTypeArtifactMigrator" /> class.
@@ -19,21 +19,16 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
             => MaxVersion = new SemVersion(3, 0, 0);
 
         /// <inheritdoc />
-        protected override MediaPickerConfiguration MigrateConfiguration(IDictionary<string, object> fromConfiguration)
+        protected override IDictionary<string, object> MigrateConfiguration(IDictionary<string, object> fromConfiguration)
         {
-            var toConfiguration = new MediaPickerConfiguration();
-
-            if (fromConfiguration.TryGetValue("startNodeId", out var startNodeId) &&
-               Udi.TryParse(startNodeId?.ToString(), out var udi))
+            if (fromConfiguration.TryGetValue("startNodeId", out var startNodeIdValue) &&
+                (!(startNodeIdValue?.ToString() is string startNodeId) || !Udi.TryParse(startNodeId, out _)))
             {
-                toConfiguration.StartNodeId = udi;
+                // Remove invalid start node ID
+                fromConfiguration.Remove("startNodeId");
             }
 
-            return toConfiguration;
+            return fromConfiguration;
         }
-
-        /// <inheritdoc />
-        protected override MediaPickerConfiguration GetDefaultConfiguration()
-            => new MediaPickerConfiguration();
     }
 }

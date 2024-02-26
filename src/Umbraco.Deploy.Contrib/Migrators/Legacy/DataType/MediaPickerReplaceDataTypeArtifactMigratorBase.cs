@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
-using Umbraco.Web.PropertyEditors;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {
     /// <summary>
-    /// Migrates the <see cref="DataTypeArtifact" /> to replace the editor alias with <see cref="Constants.PropertyEditors.Aliases.MediaPicker" /> and the configuration from Umbraco 7 to <see cref="MediaPickerConfiguration" />.
+    /// Migrates the <see cref="DataTypeArtifact" /> to replace the editor alias with <see cref="Constants.PropertyEditors.Aliases.MediaPicker" /> and update the configuration.
     /// </summary>
-    public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDataTypeArtifactMigratorBase<MediaPickerConfiguration>
+    public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDataTypeArtifactMigratorBase
     {
-        private const string TrueValue = "1";
-
         /// <summary>
         /// Gets a value indicating whether the configuration allows multiple items to be picked.
         /// </summary>
@@ -32,47 +30,28 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
             => MaxVersion = new SemVersion(3, 0, 0);
 
         /// <inheritdoc />
-        protected override MediaPickerConfiguration MigrateConfiguration(IDictionary<string, object> fromConfiguration)
+        protected override IDictionary<string, object> MigrateConfiguration(IDictionary<string, object> configuration)
         {
-            var toConfiguration = new MediaPickerConfiguration()
-            {
-                Multiple = Multiple
-            };
+            configuration["multiPicker"] = Multiple;
 
-            if (fromConfiguration.TryGetValue("multiPicker", out var multiPicker))
+            if (configuration.TryGetValue("startNodeId", out var startNodeIdValue) &&
+                (!(startNodeIdValue?.ToString() is string startNodeId) || !Udi.TryParse(startNodeId, out _)))
             {
-                toConfiguration.Multiple = TrueValue.Equals(multiPicker);
+                // Remove invalid start node ID
+                configuration.Remove("startNodeId");
             }
 
-            if (fromConfiguration.TryGetValue("onlyImages", out var onlyImages))
-            {
-                toConfiguration.OnlyImages = TrueValue.Equals(onlyImages);
-            }
-
-            if (fromConfiguration.TryGetValue("disableFolderSelect", out var disableFolderSelect))
-            {
-                toConfiguration.DisableFolderSelect = TrueValue.Equals(disableFolderSelect);
-            }
-
-            if (fromConfiguration.TryGetValue("startNodeId", out var startNodeId) &&
-               Udi.TryParse(startNodeId?.ToString(), out var udi))
-            {
-                toConfiguration.StartNodeId = udi;
-            }
-
-            if (fromConfiguration.TryGetValue("ignoreUserStartNodes", out var ignoreUserStartNodes))
-            {
-                toConfiguration.IgnoreUserStartNodes = TrueValue.Equals(ignoreUserStartNodes);
-            }
-
-            return toConfiguration;
+            return configuration;
         }
 
         /// <inheritdoc />
-        protected override MediaPickerConfiguration GetDefaultConfiguration(IConfigurationEditor toConfigurationEditor)
+        protected override IDictionary<string, object> GetDefaultConfiguration(IConfigurationEditor toConfigurationEditor)
         {
             var configuration = base.GetDefaultConfiguration(toConfigurationEditor);
-            configuration.Multiple = Multiple;
+            if (configuration != null)
+            {
+                configuration["multiPicker"] = Multiple;
+            }
 
             return configuration;
         }

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Semver;
 using Umbraco.Core;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
@@ -61,7 +62,10 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         protected override DropDownFlexibleConfiguration GetDefaultConfiguration(IConfigurationEditor toConfigurationEditor)
         {
             var configuration = base.GetDefaultConfiguration(toConfigurationEditor);
-            configuration.Multiple = Multiple;
+            if (configuration != null)
+            {
+                configuration.Multiple = Multiple;
+            }
 
             return configuration;
         }

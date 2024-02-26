@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using Semver;
+using Umbraco.Core;
 using Umbraco.Deploy.Artifacts;
 using Umbraco.Deploy.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy
 {
     /// <summary>
-    /// Migrates the <see cref="DataTypeArtifact" /> JSON from Umbraco 7 pre-values to configuration.
+    /// Migrates the <see cref="DataTypeArtifact" /> JSON from Umbraco 7 pre-values to configuration objects/arrays.
     /// </summary>
     public class PreValuesDataTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<DataTypeArtifact>
     {
@@ -19,12 +20,26 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         /// <inheritdoc />
         public override JToken Migrate(JToken artifactJson)
         {
-            var preValues = artifactJson["PreValues"];
-            if (preValues != null)
+            if (artifactJson["PreValues"] is JObject preValues)
             {
-                artifactJson["Configuration"] = preValues;
+                var configuration = new JObject();
 
-                preValues.Remove();
+                foreach (var property in preValues.Properties())
+                {
+                    var propertyValue = property.Value;
+
+                    // Convert pre-value serialized JSON to actual JSON objects/arrays
+                    if (propertyValue.Type == JTokenType.String &&
+                        propertyValue.Value<string>() is string json &&
+                        json.DetectIsJson())
+                    {
+                        propertyValue = JToken.Parse(json);
+                    }
+
+                    configuration.Add(property.Name, propertyValue);
+                }
+
+                artifactJson["Configuration"] = configuration;
             }
 
             return artifactJson;
