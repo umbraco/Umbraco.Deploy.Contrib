@@ -13,7 +13,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         private const string FromEditorAlias = "Umbraco.MediaPicker2";
 
         /// <inheritdoc />
-        protected override bool Multiple => true;
+        protected override bool Multiple => false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MediaPicker2DataTypeArtifactMigrator" /> class.

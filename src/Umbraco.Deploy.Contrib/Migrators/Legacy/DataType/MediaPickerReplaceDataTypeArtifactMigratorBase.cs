@@ -32,7 +32,10 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy
         /// <inheritdoc />
         protected override IDictionary<string, object> MigrateConfiguration(IDictionary<string, object> configuration)
         {
-            configuration["multiPicker"] = Multiple;
+            if (!configuration.ContainsKey("multiPicker"))
+            {
+                configuration["multiPicker"] = Multiple;
+            }
 
             if (configuration.TryGetValue("startNodeId", out var startNodeIdValue) &&
                 (!(startNodeIdValue?.ToString() is string startNodeId) || !Udi.TryParse(startNodeId, out _)))
