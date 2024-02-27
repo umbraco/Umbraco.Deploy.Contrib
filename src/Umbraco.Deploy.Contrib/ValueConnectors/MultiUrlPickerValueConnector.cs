@@ -13,6 +13,7 @@ using Umbraco.Deploy.Core;
 
 namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 {
+    [Obsolete("Deploy 4.9.0 adds an explicit binding to use Umbraco.Deploy.Connectors.ValueConnectors.MultiUrlPickerValueConnector instead to support recursive migrators. This class will be removed in a future version.")]
     public class MultiUrlPickerValueConnector : ValueConnectorBase
     {
         private readonly IEntityService _entityService;

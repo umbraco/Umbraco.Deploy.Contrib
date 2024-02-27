@@ -19,6 +19,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// <summary>
     /// A Deploy connector for BlockEditor based property editors (ie. BlockList)
     /// </summary>
+    [Obsolete("Use Umbraco.Deploy.Connectors.ValueConnectors.BlockValueConnectorBase instead to support recursive migrators. This class will be removed in a future version.")]
     public abstract class BlockEditorValueConnector : ValueConnectorBase
     {
         private readonly IContentTypeService _contentTypeService;

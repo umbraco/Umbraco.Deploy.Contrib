@@ -19,6 +19,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
     /// <summary>
     /// A Deploy connector for the NestedContent property editor
     /// </summary>
+    [Obsolete("Deploy 4.9.0 adds an explicit binding to use Umbraco.Deploy.Connectors.ValueConnectors.NestedContentValueConnector instead to support recursive migrators. This class will be removed in a future version.")]
     public class NestedContentValueConnector : ValueConnectorBase
     {
         private readonly IContentTypeService _contentTypeService;
