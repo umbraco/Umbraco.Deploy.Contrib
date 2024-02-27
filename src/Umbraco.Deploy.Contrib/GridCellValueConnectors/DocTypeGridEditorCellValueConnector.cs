@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Deploy;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -23,7 +24,18 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
 
         private ValueConnectorCollection ValueConnectors => _valueConnectorsLazy.Value;
 
+        [Obsolete("Please use the constructor taking all parameters. This constructor will be removed in a future version.")]
         public DocTypeGridEditorCellValueConnector(ILogger logger, IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
+            : this(
+                  Current.Factory.GetInstance<IEntityService>(),
+                  Current.Factory.GetInstance<ILocalLinkParser>(),
+                  logger,
+                  contentTypeService,
+                  valueConnectors)
+        { }
+
+        public DocTypeGridEditorCellValueConnector(IEntityService entityService, ILocalLinkParser localLinkParser, ILogger logger, IContentTypeService contentTypeService, Lazy<ValueConnectorCollection> valueConnectors)
+            : base(entityService, localLinkParser)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _contentTypeService = contentTypeService ?? throw new ArgumentNullException(nameof(contentTypeService));
@@ -127,11 +139,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.GridCellValueConnectors
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentTypeAlias - {docTypeGridEditorContent.ContentTypeAlias}");
 
             // check if the doc type exist - else abort packaging
-            var contentType = contextCache.GetContentTypeByAlias(_contentTypeService, docTypeGridEditorContent.ContentTypeAlias);
-            if (contentType == null)
-            {
-                throw new InvalidOperationException($"Could not resolve the Content Type for the Doc Type Grid Editor property: {docTypeGridEditorContent.ContentTypeAlias}");
-            }
+            var contentType = contextCache.GetContentTypeByAlias(_contentTypeService, docTypeGridEditorContent.ContentTypeAlias)
+                ?? throw new InvalidOperationException($"Could not resolve the Content Type for the Doc Type Grid Editor property: {docTypeGridEditorContent.ContentTypeAlias}");
 
             _logger.Debug<DocTypeGridEditorCellValueConnector>($"SetValue - ContentType - {contentType}");
 

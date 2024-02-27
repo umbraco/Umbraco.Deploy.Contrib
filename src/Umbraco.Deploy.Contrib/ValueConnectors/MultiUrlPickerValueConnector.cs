@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -64,7 +64,6 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             var valueAsJToken = JToken.Parse(svalue);
-
             if (valueAsJToken is JArray)
             {
                 // Multiple links, parse as JArray
@@ -114,9 +113,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     }
                     else if (isMedia && TryParseJTokenAttr(link, "url", out string url))
                     {
-                        // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on), 
-                        // where you edit a media link, and just hit "Select". 
-                        // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as 
+                        // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on),
+                        // where you edit a media link, and just hit "Select".
+                        // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as
                         // a dependency to the package. If we can't find it, we abort(aka continue)
                         var entry = _mediaService.GetMediaByPath(url);
                         if (entry == null)
@@ -132,6 +131,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         link["url"] = udi.ToString();
                     }
                 }
+
                 return JsonConvert.SerializeObject(links);
             }
 
@@ -145,11 +145,9 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 }
 
                 var isMedia = link["isMedia"] != null;
-                int intId;
-                string url;
-                GuidUdi guidUdi;
+
                 // Only do processing if the Id is set on the element. OR if the url is set and its a media item
-                if (TryParseJTokenAttr(link, "id", out intId))
+                if (TryParseJTokenAttr(link, "id", out int intId))
                 {
                     // Checks weather we are resolving a media item or a document
                     var objectTypeId = isMedia
@@ -169,7 +167,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         link["id"] = udi.ToString();
                     }
                 }
-                else if (TryParseJTokenAttr(link, "udi", out guidUdi))
+                else if (TryParseJTokenAttr(link, "udi", out GuidUdi guidUdi))
                 {
                     if (contextCache.EntityExists(_entityService, guidUdi.Guid))
                     {
@@ -177,11 +175,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         dependencies.Add(new ArtifactDependency(guidUdi, false, ArtifactDependencyMode.Exist));
                     }
                 }
-                else if (isMedia && TryParseJTokenAttr(link, "url", out url))
+                else if (isMedia && TryParseJTokenAttr(link, "url", out string url))
                 {
-                    // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on), 
-                    // where you edit a media link, and just hits "Select". 
-                    // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as 
+                    // This state can happen due to an issue in RJP.MultiUrlPicker(or our linkPicker in RTE which it relies on),
+                    // where you edit a media link, and just hits "Select".
+                    // That will set the id to null, but the url will still be filled. We try to get the media item, and if so add it as
                     // a dependency to the package. If we can't find it, we abort(aka continue)
                     var entry = _mediaService.GetMediaByPath(url);
                     if (entry != null)
@@ -194,10 +192,11 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         link["url"] = udi.ToString();
                     }
                 }
+
                 return JsonConvert.SerializeObject(link);
             }
 
-            //if none of the above...
+            // If none of the above...
             return string.Empty;
         }
 
@@ -209,19 +208,16 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
             }
 
             var valueAsJToken = JToken.Parse(value);
-
             if (valueAsJToken is JArray)
             {
-                //Multiple links, parse as JArray
+                // Multiple links, parse as JArray
                 var links = JsonConvert.DeserializeObject<JArray>(value);
                 if (links != null)
                 {
                     foreach (var link in links)
                     {
-                        GuidUdi udi;
-                        string url;
                         // Only do processing on an item if the Id or the url is set
-                        if (TryParseJTokenAttr(link, "id", out udi))
+                        if (TryParseJTokenAttr(link, "id", out GuidUdi udi))
                         {
                             // Check the type of the link
                             var nodeObjectType = link["isMedia"] != null
@@ -237,15 +233,15 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                                 link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                             }
                         }
-                        else if (TryParseJTokenAttr(link, "url", out url))
+                        else if (TryParseJTokenAttr(link, "url", out string url))
                         {
                             // Check whether the url attribute of the link contains a udi, if so, replace it with the
                             // path to the file, i.e. the regex replaces <udi> with /path/to/file
                             var newUrl = MediaUdiSrcRegex.Replace(url, match =>
                             {
                                 var udiString = match.Groups["udi"].ToString();
-                                GuidUdi foundUdi;
-                                if (GuidUdi.TryParse(udiString, out foundUdi) && foundUdi.EntityType == Constants.UdiEntityType.Media)
+                                if (GuidUdi.TryParse(udiString, out var foundUdi) &&
+                                    foundUdi.EntityType == Constants.UdiEntityType.Media)
                                 {
                                     // (take care of nulls)
                                     var media = _mediaService.GetById(foundUdi.Guid);
@@ -254,23 +250,24 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                                         return media.GetUrl("umbracoFile", _logger);
                                     }
                                 }
+
                                 return string.Empty;
                             });
+
                             link["url"] = newUrl;
                         }
                     }
+
                     value = JsonConvert.SerializeObject(links);
                 }
             }
             else if (valueAsJToken is JObject)
             {
-                //Single link, parse as JToken    
+                // Single link, parse as JToken
                 var link = JsonConvert.DeserializeObject<JToken>(value);
 
-                GuidUdi udi;
-                string url;
                 // Only do processing on an item if the Id or the url is set
-                if (TryParseJTokenAttr(link, "id", out udi))
+                if (TryParseJTokenAttr(link, "id", out GuidUdi udi))
                 {
                     // Check the type of the link
                     var nodeObjectType = link["isMedia"] != null
@@ -286,15 +283,14 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                         link["id"] = idAttempt.Success ? idAttempt.Result : 0;
                     }
                 }
-                else if (TryParseJTokenAttr(link, "url", out url))
+                else if (TryParseJTokenAttr(link, "url", out string url))
                 {
-                    // Check whether the url attribute of the link contains a udi, if so, replace it with the 
+                    // Check whether the url attribute of the link contains a udi, if so, replace it with the
                     // path to the file, i.e. the regex replaces <udi> with /path/to/file
                     var newUrl = MediaUdiSrcRegex.Replace(url, match =>
                     {
                         var udiString = match.Groups["udi"].ToString();
-                        GuidUdi foundUdi;
-                        if (GuidUdi.TryParse(udiString, out foundUdi) &&
+                        if (GuidUdi.TryParse(udiString, out var foundUdi) &&
                             foundUdi.EntityType == Constants.UdiEntityType.Media)
                         {
                             // (take care of nulls)
@@ -307,6 +303,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
 
                         return string.Empty;
                     });
+
                     link["url"] = newUrl;
                 }
 
@@ -323,6 +320,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var val = link[attrName].ToString();
                 return int.TryParse(val, out attrValue);
             }
+
             attrValue = 0;
             return false;
         }
@@ -334,6 +332,7 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                 var val = link[attrName].ToString();
                 return GuidUdi.TryParse(val, out attrValue);
             }
+
             attrValue = null;
             return false;
         }
@@ -349,7 +348,8 @@ namespace Umbraco.Deploy.Contrib.Connectors.ValueConnectors
                     return true;
                 }
             }
-            strAttr = "";
+
+            strAttr = string.Empty;
             return false;
         }
     }

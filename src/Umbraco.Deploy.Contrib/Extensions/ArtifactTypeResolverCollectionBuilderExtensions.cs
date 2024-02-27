@@ -1,4 +1,4 @@
-﻿using Umbraco.Deploy.Contrib.Connectors.Serialization;
+using Umbraco.Deploy.Contrib.Connectors.Serialization;
 using Umbraco.Deploy.Serialization;
 
 namespace Umbraco.Extensions

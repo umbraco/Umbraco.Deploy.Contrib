@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Semver;
 using Umbraco.Deploy.Artifacts.ContentType;
 using Umbraco.Deploy.Migrators;

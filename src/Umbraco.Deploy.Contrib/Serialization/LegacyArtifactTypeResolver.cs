@@ -1,4 +1,4 @@
-﻿using Semver;
+using Semver;
 using Umbraco.Deploy.Serialization;
 
 namespace Umbraco.Deploy.Contrib.Connectors.Serialization
