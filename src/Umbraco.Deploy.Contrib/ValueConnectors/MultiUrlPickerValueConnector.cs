@@ -1,10 +1,10 @@
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
@@ -16,6 +16,11 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.ValueConnectors;
 
+/// <summary>
+/// A Deploy connector for the Umbraco.MultiUrlPicker property editor.
+/// </summary>
+/// <seealso cref="Umbraco.Deploy.Core.Connectors.ValueConnectors.ValueConnectorBase" />
+[Obsolete("Deploy 10.3.0 adds an explicit binding to use Umbraco.Deploy.Infrastructure.Connectors.ValueConnectors.MultiUrlPickerValueConnector instead. This class will be removed in a future version.")]
 public class MultiUrlPickerValueConnector : ValueConnectorBase
 {
     private readonly IEntityService _entityService;
