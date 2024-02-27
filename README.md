@@ -1,6 +1,3 @@
-![Build status](https://umbraco.visualstudio.com/_apis/public/build/definitions/c854e28c-27a5-4caf-a499-67997042aa5e/15/badge)
-[![NuGet release](https://img.shields.io/nuget/v/Umbraco.Deploy.Contrib.svg)](https://www.nuget.org/packages/Umbraco.Deploy.Contrib)
-
 # Umbraco Deploy Contrib
 
 This project contains community contributions for Umbraco Deploy.
