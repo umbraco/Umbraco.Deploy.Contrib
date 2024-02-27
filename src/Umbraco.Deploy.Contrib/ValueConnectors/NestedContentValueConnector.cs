@@ -115,7 +115,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     // key is a system property that is added by NestedContent in Core v7.7
                     // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
+                    {
                         continue;
+                    }
 
                     var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 
@@ -192,7 +194,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                     // key is a system property that is added by NestedContent in Core v7.7
                     // see note in NestedContentValue - leave it unchanged
                     if (key == "key")
+                    {
                         continue;
+                    }
 
                     var innerPropertyType = contentType.CompositionPropertyTypes.FirstOrDefault(x => x.Alias == key);
 

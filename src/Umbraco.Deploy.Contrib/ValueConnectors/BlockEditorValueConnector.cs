@@ -17,7 +17,7 @@ using Umbraco.Extensions;
 namespace Umbraco.Deploy.Contrib.ValueConnectors
 {
     /// <summary>
-    /// A Deploy connector for BlockEditor based property editors (ie. BlockList)
+    /// A Deploy connector for Block Editor based property editors (ie. Block List).
     /// </summary>
     public abstract class BlockEditorValueConnector : ValueConnectorBase
     {
@@ -77,7 +77,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 .ToDictionary(a => a, a =>
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
+                    {
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
+                    }
 
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });
@@ -130,7 +132,7 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
 
             value = JsonConvert.SerializeObject(blockEditorValue);
             _logger.LogDebug("Finished converting {PropertyType} to artifact.", propertyType.Alias);
-            return (string) value;
+            return (string)value;
         }
 
         public override object FromArtifact(string value, IPropertyType propertyType, object currentValue, IContextCache contextCache)
@@ -158,7 +160,9 @@ namespace Umbraco.Deploy.Contrib.ValueConnectors
                 .ToDictionary(a => a, a =>
                 {
                     if (!Guid.TryParse(a, out var keyAsGuid))
+                    {
                         throw new InvalidOperationException($"Could not parse ContentTypeKey as GUID {keyAsGuid}.");
+                    }
 
                     return contextCache.GetContentTypeByKey(_contentTypeService, keyAsGuid);
                 });

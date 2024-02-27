@@ -1,7 +1,9 @@
 The MIT License (MIT)
 
 Copyright &copy; 2016 Umbraco
+
 Copyright &copy; 2016 Our Umbraco and other contributors
+
 Copyright &copy; 2014 Lee Kelleher, Umbrella Inc
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of

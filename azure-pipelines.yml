@@ -1,10 +1,39 @@
-name: $(TeamProject)_$(Build.DefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+trigger:
+  branches:
+    exclude:
+    - 'v2/*'
+    - 'v3/*'
+    - 'v4/*'
+  tags:
+    exclude:
+    - release-2.*
+    - release-3.*
+    - release-4.*
+
+pr:
+  branches:
+    exclude:
+    - 'v2/*'
+    - 'v3/*'
+    - 'v4/*'
 
 parameters:
   - name: cache_nuget
     displayName: Cache NuGet packages
     type: boolean
-    default: true
+    default: false # As long as we're overwriting versions on MyGet, we can't cache NuGet packages by default
+  - name: release_myget
+    displayName: Release to pre-release/nightly MyGet feed
+    type: boolean
+    default: false
+  - name: release_myget_nightly
+    displayName: Release to nightly MyGet feed (instead of pre-release)
+    type: boolean
+    default: false
+  - name: release_nuget
+    displayName: Release to public NuGet feed
+    type: boolean
+    default: false
 
 variables:
   solution: Umbraco.Deploy.Contrib.sln
@@ -50,6 +79,7 @@ stages:
           # Build
           - script: dotnet build $(solution) --configuration $(buildConfiguration) --no-restore -p:ContinuousIntegrationBuild=true
             displayName: Run dotnet build
+            name: build
 
           # Pack
           - script: dotnet pack $(solution) --configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)/nupkg
@@ -110,3 +140,50 @@ stages:
               searchFolder: $(Build.ArtifactStagingDirectory)/tests
               testRunTitle: Unit Tests - $(Agent.OS)
               configuration: $(buildConfiguration)
+
+  - stage: ReleaseMyGet
+    displayName: MyGet release
+    dependsOn: Test
+    condition: and(succeeded(), or(eq(dependencies.Build.outputs['Build.build.NBGV_PublicRelease'], 'True'), ${{ parameters.release_myget }}))
+    jobs:
+      - job:
+        displayName: Release to pre-release/nightly MyGet feed
+        steps:
+          - checkout: none
+          - task: DownloadPipelineArtifact@2
+            displayName: Download nupkg
+            inputs:
+              artifact: nupkg
+              path: $(Build.ArtifactStagingDirectory)/nupkg
+          - task: NuGetCommand@2
+            displayName: NuGet push
+            inputs:
+              command: 'push'
+              packagesToPush: $(Build.ArtifactStagingDirectory)/nupkg/*.nupkg
+              nuGetFeedType: 'external'
+              ${{ if eq(parameters.release_myget_nightly, true) }}:
+                publishFeedCredentials: 'MyGet - Nightly'
+              ${{ else }}:
+                publishFeedCredentials: 'MyGet - Pre-releases'
+
+  - stage: ReleaseNuGet
+    displayName: NuGet release
+    dependsOn: ReleaseMyGet
+    condition: and(succeeded(), or(eq(dependencies.Build.outputs['Build.build.NBGV_PublicRelease'], 'True'), ${{ parameters.release_nuget }}))
+    jobs:
+      - job:
+        displayName: Release to public NuGet feed
+        steps:
+          - checkout: none
+          - task: DownloadPipelineArtifact@2
+            displayName: Download nupkg
+            inputs:
+              artifact: nupkg
+              path: $(Build.ArtifactStagingDirectory)/nupkg
+          - task: NuGetCommand@2
+            displayName: NuGet push
+            inputs:
+              command: 'push'
+              packagesToPush: $(Build.ArtifactStagingDirectory)/nupkg/*.nupkg
+              nuGetFeedType: 'external'
+              publishFeedCredentials: 'NuGet'

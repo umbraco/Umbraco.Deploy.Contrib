@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32819.101
+VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Deploy.Contrib", "src\Umbraco.Deploy.Contrib\Umbraco.Deploy.Contrib.csproj", "{42FB2213-0815-41CD-94F8-DFB0EC1D8061}"
 EndProject
@@ -17,15 +17,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		azure-pipelines.yml = azure-pipelines.yml
 		CONTRIBUTING.md = CONTRIBUTING.md
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
 		icon.png = icon.png
 		LICENSE.md = LICENSE.md
-		NuGet.config = NuGet.config
+		nuget.config = nuget.config
 		README.md = README.md
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A6A24D3F-71EC-4B77-8466-6CCBB69DC2A2}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{71D68BC9-0940-4644-8342-4806401B4ACD}"
+	ProjectSection(SolutionItems) = preProject
+		tests\.editorconfig = tests\.editorconfig
+		tests\codeanalysis.ruleset = tests\codeanalysis.ruleset
+		tests\Directory.Build.props = tests\Directory.Build.props
+		tests\Directory.Packages.props = tests\Directory.Packages.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,7 +53,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{48B09241-9C44-47EF-B4DF-397B39A631DC} = {A6A24D3F-71EC-4B77-8466-6CCBB69DC2A2}
+		{48B09241-9C44-47EF-B4DF-397B39A631DC} = {71D68BC9-0940-4644-8342-4806401B4ACD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20357E31-FA18-4D77-B38B-6C878A179849}
