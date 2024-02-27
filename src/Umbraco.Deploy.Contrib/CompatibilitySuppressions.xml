@@ -1,92 +1,44 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://learn.microsoft.com/en-us/dotnet/fundamentals/package-validation/diagnostic-ids -->
 <Suppressions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Suppression>
-    <DiagnosticId>CP0007</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector.get_PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
-    <DiagnosticId>CP0008</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector.get_PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector.ToArtifact(System.Object,Umbraco.Cms.Core.Models.IPropertyType,System.Collections.Generic.ICollection{Umbraco.Cms.Core.Deploy.ArtifactDependency})</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector.get_PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector.FromArtifact(System.String,Umbraco.Cms.Core.Models.IPropertyType,System.Object)</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>P:Umbraco.Deploy.Contrib.ValueConnectors.BlockEditorValueConnector.PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
-    <DiagnosticId>CP0008</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.BlockListValueConnector</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>P:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector.PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
   </Suppression>
   <Suppression>
-    <DiagnosticId>CP0007</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0008</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector.ToArtifact(System.Object,Umbraco.Cms.Core.Models.IPropertyType,System.Collections.Generic.ICollection{Umbraco.Cms.Core.Deploy.ArtifactDependency})</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.MultiUrlPickerValueConnector.FromArtifact(System.String,Umbraco.Cms.Core.Models.IPropertyType,System.Object)</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0007</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0008</DiagnosticId>
-    <Target>T:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector.ToArtifact(System.Object,Umbraco.Cms.Core.Models.IPropertyType,System.Collections.Generic.ICollection{Umbraco.Cms.Core.Deploy.ArtifactDependency})</Target>
-    <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
-    <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
-    <IsBaselineSuppression>true</IsBaselineSuppression>
-  </Suppression>
-  <Suppression>
-    <DiagnosticId>CP0002</DiagnosticId>
-    <Target>M:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector.FromArtifact(System.String,Umbraco.Cms.Core.Models.IPropertyType,System.Object)</Target>
+    <DiagnosticId>CP0012</DiagnosticId>
+    <Target>P:Umbraco.Deploy.Contrib.ValueConnectors.NestedContentValueConnector.PropertyEditorAliases</Target>
     <Left>lib/net6.0/Umbraco.Deploy.Contrib.dll</Left>
     <Right>lib/net6.0/Umbraco.Deploy.Contrib.dll</Right>
     <IsBaselineSuppression>true</IsBaselineSuppression>
