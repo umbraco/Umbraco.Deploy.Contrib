@@ -12,13 +12,14 @@
     "^refs/heads/main$",
     "^refs/tags/release-"
   ],
+  "release": {
+    "branchName": "release/{version}",
+    "tagName": "release-{version}"
+  },
   "cloudBuild": {
+    "setAllVariables": true,
     "buildNumber": {
       "enabled": true
     }
-  },
-  "release": {
-    "tagName": "release-{version}",
-    "branchName": "release/{version}"
   }
 }

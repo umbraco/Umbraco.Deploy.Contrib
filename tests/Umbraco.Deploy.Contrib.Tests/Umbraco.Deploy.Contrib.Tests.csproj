@@ -1,14 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <RollForward>Major</RollForward>
     <IsTestProject>true</IsTestProject>
     <IsPackable>false</IsPackable>
     <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="Umbraco.Cms.Tests" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Umbraco.Cms.Tests" IncludeAssets="compile" />
     <PackageReference Include="Umbraco.Deploy.Infrastructure" />
   </ItemGroup>
   
