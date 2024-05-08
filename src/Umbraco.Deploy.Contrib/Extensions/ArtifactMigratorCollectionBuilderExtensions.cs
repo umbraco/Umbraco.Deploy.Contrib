@@ -15,11 +15,11 @@ public static class ArtifactMigratorCollectionBuilderExtensions
     public static ArtifactMigratorCollectionBuilder AddLegacyMigrators(this ArtifactMigratorCollectionBuilder artifactMigratorCollectionBuilder)
         => artifactMigratorCollectionBuilder
             // Pre-values to configuration
-            ////.Append<PreValuesDataTypeArtifactJsonMigrator>()
+            .Append<PreValuesDataTypeArtifactJsonMigrator>()
             // Release/expire dates to schedule
-            ////.Append<DocumentArtifactJsonMigrator>()
+            .Append<DocumentArtifactJsonMigrator>()
             // Allowed at root and child content types to permissions
-            ////.Append<ContentTypeArtifactJsonMigrator>()
+            .Append<ContentTypeArtifactJsonMigrator>()
             // Data types
             ////.Append<CheckBoxListDataTypeArtifactMigrator>()
             ////.Append<ColorPickerAliasDataTypeArtifactMigrator>()

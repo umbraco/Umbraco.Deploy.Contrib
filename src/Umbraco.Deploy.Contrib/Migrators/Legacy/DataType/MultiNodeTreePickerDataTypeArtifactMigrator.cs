@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
@@ -25,9 +25,9 @@ public class MultiNodeTreePickerDataTypeArtifactMigrator : DataTypeConfiguration
     protected override IDictionary<string, object?>? MigrateConfiguration(IDictionary<string, object?> fromConfiguration)
     {
         if (fromConfiguration.TryGetValue("startNode", out var startNodeValue) &&
-            startNodeValue is JObject startNode &&
-            startNode["id"] is JValue idValue &&
-            (idValue.Value?.ToString() is not string id || !UdiParser.TryParse(id, out _)))
+            startNodeValue is JsonObject startNode &&
+            startNode["id"] is JsonValue idValue &&
+            (idValue.TryGetValue(out string? id) is false || UdiParser.TryParse(id, out _) is false))
         {
             // Remove invalid start node ID
             startNode.Remove("id");
