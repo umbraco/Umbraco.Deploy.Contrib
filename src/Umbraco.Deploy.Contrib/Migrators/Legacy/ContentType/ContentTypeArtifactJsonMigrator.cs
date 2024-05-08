@@ -1,5 +1,5 @@
 using System;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Deploy.Infrastructure.Artifacts.ContentType;
 using Umbraco.Deploy.Infrastructure.Migrators;
@@ -22,22 +22,13 @@ public class ContentTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<ContentT
         => type.Inherits<ContentTypeArtifactBase>();
 
     /// <inheritdoc />
-    public override JToken Migrate(JToken artifactJson)
+    public override JsonNode Migrate(JsonNode artifactJson)
     {
-        var permissions = new JObject();
-
-        if (artifactJson["AllowedAtRoot"] is JValue allowedAtRootValue &&
-            allowedAtRootValue.Value is not null)
+        artifactJson["Permissions"] = new JsonObject()
         {
-            permissions["AllowedAtRoot"] = allowedAtRootValue;
-        }
-
-        if (artifactJson["AllowedChildContentTypes"] is JArray allowedChildContentTypesToken)
-        {
-            permissions["AllowedChildContentTypes"] = allowedChildContentTypesToken;
-        }
-
-        artifactJson["Permissions"] = permissions;
+            ["AllowedAtRoot"] = artifactJson["AllowedAtRoot"],
+            ["AllowedChildContentTypes"] = artifactJson["AllowedChildContentTypes"],
+        };
 
         return artifactJson;
     }

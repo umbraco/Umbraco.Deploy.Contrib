@@ -6,13 +6,13 @@
   <!-- Global packages (private, build-time packages for all projects) -->
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" />
-    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507" />
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <GlobalPackageReference Include="Umbraco.Code" Version="2.1.0" />
     <GlobalPackageReference Include="Umbraco.GitVersioning.Extensions" Version="0.2.0" />
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[13.0.0, 14)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[13.1.0, 14)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[14.0.0-rc3, 15)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[14.0.0-beta001, 15)" />
   </ItemGroup>
 </Project>

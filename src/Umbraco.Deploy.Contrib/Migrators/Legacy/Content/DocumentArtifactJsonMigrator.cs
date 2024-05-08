@@ -1,4 +1,4 @@
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Deploy.Infrastructure.Artifacts.Content;
@@ -18,25 +18,23 @@ public class DocumentArtifactJsonMigrator : ArtifactJsonMigratorBase<DocumentArt
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    public override JToken Migrate(JToken artifactJson)
+    public override JsonNode Migrate(JsonNode artifactJson)
     {
-        var schedule = new JArray();
+        var schedule = new JsonArray();
 
-        if (artifactJson["ReleaseDate"] is JValue releaseDate &&
-            releaseDate.Value is not null)
+        if (artifactJson["ReleaseDate"] is JsonNode releaseDate)
         {
-            schedule.Add(new JObject()
+            schedule.Add(new JsonObject()
             {
-                ["Date"] = releaseDate.Value<string>(),
+                ["Date"] = releaseDate,
                 ["Culture"] = string.Empty,
                 ["Action"] = nameof(ContentScheduleAction.Release)
             });
         }
 
-        if (artifactJson["ExpireDate"] is JValue expireDate &&
-            expireDate.Value is not null)
+        if (artifactJson["ExpireDate"] is JsonNode expireDate)
         {
-            schedule.Add(new JObject()
+            schedule.Add(new JsonObject()
             {
                 ["Date"] = expireDate,
                 ["Culture"] = string.Empty,

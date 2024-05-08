@@ -482,3 +482,11 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# Build
+/build.out/
+
+# Ignore auto-generated schema
+/tests/*/appsettings-schema.json
+/tests/*/appsettings-schema.*.json
+/tests/*/umbraco-package-schema.json
