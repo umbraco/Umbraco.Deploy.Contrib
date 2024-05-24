@@ -24,7 +24,7 @@ public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : Replace
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override IDictionary<string, object?>? MigrateConfiguration(IDictionary<string, object?> configuration)
+    protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
         if (configuration.TryGetValue("startNodeId", out var startNodeIdValue) &&
             (startNodeIdValue?.ToString() is not string startNodeIdString || !UdiParser.TryParse(startNodeIdString, out _)))
@@ -33,6 +33,6 @@ public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : Replace
             configuration.Remove("startNodeId");
         }
 
-        return base.MigrateConfiguration(configuration);
+        return configuration;
     }
 }

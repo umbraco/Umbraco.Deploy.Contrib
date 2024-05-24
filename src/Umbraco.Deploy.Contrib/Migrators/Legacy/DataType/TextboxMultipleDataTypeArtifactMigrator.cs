@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
@@ -22,4 +23,8 @@ public class TextboxMultipleDataTypeArtifactMigrator : ReplaceDataTypeArtifactMi
     public TextboxMultipleDataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
         : base(FromEditorAlias, Constants.PropertyEditors.Aliases.TextArea, propertyEditors, configurationEditorJsonSerializer)
         => MaxVersion = new SemVersion(3, 0, 0);
+
+    /// <inheritdoc />
+    protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
+        => configuration;
 }

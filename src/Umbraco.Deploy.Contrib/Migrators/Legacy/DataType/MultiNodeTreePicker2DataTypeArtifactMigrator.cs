@@ -26,7 +26,7 @@ public class MultiNodeTreePicker2DataTypeArtifactMigrator : ReplaceDataTypeArtif
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override IDictionary<string, object?>? MigrateConfiguration(IDictionary<string, object?> configuration)
+    protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
         if (configuration.TryGetValue("startNode", out var startNodeValue) &&
             startNodeValue is JsonObject startNode &&
