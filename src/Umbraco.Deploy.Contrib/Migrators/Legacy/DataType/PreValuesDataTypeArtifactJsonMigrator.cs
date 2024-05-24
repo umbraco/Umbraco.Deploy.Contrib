@@ -1,3 +1,4 @@
+using System.Linq;
 using Newtonsoft.Json.Linq;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Deploy.Infrastructure.Artifacts;
@@ -30,10 +31,17 @@ public class PreValuesDataTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<Da
 
                 // Convert pre-value serialized JSON to actual JSON objects/arrays
                 if (propertyValue.Type == JTokenType.String &&
-                    propertyValue.Value<string>() is string json &&
-                    json.DetectIsJson())
+                    propertyValue.Value<string>() is string value)
                 {
-                    propertyValue = JToken.Parse(json);
+                    if (string.IsNullOrEmpty(value))
+                    {
+                        // Skip empty value
+                        continue;
+                    }
+                    else if (value.DetectIsJson())
+                    {
+                        propertyValue = JToken.Parse(value);
+                    }
                 }
 
                 configuration.Add(property.Name, propertyValue);
