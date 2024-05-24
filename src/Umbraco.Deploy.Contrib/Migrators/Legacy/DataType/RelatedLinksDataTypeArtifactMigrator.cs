@@ -7,7 +7,7 @@ using Umbraco.Deploy.Infrastructure.Artifacts;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.MultiUrlPicker" /> and the configuration from Umbraco 7 to <see cref="MultiUrlPickerConfiguration" />.
+/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.MultiUrlPicker" /> and the configuration from Umbraco 7.
 /// </summary>
 public class RelatedLinksDataTypeArtifactMigrator : MultiUrlPickerReplaceDataTypeArtifactMigratorBase
 {
