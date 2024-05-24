@@ -1,4 +1,3 @@
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Deploy.Infrastructure.Artifacts;
@@ -31,10 +30,17 @@ public class PreValuesDataTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<Da
 
                 // Convert pre-value serialized JSON to actual JSON objects/arrays
                 if (value is JsonValue jsonValue &&
-                    jsonValue.TryGetValue(out string? json) &&
-                    json.DetectIsJson())
+                    jsonValue.TryGetValue(out string? json))
                 {
-                    value = JsonNode.Parse(json);
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        // Skip empty value
+                        continue;
+                    }
+                    else if (json.DetectIsJson())
+                    {
+                        value = JsonNode.Parse(json);
+                    }
                 }
 
                 configuration.Add(preValue.Key, value);
