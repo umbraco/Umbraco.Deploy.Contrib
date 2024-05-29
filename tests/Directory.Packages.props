@@ -4,7 +4,7 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="14.0.0-rc5" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="14.0.0" />
   </ItemGroup>
   <!-- Third-party packages -->
   <ItemGroup>
