@@ -9,7 +9,7 @@ using Umbraco.Deploy.Infrastructure.Migrators;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.TinyMce" />.
+/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.RichText" />.
 /// </summary>
 public class TinyMCEv3DataTypeArtifactMigrator : ReplaceDataTypeArtifactMigratorBase
 {
