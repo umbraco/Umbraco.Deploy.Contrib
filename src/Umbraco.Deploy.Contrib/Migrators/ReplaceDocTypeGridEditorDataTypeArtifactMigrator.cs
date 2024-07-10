@@ -59,20 +59,25 @@ public class ReplaceDocTypeGridEditorDataTypeArtifactMigrator : ReplaceGridDataT
 
         // Migrate DTGE editors
         var allElementTypes = GetAllElementTypes().ToList();
+        var migratedContentTypeKeys = new HashSet<Guid>();
         foreach (IGridEditorConfig gridEditor in GetGridEditors(gridLayouts).Where(IsDocTypeGridEditor))
         {
             foreach (Guid contentElementTypeKey in MigrateDocTypeGridEditor(gridEditor, allElementTypes))
             {
-                yield return (gridEditor.Alias, new BlockGridBlockConfiguration()
+                // Avoid DocTypeGridEditors returning duplicate block configurations for the same content element type
+                if (migratedContentTypeKeys.Add(contentElementTypeKey))
                 {
-                    ContentElementTypeKey = contentElementTypeKey,
-                    Label = gridEditor.Config.TryGetValue("nameTemplate", out var nameTemplateConfig) && nameTemplateConfig is string nameTemplate && !string.IsNullOrEmpty(nameTemplate)
+                    yield return (gridEditor.Alias, new BlockGridBlockConfiguration()
+                    {
+                        ContentElementTypeKey = contentElementTypeKey,
+                        Label = gridEditor.Config.TryGetValue("nameTemplate", out var nameTemplateConfig) && nameTemplateConfig is string nameTemplate && !string.IsNullOrEmpty(nameTemplate)
                         ? nameTemplate
                         : gridEditor.NameTemplate,
-                    EditorSize = gridEditor.Config.TryGetValue("overlaySize", out var overviewSizeConfig) && overviewSizeConfig is string overviewSize && !string.IsNullOrEmpty(overviewSize)
+                        EditorSize = gridEditor.Config.TryGetValue("overlaySize", out var overviewSizeConfig) && overviewSizeConfig is string overviewSize && !string.IsNullOrEmpty(overviewSize)
                         ? overviewSize
                         : null,
-                });
+                    });
+                }
             }
         }
     }
