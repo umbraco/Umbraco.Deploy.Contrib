@@ -26,7 +26,7 @@ public class PreValuesDataTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<Da
 
             foreach (var preValue in preValues)
             {
-                var value = preValue.Value;
+                var value = preValue.Value?.DeepClone();
 
                 // Convert pre-value serialized JSON to actual JSON objects/arrays
                 if (value is JsonValue jsonValue &&

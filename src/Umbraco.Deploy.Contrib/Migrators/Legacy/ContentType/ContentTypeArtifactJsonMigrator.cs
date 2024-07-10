@@ -26,8 +26,8 @@ public class ContentTypeArtifactJsonMigrator : ArtifactJsonMigratorBase<ContentT
     {
         artifactJson["Permissions"] = new JsonObject()
         {
-            ["AllowedAtRoot"] = artifactJson["AllowedAtRoot"],
-            ["AllowedChildContentTypes"] = artifactJson["AllowedChildContentTypes"],
+            ["AllowedAtRoot"] = artifactJson["AllowedAtRoot"]?.DeepClone(),
+            ["AllowedChildContentTypes"] = artifactJson["AllowedChildContentTypes"]?.DeepClone(),
         };
 
         return artifactJson;

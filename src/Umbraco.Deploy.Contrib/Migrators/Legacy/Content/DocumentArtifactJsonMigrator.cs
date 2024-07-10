@@ -26,7 +26,7 @@ public class DocumentArtifactJsonMigrator : ArtifactJsonMigratorBase<DocumentArt
         {
             schedule.Add(new JsonObject()
             {
-                ["Date"] = releaseDate,
+                ["Date"] = releaseDate.DeepClone(),
                 ["Culture"] = string.Empty,
                 ["Action"] = nameof(ContentScheduleAction.Release)
             });
@@ -36,7 +36,7 @@ public class DocumentArtifactJsonMigrator : ArtifactJsonMigratorBase<DocumentArt
         {
             schedule.Add(new JsonObject()
             {
-                ["Date"] = expireDate,
+                ["Date"] = expireDate.DeepClone(),
                 ["Culture"] = string.Empty,
                 ["Action"] = nameof(ContentScheduleAction.Expire)
             });
