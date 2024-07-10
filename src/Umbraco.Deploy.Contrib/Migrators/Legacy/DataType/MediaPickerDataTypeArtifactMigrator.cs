@@ -27,11 +27,18 @@ public class MediaPickerDataTypeArtifactMigrator : DataTypeConfigurationArtifact
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> fromConfiguration)
     {
-        if (fromConfiguration.TryGetValue("startNodeId", out var startNodeIdValue) &&
-            (startNodeIdValue?.ToString() is not string startNodeId || !UdiParser.TryParse(startNodeId, out _)))
+        if (fromConfiguration.TryGetValue("startNodeId", out var startNodeIdValue))
         {
-            // Remove invalid start node ID
-            fromConfiguration.Remove("startNodeId");
+            if (startNodeIdValue?.ToString() is not string startNodeId || !UdiParser.TryParse(startNodeId, out GuidUdi? udi))
+            {
+                // Remove invalid start node ID
+                fromConfiguration.Remove("startNodeId");
+            }
+            else
+            {
+                // Update start node ID to GUID
+                fromConfiguration["startNodeId"] = udi.Guid;
+            }
         }
 
         return fromConfiguration;

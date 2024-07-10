@@ -26,11 +26,18 @@ public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : Replace
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
-        if (configuration.TryGetValue("startNodeId", out var startNodeIdValue) &&
-            (startNodeIdValue?.ToString() is not string startNodeIdString || !UdiParser.TryParse(startNodeIdString, out _)))
+        if (configuration.TryGetValue("startNodeId", out var startNodeIdValue))
         {
-            // Remove invalid start node id
-            configuration.Remove("startNodeId");
+            if (startNodeIdValue?.ToString() is not string startNodeId || !UdiParser.TryParse(startNodeId, out GuidUdi? udi))
+            {
+                // Remove invalid start node ID
+                configuration.Remove("startNodeId");
+            }
+            else
+            {
+                // Update start node ID to GUID
+                configuration["startNodeId"] = udi.Guid;
+            }
         }
 
         return configuration;
