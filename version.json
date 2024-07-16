@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "4.3.0",
+  "version": "4.4.0-rc1",
   "assemblyVersion": {
     "precision": "build"
   },
@@ -12,14 +12,14 @@
     "^refs/heads/main$",
     "^refs/tags/release-"
   ],
-  "release": {
-    "branchName": "release/{version}",
-    "tagName": "release-{version}"
-  },
   "cloudBuild": {
     "setAllVariables": true,
     "buildNumber": {
       "enabled": true
     }
+  },
+  "release": {
+    "tagName": "release-{version}",
+    "branchName": "release/{version}"
   }
 }
