@@ -21,7 +21,6 @@ public static class ArtifactMigratorCollectionBuilderExtensions
             // Allowed at root and child content types to permissions
             .Append<ContentTypeArtifactJsonMigrator>()
             // Data types
-            .Append<CheckBoxListDataTypeArtifactMigrator>()
             .Append<ColorPickerAliasDataTypeArtifactMigrator>()
             .Append<ContentPicker2DataTypeArtifactMigrator>()
             .Append<ContentPickerAliasDataTypeArtifactMigrator>()
@@ -32,13 +31,10 @@ public static class ArtifactMigratorCollectionBuilderExtensions
             .Append<DropdownlistPublishingKeysDataTypeArtifactMigrator>()
             .Append<DropDownMultipleDataTypeArtifactMigrator>()
             .Append<MediaPicker2DataTypeArtifactMigrator>()
-            .Append<MediaPickerDataTypeArtifactMigrator>()
             .Append<MemberPicker2DataTypeArtifactMigrator>()
             .Append<MultiNodeTreePicker2DataTypeArtifactMigrator>()
-            .Append<MultiNodeTreePickerDataTypeArtifactMigrator>()
             .Append<MultipleMediaPickerDataTypeArtifactMigrator>()
             .Append<NoEditDataTypeArtifactMigrator>()
-            .Append<RadioButtonListDataTypeArtifactMigrator>()
             .Append<RelatedLinks2DataTypeArtifactMigrator>()
             .Append<RelatedLinksDataTypeArtifactMigrator>()
             .Append<TextboxDataTypeArtifactMigrator>()

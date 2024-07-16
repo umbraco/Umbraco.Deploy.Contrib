@@ -4,14 +4,13 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Deploy.Infrastructure.Artifacts;
-using Umbraco.Deploy.Infrastructure.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to replace the editor alias with <see cref="Constants.PropertyEditors.Aliases.MediaPicker3" /> and update the configuration.
 /// </summary>
-public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDataTypeArtifactMigratorBase
+public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : LegacyReplaceDataTypeArtifactMigratorBase
 {
     /// <summary>
     /// Gets a value indicating whether the configuration allows multiple items to be picked.
@@ -34,24 +33,15 @@ public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDa
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
-        if (!configuration.ContainsKey("multiPicker"))
+        ReplaceKey(ref configuration, "multiPicker", "multiple");
+        ReplaceIntegerWithBoolean(ref configuration, "multiple");
+        if (!configuration.ContainsKey("multiple"))
         {
-            configuration["multiPicker"] = Multiple;
+            configuration["multiple"] = Multiple;
         }
 
-        if (configuration.TryGetValue("startNodeId", out var startNodeIdValue))
-        {
-            if (startNodeIdValue?.ToString() is not string startNodeId || !UdiParser.TryParse(startNodeId, out GuidUdi? udi))
-            {
-                // Remove invalid start node ID
-                configuration.Remove("startNodeId");
-            }
-            else
-            {
-                // Update start node ID to GUID
-                configuration["startNodeId"] = udi.Guid;
-            }
-        }
+        ReplaceUdiWithGuid(ref configuration, "startNodeId");
+        ReplaceIntegerWithBoolean(ref configuration, Constants.DataTypes.ReservedPreValueKeys.IgnoreUserStartNodes);
 
         return configuration;
     }
@@ -60,7 +50,7 @@ public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDa
     protected override IDictionary<string, object> GetDefaultConfiguration(IConfigurationEditor toConfigurationEditor)
     {
         var configuration = base.GetDefaultConfiguration(toConfigurationEditor);
-        configuration["multiPicker"] = Multiple;
+        configuration["multiple"] = Multiple;
 
         return configuration;
     }

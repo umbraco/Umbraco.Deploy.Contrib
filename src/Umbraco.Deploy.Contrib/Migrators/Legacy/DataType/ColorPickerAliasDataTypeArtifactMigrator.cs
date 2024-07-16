@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
@@ -38,10 +39,16 @@ public class ColorPickerAliasDataTypeArtifactMigrator : ReplaceDataTypeArtifactM
             }
             else if (int.TryParse(key, out _) && value is string itemValue)
             {
+                var hex = itemValue.ToLowerInvariant();
+                if (hex.Length is 3)
+                {
+                    hex = string.Join(string.Empty, hex.Select(c => $"{c}{c}"));
+                }
+
                 toConfiguration.Items.Add(new ColorPickerConfiguration.ColorPickerItem()
                 {
-                    Label = itemValue,
-                    Value = itemValue,
+                    Label = hex,
+                    Value = hex,
                 });
             }
         }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Models;
@@ -12,6 +13,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to replace the configuration of the <see cref="Constants.PropertyEditors.Aliases.RadioButtonList" /> editor from Umbraco 7 to <see cref="ValueListConfiguration" />.
 /// </summary>
+[Obsolete("This has been replaced by DefaultLegacyDataTypeConfigurationArtifactMigrator in Deploy 14.1.0.")]
 public class RadioButtonListDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase<ValueListConfiguration>
 {
     /// <summary>

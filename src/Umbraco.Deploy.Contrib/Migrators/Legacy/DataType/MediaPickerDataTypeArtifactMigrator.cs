@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
+using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
 using Umbraco.Deploy.Infrastructure.Migrators;
 
@@ -11,9 +12,10 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to update the <see cref="EditorAlias" /> editor configuration.
 /// </summary>
+[Obsolete("This has been replaced by ReplaceMediaPickerDataTypeArtifactMigrator and DefaultLegacyDataTypeConfigurationArtifactMigrator in Deploy.")]
 public class MediaPickerDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase
 {
-    private const string EditorAlias = "Umbraco.MediaPicker"; // TODO: Use DeployConstants.PropertyEditors.Legacy.Aliases.MediaPicker once made public
+    private const string EditorAlias = DeployConstants.PropertyEditors.Legacy.Aliases.MediaPicker;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MediaPickerDataTypeArtifactMigrator" /> class.
@@ -26,21 +28,5 @@ public class MediaPickerDataTypeArtifactMigrator : DataTypeConfigurationArtifact
 
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> fromConfiguration)
-    {
-        if (fromConfiguration.TryGetValue("startNodeId", out var startNodeIdValue))
-        {
-            if (startNodeIdValue?.ToString() is not string startNodeId || !UdiParser.TryParse(startNodeId, out GuidUdi? udi))
-            {
-                // Remove invalid start node ID
-                fromConfiguration.Remove("startNodeId");
-            }
-            else
-            {
-                // Update start node ID to GUID
-                fromConfiguration["startNodeId"] = udi.Guid;
-            }
-        }
-
-        return fromConfiguration;
-    }
+        => fromConfiguration;
 }

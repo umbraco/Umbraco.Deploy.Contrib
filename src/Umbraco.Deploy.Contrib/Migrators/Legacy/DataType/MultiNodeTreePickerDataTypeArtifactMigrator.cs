@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Text.Json.Nodes;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
@@ -12,6 +12,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to update the <see cref="Constants.PropertyEditors.Aliases.MultiNodeTreePicker" /> editor configuration.
 /// </summary>
+[Obsolete("This has been replaced by DefaultLegacyDataTypeConfigurationArtifactMigrator in Deploy 14.1.0.")]
 public class MultiNodeTreePickerDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase
 {
     /// <summary>
@@ -25,16 +26,5 @@ public class MultiNodeTreePickerDataTypeArtifactMigrator : DataTypeConfiguration
 
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> fromConfiguration)
-    {
-        if (fromConfiguration.TryGetValue("startNode", out var startNodeValue) &&
-            startNodeValue is JsonObject startNode &&
-            startNode["id"] is JsonValue idValue &&
-            (idValue.TryGetValue(out string? id) is false || UdiParser.TryParse(id, out _) is false))
-        {
-            // Remove invalid start node ID
-            startNode.Remove("id");
-        }
-
-        return fromConfiguration;
-    }
+        => fromConfiguration;
 }
