@@ -3,6 +3,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
+using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
 using Umbraco.Deploy.Infrastructure.Migrators;
 
@@ -21,7 +22,7 @@ public class MemberPicker2DataTypeArtifactMigrator : ReplaceDataTypeArtifactMigr
     /// <param name="propertyEditors">The property editors.</param>
     /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
     public MemberPicker2DataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.MemberPicker, propertyEditors, configurationEditorJsonSerializer)
+        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.MemberPicker, DeployConstants.PropertyEditors.UiAliases.MemberPicker, propertyEditors, configurationEditorJsonSerializer)
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />

@@ -20,10 +20,11 @@ public abstract class LegacyReplaceDataTypeArtifactMigratorBase : ReplaceDataTyp
     /// </summary>
     /// <param name="fromEditorAlias">The editor alias to migrate from.</param>
     /// <param name="toEditorAlias">The editor alias to migrate to.</param>
+    /// <param name="toEditorUiAlias">The editor UI alias to migrate to.</param>
     /// <param name="propertyEditors">The property editors.</param>
     /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
-    protected LegacyReplaceDataTypeArtifactMigratorBase(string fromEditorAlias, string toEditorAlias, PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(fromEditorAlias, toEditorAlias, propertyEditors, configurationEditorJsonSerializer)
+    protected LegacyReplaceDataTypeArtifactMigratorBase(string fromEditorAlias, string toEditorAlias, string toEditorUiAlias, PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+        : base(fromEditorAlias, toEditorAlias, toEditorUiAlias, propertyEditors, configurationEditorJsonSerializer)
         => _configurationEditorJsonSerializer = configurationEditorJsonSerializer;
 
     /// <summary>

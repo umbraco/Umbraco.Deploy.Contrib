@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
@@ -46,7 +47,7 @@ public class MultiNodeTreePicker2DataTypeArtifactMigrator : LegacyReplaceDataTyp
     /// <param name="mediaTypeService">The media type service.</param>
     /// <param name="memberTypeService">The member type service.</param>
     public MultiNodeTreePicker2DataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer, IContentTypeService contentTypeService, IMediaTypeService mediaTypeService, IMemberTypeService memberTypeService)
-        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.MultiNodeTreePicker, propertyEditors, configurationEditorJsonSerializer)
+        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.MultiNodeTreePicker, DeployConstants.PropertyEditors.UiAliases.ContentPicker, propertyEditors, configurationEditorJsonSerializer)
     {
         _contentTypeService = contentTypeService;
         _mediaTypeService = mediaTypeService;
