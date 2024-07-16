@@ -57,12 +57,12 @@
       },
       "Umbraco.Deploy.Infrastructure": {
         "type": "Direct",
-        "requested": "[13.1.0, 14.0.0)",
-        "resolved": "13.1.0",
-        "contentHash": "LS2RJC4znoS4FvZEuDD0Fw8tdOhP0nAf4HYoCRirPNfaP4GOt5/jjTxr6TyF6nJr2JPXr9qEE40DoOC5+uXMLg==",
+        "requested": "[13.2.0-rc1, 14.0.0)",
+        "resolved": "13.2.0-rc1",
+        "contentHash": "VhVsKrkpxreisA4JWVD9HnPsjaYckHZbA4ED+OSVlwa9AmwNRXAsoRtaZqaEDuxMY3fzZxZRpihBFzIIDxuosg==",
         "dependencies": {
           "Umbraco.Cms.Web.BackOffice": "[13.0.0, 14.0.0)",
-          "Umbraco.Deploy.Core": "[13.1.0, 14.0.0)"
+          "Umbraco.Deploy.Core": "[13.2.0-rc1, 14.0.0)"
         }
       },
       "Umbraco.GitVersioning.Extensions": {
@@ -2749,8 +2749,8 @@
       },
       "Umbraco.Deploy.Core": {
         "type": "Transitive",
-        "resolved": "13.1.0",
-        "contentHash": "UnXxci5sanYHLTABTjUdYLkKuRaoQPYS9lp/nZ1r8h+OcDo/h4gES6VnS1OFE8XAZRanae9IqyT1TtMTReNUoQ==",
+        "resolved": "13.2.0-rc1",
+        "contentHash": "y9dkLU297uLGhzRB1A32DjFbMZoySM4TtcC/Jq2gvJw4uds3S5T0pfXgI+lBGaEbg/oRPtAr+0OHXugVYXM1Ag==",
         "dependencies": {
           "Umbraco.Cms.Core": "[13.0.0, 14.0.0)"
         }
@@ -2759,7 +2759,7 @@
         "type": "Project",
         "dependencies": {
           "Umbraco.Cms.Web.Common": "[13.0.0, 14.0.0)",
-          "Umbraco.Deploy.Infrastructure": "[13.1.0, 14.0.0)"
+          "Umbraco.Deploy.Infrastructure": "[13.2.0-rc1, 14.0.0)"
         }
       },
       "Moq": {
