@@ -3,6 +3,7 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
+using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
 using Umbraco.Deploy.Infrastructure.Migrators;
 
@@ -28,7 +29,7 @@ public abstract class MediaPickerReplaceDataTypeArtifactMigratorBase : ReplaceDa
     /// <param name="propertyEditors">The property editors.</param>
     /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
     protected MediaPickerReplaceDataTypeArtifactMigratorBase(string fromEditorAlias, PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(fromEditorAlias, Constants.PropertyEditors.Aliases.MediaPicker3, propertyEditors, configurationEditorJsonSerializer)
+        : base(fromEditorAlias, Constants.PropertyEditors.Aliases.MediaPicker3, DeployConstants.PropertyEditors.UiAliases.MediaPicker, propertyEditors, configurationEditorJsonSerializer)
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
