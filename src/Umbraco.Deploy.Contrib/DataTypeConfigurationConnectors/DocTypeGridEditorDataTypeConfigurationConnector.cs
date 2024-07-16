@@ -4,21 +4,22 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Umbraco.Core;
-using Umbraco.Core.Configuration.Grid;
-using Umbraco.Core.Deploy;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
-using Umbraco.Deploy.Connectors.DataTypeConfigurationConnectors;
-using Umbraco.Deploy.Core;
-using Umbraco.Web.PropertyEditors;
+using Umbraco.Cms.Core;
+using Umbraco.Cms.Core.Configuration.Grid;
+using Umbraco.Cms.Core.Deploy;
+using Umbraco.Cms.Core.Models;
+using Umbraco.Cms.Core.PropertyEditors;
+using Umbraco.Cms.Core.Serialization;
+using Umbraco.Cms.Core.Services;
+using Umbraco.Deploy.Infrastructure.Connectors.DataTypeConfigurationConnectors;
+using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.DataTypeConfigurationConnectors
 {
     /// <summary>
     /// Implements a Grid layout data type configuration connector supporting DocTypeGridEditor.
     /// </summary>
-    public class DocTypeGridEditorDataTypeConfigurationConnector : DataTypeConfigurationConnectorBase2
+    public class DocTypeGridEditorDataTypeConfigurationConnector : DataTypeConfigurationConnectorBase
     {
         private readonly IGridConfig _gridConfig;
         private readonly IContentTypeService _contentTypeService;
@@ -34,20 +35,22 @@ namespace Umbraco.Deploy.Contrib.DataTypeConfigurationConnectors
         /// </summary>
         /// <param name="gridConfig">The grid configuration.</param>
         /// <param name="contentTypeService">The content type service.</param>
-        public DocTypeGridEditorDataTypeConfigurationConnector(IGridConfig gridConfig, IContentTypeService contentTypeService)
+        /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
+        public DocTypeGridEditorDataTypeConfigurationConnector(IGridConfig gridConfig, IContentTypeService contentTypeService, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
+            : base(configurationEditorJsonSerializer)
         {
             _gridConfig = gridConfig;
             _contentTypeService = contentTypeService;
         }
 
         /// <inheritdoc />
-        public override string ToArtifact(IDataType dataType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
+        public override string? ToArtifact(IDataType dataType, ICollection<ArtifactDependency> dependencies, IContextCache contextCache)
         {
             if (dataType.ConfigurationAs<GridConfiguration>() is GridConfiguration gridConfiguration &&
                 gridConfiguration.Items?.ToObject<GridConfigurationItems>() is GridConfigurationItems gridConfigurationItems)
             {
                 // Get all element types (when needed)
-                var allElementTypes = new Lazy<IEnumerable<IContentType>>(() => _contentTypeService.GetAll().Where(x => x.IsElement).ToList());
+                var allElementTypes = new Lazy<IEnumerable<IContentType>>(() => _contentTypeService.GetAllElementTypes().Where(x => x.IsElement).ToList());
 
                 // Process DTGE editors
                 foreach (var gridEditor in GetGridEditors(gridConfigurationItems).Where(IsDocTypeGridEditor))
