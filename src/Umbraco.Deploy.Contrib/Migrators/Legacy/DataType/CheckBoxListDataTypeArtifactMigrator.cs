@@ -11,8 +11,6 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="Constants.PropertyEditors.Aliases.CheckBoxList" /> editor configuration from Umbraco 7 to <see cref="ValueListConfiguration" />.
 /// </summary>
-/// <remarks>
-/// </remarks>
 public class CheckBoxListDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase<ValueListConfiguration>
 {
     /// <summary>
