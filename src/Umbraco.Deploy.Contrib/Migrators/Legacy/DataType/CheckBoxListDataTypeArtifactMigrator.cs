@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -14,7 +13,6 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// </summary>
 /// <remarks>
 /// </remarks>
-[Obsolete("This has been replaced by DefaultLegacyDataTypeConfigurationArtifactMigrator in Deploy 14.1.0.")]
 public class CheckBoxListDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase<ValueListConfiguration>
 {
     /// <summary>
