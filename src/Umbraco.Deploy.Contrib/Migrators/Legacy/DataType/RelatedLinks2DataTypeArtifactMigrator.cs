@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Serialization;
@@ -21,8 +20,4 @@ public class RelatedLinks2DataTypeArtifactMigrator : MultiUrlPickerReplaceDataTy
     public RelatedLinks2DataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
         : base(FromEditorAlias, propertyEditors, configurationEditorJsonSerializer)
     { }
-
-    /// <inheritdoc />
-    protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
-        => configuration;
 }
