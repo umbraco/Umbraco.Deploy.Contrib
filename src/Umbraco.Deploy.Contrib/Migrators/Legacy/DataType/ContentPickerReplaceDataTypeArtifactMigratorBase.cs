@@ -5,14 +5,13 @@ using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
-using Umbraco.Deploy.Infrastructure.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to replace the editor alias with <see cref="Constants.PropertyEditors.Aliases.ContentPicker" /> and update the configuration.
 /// </summary>
-public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : ReplaceDataTypeArtifactMigratorBase
+public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : LegacyReplaceDataTypeArtifactMigratorBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="ContentPickerReplaceDataTypeArtifactMigratorBase" /> class.
@@ -27,12 +26,9 @@ public abstract class ContentPickerReplaceDataTypeArtifactMigratorBase : Replace
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
-        if (configuration.TryGetValue("startNodeId", out var startNodeIdValue) &&
-            (startNodeIdValue?.ToString() is not string startNodeIdString || !UdiParser.TryParse(startNodeIdString, out _)))
-        {
-            // Remove invalid start node id
-            configuration.Remove("startNodeId");
-        }
+        ReplaceIntegerWithBoolean(ref configuration, Constants.DataTypes.ReservedPreValueKeys.IgnoreUserStartNodes);
+        ReplaceUdiWithGuid(ref configuration, "startNodeId");
+        ReplaceIntegerWithBoolean(ref configuration, "showOpenButton");
 
         return configuration;
     }

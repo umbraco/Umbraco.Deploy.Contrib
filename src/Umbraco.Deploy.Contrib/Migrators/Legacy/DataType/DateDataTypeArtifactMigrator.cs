@@ -5,14 +5,13 @@ using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
-using Umbraco.Deploy.Infrastructure.Migrators;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
 /// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.DateTime" />.
 /// </summary>
-public class DateDataTypeArtifactMigrator : ReplaceDataTypeArtifactMigratorBase
+public class DateDataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMigratorBase
 {
     private const string FromEditorAlias = "Umbraco.Date";
 
@@ -27,5 +26,10 @@ public class DateDataTypeArtifactMigrator : ReplaceDataTypeArtifactMigratorBase
 
     /// <inheritdoc />
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
-        => configuration;
+    {
+        ReplaceIntegerWithBoolean(ref configuration, "offsetTime");
+        ReplaceIntegerWithBoolean(ref configuration, "defaultEmpty");
+
+        return configuration;
+    }
 }

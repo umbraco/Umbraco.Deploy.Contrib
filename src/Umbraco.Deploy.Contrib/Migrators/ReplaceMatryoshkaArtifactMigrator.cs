@@ -1,12 +1,12 @@
-using System.Linq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Deploy.Core.Migrators;
 using Umbraco.Deploy.Infrastructure.Artifacts;
 using Umbraco.Deploy.Infrastructure.Artifacts.ContentType;
-using System.Collections.Generic;
 using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Migrators;
