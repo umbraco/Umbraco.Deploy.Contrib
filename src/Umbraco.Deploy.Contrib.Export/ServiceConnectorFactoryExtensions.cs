@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
+using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Deploy;
+using Umbraco.Core.Logging;
 using Umbraco.Deploy.ServiceConnectors;
 
 namespace UmbracoDeploy.Contrib.Export
@@ -16,6 +18,8 @@ namespace UmbracoDeploy.Contrib.Export
                 {
                     foreach (var udi in udiByType)
                     {
+                        LogHelper.Info<Log>($"Getting Artifact: {udi}");
+
                         if (serviceConnector.GetArtifact(udi) is IArtifact artifact)
                         {
                             yield return artifact;
@@ -34,6 +38,8 @@ namespace UmbracoDeploy.Contrib.Export
                     foreach (var udi in udiByType)
                     {
                         var namedUdiRange = serviceConnector.GetRange(udi, selector);
+
+                        LogHelper.Info<Log>($"Getting Artifacts for named range: {namedUdiRange}");
 
                         foreach (var artifact in serviceConnector.GetArtifacts(namedUdiRange))
                         {
