@@ -44,8 +44,6 @@ public static class ArtifactMigratorCollectionBuilderExtensions
             .Append<TextboxDataTypeArtifactMigrator>()
             .Append<TextboxMultipleDataTypeArtifactMigrator>()
             .Append<TinyMCEv3DataTypeArtifactMigrator>()
-            // Property values
-            .Append<CheckBoxListPropertyValueArtifactMigrator>()
-            .Append<DropDownListFlexiblePropertyValueArtifactMigrator>()
-            .Append<RadioButtonListPropertyValueArtifactMigrator>();
+            // Add prefixes to pre-value property editor aliases, triggering property type migrators
+            .Append<PrevalueArtifactMigrator>();
 }
