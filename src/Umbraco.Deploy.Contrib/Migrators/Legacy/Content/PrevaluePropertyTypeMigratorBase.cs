@@ -28,10 +28,20 @@ public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBas
     /// <summary>
     /// Initializes a new instance of the <see cref="PrevaluePropertyTypeMigratorBase" /> class.
     /// </summary>
-    /// <param name="editorAlias">The editor alias.</param>
+    /// <param name="editorAlias">The editor alias (without the prefix added by <see cref="PrevalueArtifactMigrator" />).</param>
     /// <param name="jsonSerializer">The JSON serializer.</param>
     protected PrevaluePropertyTypeMigratorBase(string editorAlias, IJsonSerializer jsonSerializer)
-        : base(EditorAliasPrefix + editorAlias, editorAlias)
+        : this(EditorAliasPrefix + editorAlias, editorAlias, jsonSerializer)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PrevaluePropertyTypeMigratorBase" /> class.
+    /// </summary>
+    /// <param name="fromEditorAlias">The editor alias to migrate from.</param>
+    /// <param name="toEditorAlias">The editor alias to migrate to.</param>
+    /// <param name="jsonSerializer">The JSON serializer.</param>
+    protected PrevaluePropertyTypeMigratorBase(string fromEditorAlias, string toEditorAlias, IJsonSerializer jsonSerializer)
+        : base(fromEditorAlias, toEditorAlias)
         => _jsonSerializer = jsonSerializer;
 
     /// <inheritdoc />

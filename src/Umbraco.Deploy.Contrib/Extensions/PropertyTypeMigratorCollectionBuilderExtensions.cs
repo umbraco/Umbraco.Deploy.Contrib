@@ -15,6 +15,10 @@ public static class PropertyTypeMigratorCollectionBuilderExtensions
         => propertyTypeMigratorCollectionBuilder
             // Pre-values to a single value or JSON array
             .Append<CheckBoxListPropertyTypeMigrator>()
+            .Append<DropDownPropertyTypeMigrator>()
             .Append<DropDownListFlexiblePropertyTypeMigrator>()
+            .Append<DropdownlistMultiplePublishKeysPropertyTypeMigrator>()
+            .Append<DropdownlistPublishingKeysPropertyTypeMigrator>()
+            .Append<DropDownMultiplePropertyTypeMigrator>()
             .Append<RadioButtonListPropertyTypeMigrator>();
 }
