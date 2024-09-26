@@ -1,3 +1,4 @@
+using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -7,8 +8,9 @@ using Umbraco.Deploy.Infrastructure.Artifacts.Content;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the <see cref="PropertyValueWithSegments" /> using the <see cref="Constants.PropertyEditors.Aliases.RadioButtonList" /> editor from the <see cref="ContentArtifactBase" /> containing prevalues (seperated by <see cref="PrevaluePropertyValueArtifactMigratorBase.Delimiter" />) from Umbraco 7 to a JSON array.
+/// Migrates the <see cref="PropertyValueWithSegments" /> using the <see cref="Constants.PropertyEditors.Aliases.RadioButtonList" /> editor from the <see cref="ContentArtifactBase" /> containing prevalues (seperated by <see cref="PrevaluePropertyValueArtifactMigratorBase.Delimiter" />) from Umbraco 7 to a single value.
 /// </summary>
+[Obsolete("Migrating property values in an artifact migrator does not support nested/recursive properties. Use the PrevalueArtifactMigrator and RadioButtonListPropertyTypeMigrator instead. This class will be removed in a future version.")]
 public class RadioButtonListPropertyValueArtifactMigrator : PrevaluePropertyValueArtifactMigratorBase
 {
     /// <inheritdoc />

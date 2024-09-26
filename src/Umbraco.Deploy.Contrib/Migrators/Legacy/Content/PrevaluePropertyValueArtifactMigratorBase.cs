@@ -11,6 +11,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="PropertyValueWithSegments" /> using the specified editor alias from the <see cref="ContentArtifactBase" /> containing prevalues (seperated by <see cref="Delimiter" />) from Umbraco 7 to a single value or JSON array.
 /// </summary>
+[Obsolete("Migrating property values in an artifact migrator does not support nested/recursive properties. Use the PrevalueArtifactMigrator and property type migrators instead. This class will be removed in a future version.")]
 public abstract class PrevaluePropertyValueArtifactMigratorBase : PropertyValueArtifactMigratorBase
 {
     private const string Delimiter = ";;";
