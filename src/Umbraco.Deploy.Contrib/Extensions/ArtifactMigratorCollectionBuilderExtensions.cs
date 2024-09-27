@@ -26,8 +26,8 @@ public static class ArtifactMigratorCollectionBuilderExtensions
             .Append<ContentPicker2DataTypeArtifactMigrator>()
             .Append<ContentPickerAliasDataTypeArtifactMigrator>()
             .Append<DateDataTypeArtifactMigrator>()
+            .Append<DropDownFlexibleDataTypeArtifactMigrator>() // Ensure this is appended before other dropdown migrators to avoid duplicate migration
             .Append<DropDownDataTypeArtifactMigrator>()
-            .Append<DropDownFlexibleDataTypeArtifactMigrator>()
             .Append<DropdownlistMultiplePublishKeysDataTypeArtifactMigrator>()
             .Append<DropdownlistPublishingKeysDataTypeArtifactMigrator>()
             .Append<DropDownMultipleDataTypeArtifactMigrator>()
