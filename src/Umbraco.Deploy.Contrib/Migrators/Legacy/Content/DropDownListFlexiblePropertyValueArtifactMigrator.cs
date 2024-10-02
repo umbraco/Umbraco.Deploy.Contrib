@@ -1,3 +1,4 @@
+using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Cms.Core.Services;
@@ -9,6 +10,7 @@ namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 /// <summary>
 /// Migrates the <see cref="PropertyValueWithSegments" /> using the <see cref="Constants.PropertyEditors.Aliases.DropDownListFlexible" /> editor from the <see cref="ContentArtifactBase" /> containing prevalues (seperated by <see cref="PrevaluePropertyValueArtifactMigratorBase.Delimiter" />) from Umbraco 7 to a JSON array.
 /// </summary>
+[Obsolete("Migrating property values in an artifact migrator does not support nested/recursive properties. Use the PrevalueArtifactMigrator and DropDownListFlexiblePropertyTypeMigrator instead. This class will be removed in a future version.")]
 public class DropDownListFlexiblePropertyValueArtifactMigrator : PrevaluePropertyValueArtifactMigratorBase
 {
     /// <inheritdoc />
