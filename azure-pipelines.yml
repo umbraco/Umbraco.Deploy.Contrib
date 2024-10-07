@@ -61,7 +61,6 @@ stages:
             displayName: Use .NET SDK from global.json
             inputs:
               useGlobalJson: true
-              includePreviewVersions: true
 
           # Cache and restore NuGet packages
           - task: Cache@2
