@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.Deploy;
 using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Serialization;
@@ -8,7 +10,7 @@ using Umbraco.Deploy.Core.Migrators;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the property value containing prevalues (seperated by <see cref="Delimiter" />) from Umbraco 7 to a single value or JSON array.
+/// Migrates the property value containing pre-values (separated by <see cref="Delimiter" />) from Umbraco 7 to a single value or JSON array.
 /// </summary>
 public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBase
 {
@@ -18,10 +20,10 @@ public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBas
     private readonly IJsonSerializer _jsonSerializer;
 
     /// <summary>
-    /// Gets a value indicating whether the property type stores multiple prevalues as a JSON array or single value.
+    /// Gets a value indicating whether the property type stores multiple pre-values as a JSON array or single value.
     /// </summary>
     /// <value>
-    ///   <c>true</c> if multiple prevalues are stored as a JSON array; otherwise, <c>false</c>.
+    ///   <c>true</c> if multiple pre-values are stored as a JSON array; otherwise, <c>false</c>.
     /// </value>
     protected abstract bool Multiple { get; }
 
@@ -45,7 +47,10 @@ public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBas
         => _jsonSerializer = jsonSerializer;
 
     /// <inheritdoc />
-    public override object? Migrate(IPropertyType propertyType, object? value, IDictionary<string, string> propertyEditorAliases, IContextCache contextCache)
+    public override Task<object?> MigrateAsync(IPropertyType propertyType, object? value, IDictionary<string, string> propertyEditorAliases, IContextCache contextCache, CancellationToken cancellationToken = default)
+        => Task.FromResult(Migrate(propertyType));
+
+    private object? Migrate(object? value)
     {
         if (value is not string stringValue)
         {

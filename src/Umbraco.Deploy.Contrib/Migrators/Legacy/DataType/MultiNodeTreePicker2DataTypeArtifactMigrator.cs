@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
 using Umbraco.Cms.Core;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
@@ -22,21 +19,6 @@ public class MultiNodeTreePicker2DataTypeArtifactMigrator : LegacyReplaceDataTyp
     private readonly IContentTypeService _contentTypeService;
     private readonly IMediaTypeService _mediaTypeService;
     private readonly IMemberTypeService _memberTypeService;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MultiNodeTreePicker2DataTypeArtifactMigrator" /> class.
-    /// </summary>
-    /// <param name="propertyEditors">The property editors.</param>
-    /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
-    [Obsolete("Please use the constructor taking all parameters. This constructor will be removed in a future version.")]
-    public MultiNodeTreePicker2DataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : this(
-              propertyEditors,
-              configurationEditorJsonSerializer,
-              StaticServiceProvider.Instance.GetRequiredService<IContentTypeService>(),
-              StaticServiceProvider.Instance.GetRequiredService<IMediaTypeService>(),
-              StaticServiceProvider.Instance.GetRequiredService<IMemberTypeService>())
-    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiNodeTreePicker2DataTypeArtifactMigrator" /> class.
