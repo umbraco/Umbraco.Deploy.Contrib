@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Umbraco.Cms.Core;
@@ -40,14 +42,14 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
         => _jsonSerializer = jsonSerializer;
 
     /// <inheritdoc />
-    protected override BlockItemData? MigrateGridControl(GridValue.GridControl gridControl, BlockGridConfiguration configuration, IContextCache contextCache)
+    protected override async Task<BlockItemData?> MigrateGridControlAsync(GridValue.GridControl gridControl, BlockGridConfiguration configuration, IContextCache contextCache, CancellationToken cancellationToken = default)
     {
         if (TryDeserialize(gridControl.Value, out DocTypeGridEditorValue? value))
         {
-            return MigrateGridControl(value, configuration, contextCache);
+            return await MigrateGridControlAsync(value, configuration, contextCache).ConfigureAwait(false);
         }
 
-        return base.MigrateGridControl(gridControl, configuration, contextCache);
+        return await base.MigrateGridControlAsync(gridControl, configuration, contextCache, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -57,11 +59,11 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
     /// <param name="configuration">The configuration.</param>
     /// <param name="contextCache">The context cache.</param>
     /// <returns>
-    /// The block item data, or <c>null</c> if migration should be skipped.
+    /// A task that represents the asynchronous operation. The task result contains the block item data, or <c>null</c> if migration should be skipped.
     /// </returns>
-    protected virtual BlockItemData? MigrateGridControl(DocTypeGridEditorValue value, BlockGridConfiguration configuration, IContextCache contextCache)
+    protected virtual async Task<BlockItemData?> MigrateGridControlAsync(DocTypeGridEditorValue value, BlockGridConfiguration configuration, IContextCache contextCache)
     {
-        IContentType contentType = GetContentType(value.ContentTypeAlias, configuration, contextCache)
+        IContentType contentType = await GetContentTypeAsync(value.ContentTypeAlias, configuration, contextCache).ConfigureAwait(false)
             ?? throw new InvalidOperationException($"Migrating legacy grid failed, because content type with alias '{value.ContentTypeAlias}' could not be found (in the Block Grid configuration).");
 
         return new BlockItemData()

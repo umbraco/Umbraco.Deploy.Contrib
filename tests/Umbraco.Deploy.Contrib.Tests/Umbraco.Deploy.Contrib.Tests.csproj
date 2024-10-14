@@ -1,9 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RollForward>Major</RollForward>
     <IsTestProject>true</IsTestProject>
-    <IsPackable>false</IsPackable>
-    <EnablePackageValidation>false</EnablePackageValidation>
   </PropertyGroup>
   
   <ItemGroup>
