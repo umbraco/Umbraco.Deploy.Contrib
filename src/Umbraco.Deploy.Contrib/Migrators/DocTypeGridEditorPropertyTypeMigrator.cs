@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -68,9 +69,13 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
 
         return new BlockItemData()
         {
-            Udi = Udi.Create(Constants.UdiEntityType.Element, value.Id),
+            Key = value.Id,
             ContentTypeKey = contentType.Key,
-            RawPropertyValues = value.Value
+            Values = value.Value.Select(x => new BlockPropertyValue()
+            {
+                Alias = x.Key,
+                Value = x.Value,
+            }).ToList(),
         };
     }
 
