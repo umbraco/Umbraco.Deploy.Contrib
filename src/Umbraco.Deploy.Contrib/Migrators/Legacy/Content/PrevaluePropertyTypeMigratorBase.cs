@@ -57,7 +57,7 @@ public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBas
             return null;
         }
 
-        var values = stringValue.Split(new[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries);
+        var values = stringValue.Split(Delimiter, StringSplitOptions.RemoveEmptyEntries);
         if (values.Length == 0)
         {
             return null;
