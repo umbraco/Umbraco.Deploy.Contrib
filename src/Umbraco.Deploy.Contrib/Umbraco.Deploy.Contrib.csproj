@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Common" />
-    <PackageReference Include="Umbraco.Deploy.Infrastructure" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" NoWarn="NU1901,NU1902,NU1903,NU1904" />
+    <PackageReference Include="Umbraco.Deploy.Infrastructure" NoWarn="NU1901,NU1902,NU1903,NU1904" />
   </ItemGroup>
 </Project>
