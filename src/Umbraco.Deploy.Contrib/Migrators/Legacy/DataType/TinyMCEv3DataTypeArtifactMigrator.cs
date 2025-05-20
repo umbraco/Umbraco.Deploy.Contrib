@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
 using Umbraco.Cms.Core.Serialization;
 using Umbraco.Deploy.Core;
 using Umbraco.Deploy.Infrastructure.Artifacts;
-using Umbraco.Extensions;
 
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
@@ -23,7 +21,7 @@ public class TinyMCEv3DataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMi
     /// <param name="propertyEditors">The property editors.</param>
     /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
     public TinyMCEv3DataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.RichText, DeployConstants.PropertyEditors.UiAliases.TinyMce, propertyEditors, configurationEditorJsonSerializer)
+        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.RichText, DeployConstants.PropertyEditors.UiAliases.Tiptap, propertyEditors, configurationEditorJsonSerializer)
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
@@ -32,26 +30,55 @@ public class TinyMCEv3DataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMi
         ReplaceUdiWithGuid(ref configuration, "mediaParentId");
         ReplaceRichTextEditor(ref configuration);
         ReplaceIntegerWithBoolean(ref configuration, Constants.DataTypes.ReservedPreValueKeys.IgnoreUserStartNodes);
-        configuration.TryAdd("toolbar", new[]
+        configuration.TryAdd("extensions", new[]
         {
-            "style",
-            "bold",
-            "italic",
-            "alignleft",
-            "aligncenter",
-            "alignright",
-            "bullist",
-            "numlist",
-            "outdent",
-            "indent",
-            "link",
-            "sourcecode",
-            "umbmediapicker",
-            "umbembeddialog"
+            "Umb.Tiptap.Embed",
+            "Umb.Tiptap.Link",
+            "Umb.Tiptap.Figure",
+            "Umb.Tiptap.Image",
+            "Umb.Tiptap.Subscript",
+            "Umb.Tiptap.Superscript",
+            "Umb.Tiptap.Table",
+            "Umb.Tiptap.Underline",
+            "Umb.Tiptap.TextAlign",
+            "Umb.Tiptap.MediaUpload",
         });
-        configuration.TryAdd("mode", "Classic");
+        configuration.TryAdd("toolbar", new string[][][]
+        {
+            [
+                [
+                    "Umb.Tiptap.Toolbar.SourceEditor",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.Bold",
+                    "Umb.Tiptap.Toolbar.Italic",
+                    "Umb.Tiptap.Toolbar.Underline",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.TextAlignLeft",
+                    "Umb.Tiptap.Toolbar.TextAlignCenter",
+                    "Umb.Tiptap.Toolbar.TextAlignRight",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.BulletList",
+                    "Umb.Tiptap.Toolbar.OrderedList",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.Blockquote",
+                    "Umb.Tiptap.Toolbar.HorizontalRule",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.Link",
+                    "Umb.Tiptap.Toolbar.Unlink",
+                ],
+                [
+                    "Umb.Tiptap.Toolbar.MediaPicker",
+                    "Umb.Tiptap.Toolbar.EmbeddedMedia",
+                ],
+            ],
+        });
         configuration.TryAdd("maxImageSize", 500);
-        configuration.TryAdd("overlaySize", "small");
+        configuration.TryAdd("overlaySize", "medium");
 
         return configuration;
     }
@@ -62,18 +89,12 @@ public class TinyMCEv3DataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMi
         {
             if (richTextEditorConfiguration.Toolbar is { Length: > 0 })
             {
-                // Replace ace with sourcecode
-                configuration["toolbar"] = richTextEditorConfiguration.Toolbar.Select(x => x == "ace" ? "sourcecode" : x).ToArray();
+                // TODO: Map TinyMCE toolbar to Tiptap actions
             }
 
             if (richTextEditorConfiguration.Stylesheets is { Length: > 0 })
             {
                 configuration["stylesheets"] = richTextEditorConfiguration.Stylesheets;
-            }
-
-            if (string.IsNullOrEmpty(richTextEditorConfiguration.Mode) is false)
-            {
-                configuration["mode"] = richTextEditorConfiguration.Mode.ToFirstUpperInvariant();
             }
 
             if (richTextEditorConfiguration.MaxImageSize is not null)
