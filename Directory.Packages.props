@@ -3,6 +3,7 @@
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
+  
   <!-- Global packages (private, build-time packages for all projects) -->
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.7.115" />
@@ -10,9 +11,10 @@
     <GlobalPackageReference Include="Umbraco.Code" Version="2.3.0" />
     <GlobalPackageReference Include="Umbraco.GitVersioning.Extensions" Version="0.2.0" />
   </ItemGroup>
+  
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[16.0.0-rc2, 17)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[16.0.0-rc1, 17)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[16.0.0-rc3, 17)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[16.0.0-rc2, 17)" />
   </ItemGroup>
 </Project>

@@ -4,6 +4,11 @@
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Build.props, $(MSBuildThisFileDirectory)..))" />
 
   <PropertyGroup>
+    <EnableNUnitRunner>true</EnableNUnitRunner>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <!-- Disable packaging and validation for test projects to fix benchmarks (that auto-generates boilerplate code) -->
     <IsPackable>false</IsPackable>
     <BaseEnablePackageValidation>$(EnablePackageValidation)</BaseEnablePackageValidation>
