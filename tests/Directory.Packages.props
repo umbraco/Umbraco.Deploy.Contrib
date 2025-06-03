@@ -5,12 +5,12 @@
   
   <!-- Microsoft packages -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
   </ItemGroup>
 
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="16.0.0-rc3" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="16.0.0-rc4" />
   </ItemGroup>
 
   <!-- Third-party packages -->
