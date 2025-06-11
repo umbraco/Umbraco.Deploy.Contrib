@@ -148,6 +148,8 @@ stages:
     jobs:
       - job:
         displayName: Release to pre-release/nightly MyGet feed
+        pool:
+          vmImage: 'windows-latest' # NuGetCommand@2 is no longer supported on Ubuntu 24.04, so we'll use Windows until an alternative is available
         steps:
           - checkout: none
           - task: DownloadPipelineArtifact@2
@@ -173,6 +175,8 @@ stages:
     jobs:
       - job:
         displayName: Release to public NuGet feed
+        pool:
+          vmImage: 'windows-latest' # NuGetCommand@2 is no longer supported on Ubuntu 24.04, so we'll use Windows until an alternative is available
         steps:
           - checkout: none
           - task: DownloadPipelineArtifact@2
