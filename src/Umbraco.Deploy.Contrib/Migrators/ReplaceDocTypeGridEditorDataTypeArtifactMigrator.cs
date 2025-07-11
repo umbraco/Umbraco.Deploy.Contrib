@@ -92,6 +92,7 @@ public class ReplaceDocTypeGridEditorDataTypeArtifactMigrator : ReplaceGridDataT
 
         if (AddDefaultDocTypeGridEditor)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             yield return new GridEditor()
             {
                 Name = "Doc Type",
@@ -100,6 +101,7 @@ public class ReplaceDocTypeGridEditorDataTypeArtifactMigrator : ReplaceGridDataT
                 Render = "/App_Plugins/DocTypeGridEditor/Render/DocTypeGridEditor.cshtml",
                 Icon = "icon-item-arrangement",
             };
+#pragma warning restore CS0618 // Type or member is obsolete
         }
     }
 

@@ -79,7 +79,9 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
     }
 
     /// <inheritdoc />
+#pragma warning disable CS0618 // Type or member is obsolete
     protected override BlockItemData? MigrateGridControl(GridValue.GridControl gridControl, BlockGridConfiguration configuration, IContextCache contextCache)
+#pragma warning restore CS0618 // Type or member is obsolete
     {
         if (TryDeserialize(gridControl.Value, out DocTypeGridEditorValue? value))
         {
