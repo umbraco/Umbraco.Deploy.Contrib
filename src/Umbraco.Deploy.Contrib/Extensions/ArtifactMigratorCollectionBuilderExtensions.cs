@@ -6,42 +6,45 @@ namespace Umbraco.Extensions;
 public static class ArtifactMigratorCollectionBuilderExtensions
 {
     /// <summary>
-    /// Adds the legacy artifact migrators to allow importing from Umbraco 7.
+    /// Adds/inserts the legacy artifact migrators to allow importing from Umbraco 7.
     /// </summary>
     /// <param name="artifactMigratorCollectionBuilder">The artifact migrator collection builder.</param>
     /// <returns>
     /// The artifact migrator collection builder.
     /// </returns>
+    /// <remarks>
+    /// The legacy migrators are inserted at the beginning of the collection to ensure they run before any other migrators, including default Deploy migrators.
+    /// </remarks>
     public static ArtifactMigratorCollectionBuilder AddLegacyMigrators(this ArtifactMigratorCollectionBuilder artifactMigratorCollectionBuilder)
-        => artifactMigratorCollectionBuilder
+        => artifactMigratorCollectionBuilder.Insert(
             // Pre-values to configuration
-            .Append<PreValuesDataTypeArtifactJsonMigrator>()
+            typeof(PreValuesDataTypeArtifactJsonMigrator),
             // Release/expire dates to schedule
-            .Append<DocumentArtifactJsonMigrator>()
+            typeof(DocumentArtifactJsonMigrator),
             // Allowed at root and child content types to permissions
-            .Append<ContentTypeArtifactJsonMigrator>()
+            typeof(ContentTypeArtifactJsonMigrator),
             // Data types
-            .Append<CheckBoxListDataTypeArtifactMigrator>()
-            .Append<ColorPickerAliasDataTypeArtifactMigrator>()
-            .Append<ContentPicker2DataTypeArtifactMigrator>()
-            .Append<ContentPickerAliasDataTypeArtifactMigrator>()
-            .Append<DateDataTypeArtifactMigrator>()
-            .Append<DropDownFlexibleDataTypeArtifactMigrator>() // Ensure this is appended before other dropdown migrators to avoid duplicate migration
-            .Append<DropDownDataTypeArtifactMigrator>()
-            .Append<DropdownlistMultiplePublishKeysDataTypeArtifactMigrator>()
-            .Append<DropdownlistPublishingKeysDataTypeArtifactMigrator>()
-            .Append<DropDownMultipleDataTypeArtifactMigrator>()
-            .Append<MediaPicker2DataTypeArtifactMigrator>()
-            .Append<MemberPicker2DataTypeArtifactMigrator>()
-            .Append<MultiNodeTreePicker2DataTypeArtifactMigrator>()
-            .Append<MultipleMediaPickerDataTypeArtifactMigrator>()
-            .Append<NoEditDataTypeArtifactMigrator>()
-            .Append<RadioButtonListDataTypeArtifactMigrator>()
-            .Append<RelatedLinks2DataTypeArtifactMigrator>()
-            .Append<RelatedLinksDataTypeArtifactMigrator>()
-            .Append<TextboxDataTypeArtifactMigrator>()
-            .Append<TextboxMultipleDataTypeArtifactMigrator>()
-            .Append<TinyMCEv3DataTypeArtifactMigrator>()
+            typeof(CheckBoxListDataTypeArtifactMigrator),
+            typeof(ColorPickerAliasDataTypeArtifactMigrator),
+            typeof(ContentPicker2DataTypeArtifactMigrator),
+            typeof(ContentPickerAliasDataTypeArtifactMigrator),
+            typeof(DateDataTypeArtifactMigrator),
+            typeof(DropDownFlexibleDataTypeArtifactMigrator), // Ensure this is appended before other dropdown migrators to avoid duplicate migration
+            typeof(DropDownDataTypeArtifactMigrator),
+            typeof(DropdownlistMultiplePublishKeysDataTypeArtifactMigrator),
+            typeof(DropdownlistPublishingKeysDataTypeArtifactMigrator),
+            typeof(DropDownMultipleDataTypeArtifactMigrator),
+            typeof(MediaPicker2DataTypeArtifactMigrator),
+            typeof(MemberPicker2DataTypeArtifactMigrator),
+            typeof(MultiNodeTreePicker2DataTypeArtifactMigrator),
+            typeof(MultipleMediaPickerDataTypeArtifactMigrator),
+            typeof(NoEditDataTypeArtifactMigrator),
+            typeof(RadioButtonListDataTypeArtifactMigrator),
+            typeof(RelatedLinks2DataTypeArtifactMigrator),
+            typeof(RelatedLinksDataTypeArtifactMigrator),
+            typeof(TextboxDataTypeArtifactMigrator),
+            typeof(TextboxMultipleDataTypeArtifactMigrator),
+            typeof(TinyMCEv3DataTypeArtifactMigrator),
             // Add prefixes to pre-value property editor aliases, triggering property type migrators
-            .Append<PrevalueArtifactMigrator>();
+            typeof(PrevalueArtifactMigrator));
 }
