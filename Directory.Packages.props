@@ -14,7 +14,7 @@
   
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[17.0.0-rc3, 18)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[17.0.0-rc2, 18)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[17.0.0-rc4, 18)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[17.0.0-rc3, 18)" />
   </ItemGroup>
 </Project>
