@@ -34,6 +34,10 @@ parameters:
     displayName: Release to public NuGet feed
     type: boolean
     default: false
+  - name: skipSBOM
+    displayName: Skip SBOM Generation
+    type: boolean
+    default: false
 
 variables:
   solution: Umbraco.Deploy.Contrib.sln
@@ -42,6 +46,12 @@ variables:
   DOTNET_GENERATE_ASPNET_CERTIFICATE: false
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # SBOM variables
+  productGroup: 'DXP'
+  productName: 'Umbraco.Deploy.Contrib'
+  productVersion: 'v13'
+  DT_BASE_URL: $(dtBaseUrl)
+  DT_API_KEY: $(dtApiKey)
 
 stages:
   - stage: Build
@@ -140,6 +150,25 @@ stages:
               searchFolder: $(Build.ArtifactStagingDirectory)/tests
               testRunTitle: Unit Tests - $(Agent.OS)
               configuration: $(buildConfiguration)
+
+  # Generate SBOM Stage
+  # Generates Software Bill of Materials for dependency tracking.
+  # Runs in parallel after Build stage completes.
+  # Only runs on */dev branches unless skipSBOM parameter is checked.
+  # Note: DT_API_KEY secret variable must be configured in
+  # Azure DevOps for SBOM upload. If not configured, job
+  # will gracefully skip with a warning message.
+  - stage: GenerateSBOM
+    displayName: Generate SBOM
+    dependsOn: Build
+    condition: |
+      and(
+        succeeded('Build'),
+        endsWith(variables['Build.SourceBranch'], '/dev'),
+        ne('${{ parameters.skipSBOM }}', true)
+      )
+    jobs:
+      - template: devops/cloud-sbom.yml
 
   - stage: ReleaseMyGet
     displayName: MyGet release
