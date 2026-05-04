@@ -6,19 +6,22 @@ namespace Umbraco.Extensions;
 public static class PropertyTypeMigratorCollectionBuilderExtensions
 {
     /// <summary>
-    /// Adds the legacy property type migrators to allow importing from Umbraco 7.
+    /// Adds/inserts the legacy property type migrators to allow importing from Umbraco 7.
     /// </summary>
     /// <returns>
     /// The property type migrator collection builder.
     /// </returns>
+    /// <remarks>
+    /// The legacy migrators are inserted at the beginning of the collection to ensure they run before any other migrators, including default Deploy migrators.
+    /// </remarks>
     public static PropertyTypeMigratorCollectionBuilder AddLegacyMigrators(this PropertyTypeMigratorCollectionBuilder propertyTypeMigratorCollectionBuilder)
-        => propertyTypeMigratorCollectionBuilder
+        => propertyTypeMigratorCollectionBuilder.Insert(
             // Pre-values to a single value or JSON array
-            .Append<CheckBoxListPropertyTypeMigrator>()
-            .Append<DropDownPropertyTypeMigrator>()
-            .Append<DropDownListFlexiblePropertyTypeMigrator>()
-            .Append<DropdownlistMultiplePublishKeysPropertyTypeMigrator>()
-            .Append<DropdownlistPublishingKeysPropertyTypeMigrator>()
-            .Append<DropDownMultiplePropertyTypeMigrator>()
-            .Append<RadioButtonListPropertyTypeMigrator>();
+            typeof(CheckBoxListPropertyTypeMigrator),
+            typeof(DropDownPropertyTypeMigrator),
+            typeof(DropDownListFlexiblePropertyTypeMigrator),
+            typeof(DropdownlistMultiplePublishKeysPropertyTypeMigrator),
+            typeof(DropdownlistPublishingKeysPropertyTypeMigrator),
+            typeof(DropDownMultiplePropertyTypeMigrator),
+            typeof(RadioButtonListPropertyTypeMigrator));
 }

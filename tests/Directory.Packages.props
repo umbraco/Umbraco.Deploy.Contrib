@@ -5,17 +5,17 @@
   
   <!-- Microsoft packages -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
   </ItemGroup>
 
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="16.0.0" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="17.0.0" />
   </ItemGroup>
 
   <!-- Third-party packages -->
   <ItemGroup>
     <PackageVersion Include="Moq" Version="4.17.2" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
   </ItemGroup>
 </Project>
