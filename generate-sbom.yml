@@ -41,10 +41,15 @@ steps:
         --project-version "v${{ parameters.majorVersion }}" \
         --server-url "${{ parameters.baseUrl }}" \
         --api-key "${{ parameters.apiKey }}"
+      # Only flag for publishing once the SBOM file has actually been generated
+      if [ -f "$(Build.ArtifactStagingDirectory)/sbom/sbom.json" ]; then
+        echo "##vso[task.setvariable variable=sbomGenerated]true"
+      fi
     displayName: 'Generate and upload SBOM'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Publish SBOM artifact'
+    condition: and(succeeded(), eq(variables['sbomGenerated'], true))
     inputs:
       targetPath: $(Build.ArtifactStagingDirectory)/sbom
       artifactName: sbom
