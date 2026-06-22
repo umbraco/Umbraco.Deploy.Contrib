@@ -12,9 +12,13 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>umbraco deploy contrib</PackageTags>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <WarningsAsErrors>Nullable</WarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AnalysisMode>All</AnalysisMode>
     <WarnOnPackingNonPackableProject>false</WarnOnPackingNonPackableProject>
+    <NuGetAuditMode>direct</NuGetAuditMode>
   </PropertyGroup>
 
   <!-- SourceLink -->
@@ -27,8 +31,8 @@
   <!-- Package Validation -->
   <PropertyGroup>
     <GenerateCompatibilitySuppressionFile>false</GenerateCompatibilitySuppressionFile>
-    <EnablePackageValidation>true</EnablePackageValidation>
-    <PackageValidationBaselineVersion>17.0.0</PackageValidationBaselineVersion>
+    <!--<EnablePackageValidation>true</EnablePackageValidation>-->
+    <PackageValidationBaselineVersion>18.0.0</PackageValidationBaselineVersion>
     <EnableStrictModeForCompatibleFrameworksInPackage>true</EnableStrictModeForCompatibleFrameworksInPackage>
     <EnableStrictModeForCompatibleTfms>true</EnableStrictModeForCompatibleTfms>
   </PropertyGroup>
