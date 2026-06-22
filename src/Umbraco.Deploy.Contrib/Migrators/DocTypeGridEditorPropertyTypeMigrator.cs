@@ -26,7 +26,7 @@ namespace Umbraco.Deploy.Contrib.Migrators;
 /// <summary>
 /// Migrates the property value when the editor of a property type changed from <see cref="Constants.PropertyEditors.Aliases.Grid" /> to <see cref="Constants.PropertyEditors.Aliases.BlockGrid" /> and supports DocTypeGridEditor.
 /// </summary>
-public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
+public partial class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
 {
     private readonly ILogger<GridPropertyTypeMigrator> _logger;
     private readonly IJsonSerializer _jsonSerializer;
@@ -115,7 +115,7 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
                 if (_propertyEditorAliases is not null &&
                     await _propertyTypeMigrators.TryMigrateAsync(propertyType, value, _propertyEditorAliases, contentType.Alias, contextCache).ConfigureAwait(false) is (true, var migratedValue))
                 {
-                    _logger.LogDebug("Migrated nested/recursive property {PropertyTypeAlias} on {ContentTypeAlias} to {PropertyEditorAlias}: {Value}.", propertyType.Alias, contentType.Alias, propertyType.PropertyEditorAlias, migratedValue);
+                    LogMigratedProperty(propertyType.Alias, contentType.Alias, propertyType.PropertyEditorAlias, migratedValue);
 
                     propertyValue = migratedValue;
                 }
@@ -135,6 +135,9 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
             Values = propertyValues,
         };
     }
+
+    [LoggerMessage(Level = LogLevel.Debug, Message = "Migrated nested/recursive property {PropertyTypeAlias} on {ContentTypeAlias} to {PropertyEditorAlias}: {Value}.")]
+    private partial void LogMigratedProperty(string propertyTypeAlias, string contentTypeAlias, string propertyEditorAlias, object? value);
 
     private bool TryDeserialize(JsonNode? value, [NotNullWhen(true)] out DocTypeGridEditorValue? docTypeGridEditorValue)
     {

@@ -89,3 +89,9 @@ dotnet_diagnostic.SA1135.severity = warning # UsingDirectivesMustBeQualified
 
 dotnet_diagnostic.CA1062.severity = none # ValidateArgumentsOfPublicMethods - redundant with nullable reference types
 dotnet_diagnostic.CA1812.severity = none # AvoidUninstantiatedInternalClasses - false positives for types instantiated via serialization/dependency injection
+
+##########################################
+# LoggerMessage source generator (LOGGENxxx) rule severity
+##########################################
+
+dotnet_diagnostic.LOGGEN036.severity = none # Logging an arbitrary object? value by its default string representation is intentional
