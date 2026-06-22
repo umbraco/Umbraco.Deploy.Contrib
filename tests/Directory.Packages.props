@@ -10,7 +10,7 @@
 
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="17.0.0" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="18.0.0-rc3" />
   </ItemGroup>
 
   <!-- Third-party packages -->
