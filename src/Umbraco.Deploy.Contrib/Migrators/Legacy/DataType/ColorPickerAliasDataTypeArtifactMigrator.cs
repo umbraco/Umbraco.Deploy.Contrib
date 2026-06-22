@@ -28,11 +28,11 @@ public class ColorPickerAliasDataTypeArtifactMigrator : ReplaceDataTypeArtifactM
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override ColorPickerConfiguration? MigrateConfigurationObject(IDictionary<string, object> fromConfiguration)
+    protected override ColorPickerConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
         var toConfiguration = new ColorPickerConfiguration();
 
-        foreach (var (key, value) in fromConfiguration)
+        foreach (var (key, value) in configuration)
         {
             if (key == "useLabel")
             {

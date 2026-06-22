@@ -139,7 +139,7 @@ public class ReplaceDocTypeGridEditorDataTypeArtifactMigrator : ReplaceGridDataT
     /// </remarks>
     protected virtual IEnumerable<IContentType> GetAllElementTypes()
     {
-        static bool IsAllowedElementType(string alias) => !alias.StartsWith("gridLayout_") && !alias.StartsWith("gridRow_") && !alias.StartsWith("gridEditor_") && !alias.StartsWith("gridSettings_");
+        static bool IsAllowedElementType(string alias) => !alias.StartsWith("gridLayout_", StringComparison.Ordinal) && !alias.StartsWith("gridRow_", StringComparison.Ordinal) && !alias.StartsWith("gridEditor_", StringComparison.Ordinal) && !alias.StartsWith("gridSettings_", StringComparison.Ordinal);
 
         return _contentTypeService.GetAllElementTypes().Where(x => IsAllowedElementType(x.Alias));
     }

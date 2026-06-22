@@ -48,9 +48,9 @@ public abstract class PrevaluePropertyTypeMigratorBase : PropertyTypeMigratorBas
 
     /// <inheritdoc />
     public override Task<object?> MigrateAsync(IPropertyType propertyType, object? value, IDictionary<string, string> propertyEditorAliases, IContextCache contextCache, CancellationToken cancellationToken = default)
-        => Task.FromResult(Migrate(value));
+        => Task.FromResult<object?>(Migrate(value));
 
-    private object? Migrate(object? value)
+    private string? Migrate(object? value)
     {
         if (value is not string stringValue)
         {

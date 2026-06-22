@@ -169,7 +169,7 @@ public class DocTypeGridEditorPropertyTypeMigrator : GridPropertyTypeMigrator
         /// The value.
         /// </value>
         [JsonPropertyName("value")]
-        public Dictionary<string, object?> Value { get; set; } = new();
+        public Dictionary<string, object?> Value { get; init; } = new();
 
         /// <summary>
         /// Gets or sets the content type alias.

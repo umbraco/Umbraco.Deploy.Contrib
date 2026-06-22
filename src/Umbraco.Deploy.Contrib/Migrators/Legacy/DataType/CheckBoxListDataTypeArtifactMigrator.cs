@@ -23,11 +23,11 @@ public class CheckBoxListDataTypeArtifactMigrator : DataTypeConfigurationArtifac
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override ValueListConfiguration? MigrateConfigurationObject(IDictionary<string, object> fromConfiguration)
+    protected override ValueListConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
         var toConfiguration = new ValueListConfiguration();
 
-        foreach (var (key, value) in fromConfiguration)
+        foreach (var (key, value) in configuration)
         {
             if (int.TryParse(key, out _) && value is string itemValue)
             {

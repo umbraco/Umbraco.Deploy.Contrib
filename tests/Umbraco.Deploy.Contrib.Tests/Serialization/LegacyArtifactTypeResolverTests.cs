@@ -6,7 +6,7 @@ using Umbraco.Deploy.Contrib.Connectors.Serialization;
 namespace Umbraco.Deploy.Contrib.Tests.Serialization;
 
 [TestFixture]
-internal class LegacyArtifactTypeResolverTests
+internal sealed class LegacyArtifactTypeResolverTests
 {
     private static readonly MethodInfo _resolveTypeNameMethod = typeof(LegacyArtifactTypeResolver)
         .GetMethod("ResolveTypeName", BindingFlags.Instance | BindingFlags.NonPublic)

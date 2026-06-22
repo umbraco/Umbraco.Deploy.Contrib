@@ -25,14 +25,14 @@ public class DropDownFlexibleDataTypeArtifactMigrator : DataTypeConfigurationArt
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override DropDownFlexibleConfiguration? MigrateConfigurationObject(IDictionary<string, object> fromConfiguration)
+    protected override DropDownFlexibleConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
         var toConfiguration = new DropDownFlexibleConfiguration()
         {
             Multiple = true
         };
 
-        foreach (var (key, value) in fromConfiguration)
+        foreach (var (key, value) in configuration)
         {
             if (key == "multiple")
             {

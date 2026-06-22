@@ -35,14 +35,14 @@ public abstract class DropDownReplaceDataTypeArtifactMigratorBase : ReplaceDataT
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
-    protected override DropDownFlexibleConfiguration? MigrateConfigurationObject(IDictionary<string, object> fromConfiguration)
+    protected override DropDownFlexibleConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
         var toConfiguration = new DropDownFlexibleConfiguration()
         {
             Multiple = Multiple
         };
 
-        foreach (var (key, value) in fromConfiguration)
+        foreach (var (key, value) in configuration)
         {
             if (key == "multiple")
             {

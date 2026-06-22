@@ -15,6 +15,20 @@ public class TinyMCEv3DataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMi
 {
     private const string FromEditorAlias = "Umbraco.TinyMCEv3";
 
+    private static readonly string[] DefaultExtensions =
+    [
+        "Umb.Tiptap.Embed",
+        "Umb.Tiptap.Link",
+        "Umb.Tiptap.Figure",
+        "Umb.Tiptap.Image",
+        "Umb.Tiptap.Subscript",
+        "Umb.Tiptap.Superscript",
+        "Umb.Tiptap.Table",
+        "Umb.Tiptap.Underline",
+        "Umb.Tiptap.TextAlign",
+        "Umb.Tiptap.MediaUpload",
+    ];
+
     /// <summary>
     /// Initializes a new instance of the <see cref="TinyMCEv3DataTypeArtifactMigrator" /> class.
     /// </summary>
@@ -30,19 +44,7 @@ public class TinyMCEv3DataTypeArtifactMigrator : LegacyReplaceDataTypeArtifactMi
         ReplaceUdiWithGuid(ref configuration, "mediaParentId");
         ReplaceRichTextEditor(ref configuration);
         ReplaceIntegerWithBoolean(ref configuration, Constants.DataTypes.ReservedPreValueKeys.IgnoreUserStartNodes);
-        configuration.TryAdd("extensions", new[]
-        {
-            "Umb.Tiptap.Embed",
-            "Umb.Tiptap.Link",
-            "Umb.Tiptap.Figure",
-            "Umb.Tiptap.Image",
-            "Umb.Tiptap.Subscript",
-            "Umb.Tiptap.Superscript",
-            "Umb.Tiptap.Table",
-            "Umb.Tiptap.Underline",
-            "Umb.Tiptap.TextAlign",
-            "Umb.Tiptap.MediaUpload",
-        });
+        configuration.TryAdd("extensions", DefaultExtensions);
         configuration.TryAdd("toolbar", new string[][][]
         {
             [

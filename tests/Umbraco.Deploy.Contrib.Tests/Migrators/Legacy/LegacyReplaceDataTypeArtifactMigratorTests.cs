@@ -4,7 +4,7 @@ using Umbraco.Deploy.Contrib.Migrators.Legacy;
 namespace Umbraco.Deploy.Contrib.Tests.Migrators.Legacy;
 
 [TestFixture]
-internal class LegacyReplaceDataTypeArtifactMigratorTests
+internal sealed class LegacyReplaceDataTypeArtifactMigratorTests
 {
     [TestCase("1", true)]
     [TestCase("true", true)]
