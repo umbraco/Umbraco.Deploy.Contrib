@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
@@ -28,6 +29,7 @@ public class ColorPickerAliasDataTypeArtifactMigrator : ReplaceDataTypeArtifactM
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Hex color values are normalized to lowercase by convention, not for security or culture-sensitive comparison.")]
     protected override ColorPickerConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
         var toConfiguration = new ColorPickerConfiguration();

@@ -72,11 +72,8 @@ public abstract class LegacyReplaceDataTypeArtifactMigratorBase : ReplaceDataTyp
         if (configuration.TryGetValue(key, out var value) &&
             value is not bool)
         {
-            configuration[key] = value?.ToString()?.ToLowerInvariant() switch
-            {
-                "1" or "true" => true,
-                _ => false,
-            };
+            var stringValue = value?.ToString();
+            configuration[key] = stringValue == "1" || (bool.TryParse(stringValue, out var booleanValue) && booleanValue);
         }
     }
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.PropertyEditors;
 using Umbraco.Cms.Core.Semver;
@@ -39,6 +40,7 @@ public class MultiNodeTreePicker2DataTypeArtifactMigrator : LegacyReplaceDataTyp
     }
 
     /// <inheritdoc />
+    [SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Tree source type is normalized to lowercase to match the lowercase UDI entity type constants, not for security or display.")]
     protected override IDictionary<string, object>? MigrateConfiguration(IDictionary<string, object> configuration)
     {
         ReplaceTreeSourceIdUdiWithGuid(ref configuration, "startNode", out string? treeSourceType);
