@@ -2,20 +2,17 @@
 <Project>
   <!-- Enable multi-level merging -->
   <Import Project="$([MSBuild]::GetPathOfFileAbove(Directory.Packages.props, $(MSBuildThisFileDirectory)..))" />
-  
   <!-- Microsoft packages -->
   <ItemGroup>
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.2.3" />
   </ItemGroup>
-
+  <!-- Test packages -->
+  <ItemGroup>
+    <PackageVersion Include="NUnit" Version="4.6.1" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
+  </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
     <PackageVersion Include="Umbraco.Cms.Tests" Version="18.0.0-rc3" />
-  </ItemGroup>
-
-  <!-- Third-party packages -->
-  <ItemGroup>
-    <PackageVersion Include="Moq" Version="4.17.2" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="5.2.0" />
   </ItemGroup>
 </Project>
