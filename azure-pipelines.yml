@@ -130,6 +130,10 @@ stages:
             inputs:
               useGlobalJson: true
 
+          # Restore (the test agent differs from the build agent, so the NuGet packages need restoring)
+          - script: dotnet restore $(solution) --locked-mode
+            displayName: Restore NuGet packages
+
           # Test
           - script: dotnet test $(solution) --configuration $(buildConfiguration) --no-build --logger trx --results-directory $(Build.ArtifactStagingDirectory)/tests
             displayName: Run dotnet test
