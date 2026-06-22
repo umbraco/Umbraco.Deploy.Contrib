@@ -82,3 +82,10 @@ dotnet_diagnostic.SA1209.severity = warning # UsingAliasDirectivesMustBePlacedAf
 dotnet_diagnostic.SA1216.severity = warning # UsingStaticDirectivesMustBePlacedAtTheCorrectLocation
 dotnet_diagnostic.SA1133.severity = warning # DoNotCombineAttributes
 dotnet_diagnostic.SA1135.severity = warning # UsingDirectivesMustBeQualified
+
+##########################################
+# .NET code analysis (CAxxxx) rule severity
+##########################################
+
+dotnet_diagnostic.CA1062.severity = none # ValidateArgumentsOfPublicMethods - redundant with nullable reference types
+dotnet_diagnostic.CA1812.severity = none # AvoidUninstantiatedInternalClasses - false positives for types instantiated via serialization/dependency injection
