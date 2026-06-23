@@ -135,7 +135,7 @@ stages:
             displayName: Restore NuGet packages
 
           # Test
-          - script: dotnet test $(solution) --configuration $(buildConfiguration) --no-build --logger trx --results-directory $(Build.ArtifactStagingDirectory)/tests
+          - script: dotnet test --solution $(solution) --configuration $(buildConfiguration) --no-build --results-directory $(Build.ArtifactStagingDirectory)/tests --report-trx
             displayName: Run dotnet test
 
           # Publish
