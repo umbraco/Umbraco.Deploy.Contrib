@@ -13,6 +13,6 @@
   </ItemGroup>
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Tests" Version="18.0.0-rc3" />
+    <PackageVersion Include="Umbraco.Cms.Tests" Version="18.0.0" />
   </ItemGroup>
 </Project>

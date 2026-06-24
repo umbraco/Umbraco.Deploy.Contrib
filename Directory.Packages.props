@@ -12,12 +12,8 @@
   </ItemGroup>
   
   <!-- Umbraco packages -->
-  <PropertyGroup>
-    <UmbracoCmsPackageVersion>[18.0.0-rc3, 19)</UmbracoCmsPackageVersion>
-    <UmbracoDeployPackageVersion>[18.0.0-rc3, 19)</UmbracoDeployPackageVersion>
-  </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="$(UmbracoCmsPackageVersion)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="$(UmbracoDeployPackageVersion)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[18.0.0, 19)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[18.0.0, 19)" />
   </ItemGroup>
 </Project>
