@@ -55,6 +55,7 @@ extends:
   template: devops/templates/azure-pipelines-template.yml@build
   parameters:
     product_name: "Umbraco.Deploy.Contrib"
+    run_tests: skip # This branch has no tests
     cache_nuget: ${{ parameters.cache_nuget }}
     prerelease: ${{ parameters.prerelease }}
     release: ${{ parameters.release }}
