@@ -19,9 +19,14 @@ public static class PropertyTypeMigratorCollectionBuilderExtensions
             // Pre-values to a single value or JSON array
             typeof(CheckBoxListPropertyTypeMigrator),
             typeof(DropDownPropertyTypeMigrator),
+            typeof(DropDownToSingleDropDownPropertyTypeMigrator),
             typeof(DropDownListFlexiblePropertyTypeMigrator),
+            typeof(DropDownListFlexibleToSingleDropDownPropertyTypeMigrator),
             typeof(DropdownlistMultiplePublishKeysPropertyTypeMigrator),
+            typeof(DropdownlistMultiplePublishKeysToSingleDropDownPropertyTypeMigrator),
             typeof(DropdownlistPublishingKeysPropertyTypeMigrator),
+            typeof(DropdownlistPublishingKeysToSingleDropDownPropertyTypeMigrator),
             typeof(DropDownMultiplePropertyTypeMigrator),
+            typeof(DropDownMultipleToSingleDropDownPropertyTypeMigrator),
             typeof(RadioButtonListPropertyTypeMigrator));
 }

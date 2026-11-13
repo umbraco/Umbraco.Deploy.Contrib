@@ -6,7 +6,7 @@ using Umbraco.Deploy.Infrastructure.Artifacts;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.DropDownListFlexible" /> and the configuration from Umbraco 7 to <see cref="DropDownFlexibleConfiguration" />.
+/// Migrates the <see cref="DataTypeArtifact" /> to replace the <see cref="FromEditorAlias" /> editor with <see cref="Constants.PropertyEditors.Aliases.MultipleDropDown" /> and the configuration from Umbraco 7 to <see cref="DropDownFlexibleConfiguration" />.
 /// </summary>
 public class DropdownlistPublishingKeysDataTypeArtifactMigrator : DropDownReplaceDataTypeArtifactMigratorBase
 {

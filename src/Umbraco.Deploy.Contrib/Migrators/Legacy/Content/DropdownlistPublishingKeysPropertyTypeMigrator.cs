@@ -18,6 +18,6 @@ public sealed class DropdownlistPublishingKeysPropertyTypeMigrator : PrevaluePro
     /// </summary>
     /// <param name="jsonSerializer">The JSON serializer.</param>
     public DropdownlistPublishingKeysPropertyTypeMigrator(IJsonSerializer jsonSerializer)
-        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.DropDownListFlexible, jsonSerializer)
+        : base(FromEditorAlias, Constants.PropertyEditors.Aliases.MultipleDropDown, jsonSerializer)
     { }
 }
