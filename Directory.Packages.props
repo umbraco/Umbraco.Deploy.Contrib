@@ -13,7 +13,7 @@
   
   <!-- Umbraco packages -->
   <ItemGroup>
-    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[18.0.0, 19)" />
-    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[18.0.0, 19)" />
+    <PackageVersion Include="Umbraco.Cms.Web.Common" Version="[19.0.0-rc1, 20)" />
+    <PackageVersion Include="Umbraco.Deploy.Infrastructure" Version="[19.0.0-rc1, 20)" />
   </ItemGroup>
 </Project>
