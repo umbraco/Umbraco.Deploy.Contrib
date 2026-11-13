@@ -4,7 +4,7 @@ using Umbraco.Cms.Core.Serialization;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the property value using the <see cref="Constants.PropertyEditors.Aliases.DropDownListFlexible" /> editor containing prevalues (seperated by <see cref="PrevaluePropertyTypeMigratorBase.Delimiter" />) from Umbraco 7 to a JSON array.
+/// Migrates the property value using the <see cref="Constants.PropertyEditors.Aliases.MultipleDropDown" /> editor containing prevalues (seperated by <see cref="PrevaluePropertyTypeMigratorBase.Delimiter" />) from Umbraco 7 to a JSON array.
 /// </summary>
 public sealed class DropDownListFlexiblePropertyTypeMigrator : PrevaluePropertyTypeMigratorBase
 {
@@ -16,6 +16,6 @@ public sealed class DropDownListFlexiblePropertyTypeMigrator : PrevaluePropertyT
     /// </summary>
     /// <param name="jsonSerializer">The JSON serializer.</param>
     public DropDownListFlexiblePropertyTypeMigrator(IJsonSerializer jsonSerializer)
-        : base(Constants.PropertyEditors.Aliases.DropDownListFlexible, jsonSerializer)
+        : base(Constants.PropertyEditors.Aliases.MultipleDropDown, jsonSerializer)
     { }
 }

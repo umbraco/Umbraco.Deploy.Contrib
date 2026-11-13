@@ -23,7 +23,7 @@ public class PrevalueArtifactMigrator : ArtifactMigratorBase<ContentArtifactBase
     public PrevalueArtifactMigrator()
         : this(
               Constants.PropertyEditors.Aliases.CheckBoxList,
-              Constants.PropertyEditors.Aliases.DropDownListFlexible,
+              Constants.PropertyEditors.Aliases.MultipleDropDown,
               Constants.PropertyEditors.Aliases.RadioButtonList)
     { }
 

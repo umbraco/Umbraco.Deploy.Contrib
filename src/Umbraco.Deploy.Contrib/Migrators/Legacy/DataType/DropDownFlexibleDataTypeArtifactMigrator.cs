@@ -9,7 +9,7 @@ using Umbraco.Deploy.Infrastructure.Migrators;
 namespace Umbraco.Deploy.Contrib.Migrators.Legacy;
 
 /// <summary>
-/// Migrates the <see cref="DataTypeArtifact" /> to replace the configuration of the <see cref="Constants.PropertyEditors.Aliases.DropDownListFlexible" /> editor from Umbraco 7 to <see cref="DropDownFlexibleConfiguration" />.
+/// Migrates the <see cref="DataTypeArtifact" /> to replace the configuration of the <see cref="Constants.PropertyEditors.Aliases.MultipleDropDown" /> editor from Umbraco 7 to <see cref="DropDownFlexibleConfiguration" />.
 /// </summary>
 public class DropDownFlexibleDataTypeArtifactMigrator : DataTypeConfigurationArtifactMigratorBase<DropDownFlexibleConfiguration>
 {
@@ -21,30 +21,34 @@ public class DropDownFlexibleDataTypeArtifactMigrator : DataTypeConfigurationArt
     /// <param name="propertyEditors">The property editors.</param>
     /// <param name="configurationEditorJsonSerializer">The configuration editor JSON serializer.</param>
     public DropDownFlexibleDataTypeArtifactMigrator(PropertyEditorCollection propertyEditors, IConfigurationEditorJsonSerializer configurationEditorJsonSerializer)
-        : base(Constants.PropertyEditors.Aliases.DropDownListFlexible, propertyEditors, configurationEditorJsonSerializer)
+        : base(Constants.PropertyEditors.Aliases.MultipleDropDown, propertyEditors, configurationEditorJsonSerializer)
         => MaxVersion = new SemVersion(3, 0, 0);
 
     /// <inheritdoc />
     protected override DropDownFlexibleConfiguration? MigrateConfigurationObject(IDictionary<string, object> configuration)
     {
-        var toConfiguration = new DropDownFlexibleConfiguration()
-        {
-            Multiple = true
-        };
+        var toConfiguration = new DropDownFlexibleConfiguration();
 
         foreach (var (key, value) in configuration)
         {
-            if (key == "multiple")
-            {
-                toConfiguration.Multiple = TrueValue.Equals(value);
-            }
-            else if (int.TryParse(key, out _) && value is string itemValue)
+            if (int.TryParse(key, out _) && value is string itemValue)
             {
                 toConfiguration.Items.Add(itemValue);
             }
         }
 
         return toConfiguration;
+    }
+
+    /// <inheritdoc />
+    protected override IDictionary<string, object> MigrateConfiguration(IDictionary<string, object> configuration, IConfigurationEditor configurationEditor)
+    {
+        var migratedConfiguration = base.MigrateConfiguration(configuration, configurationEditor);
+
+        // Always write an explicit value, because the dropdown migrators that run afterwards treat a missing key as a single value dropdown
+        migratedConfiguration["multiple"] = !configuration.TryGetValue("multiple", out var multiple) || TrueValue.Equals(multiple);
+
+        return migratedConfiguration;
     }
 
     /// <inheritdoc />
