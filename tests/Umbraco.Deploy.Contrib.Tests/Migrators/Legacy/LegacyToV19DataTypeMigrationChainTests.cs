@@ -35,6 +35,7 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         "Umbraco.Deploy.Infrastructure.Migrators.ReplaceSingleUrlPickerDataTypeArtifactMigrator",
         "Umbraco.Deploy.Infrastructure.Migrators.ReplaceSingleDropDownDataTypeArtifactMigrator",
         "Umbraco.Deploy.Infrastructure.Migrators.MultiUrlPickerValidationLimitDataTypeArtifactMigrator",
+        "Umbraco.Deploy.Infrastructure.Migrators.MultiNodeTreePickerValidationLimitDataTypeArtifactMigrator",
     ];
 
     private static readonly string[] _expectedItems = ["a", "b"];
@@ -55,6 +56,7 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
             CreateDataEditor(Constants.PropertyEditors.Aliases.MultipleDropDown, new TestConfigurationEditor<DropDownFlexibleConfiguration>(ioHelper), valueEditor.Object),
             CreateDataEditor(Constants.PropertyEditors.Aliases.MediaPicker3, new TestConfigurationEditor<MediaPicker3Configuration>(ioHelper), valueEditor.Object),
             CreateDataEditor(Constants.PropertyEditors.Aliases.MultiUrlPicker, new TestConfigurationEditor<MultiUrlPickerConfiguration>(ioHelper), valueEditor.Object),
+            CreateDataEditor(Constants.PropertyEditors.Aliases.MultiNodeTreePicker, new TestConfigurationEditor<EmptyConfiguration>(ioHelper), valueEditor.Object),
             CreateDataEditor(Constants.PropertyEditors.Aliases.Label, new TestConfigurationEditor<EmptyConfiguration>(ioHelper), valueEditor.Object),
         ]));
 
@@ -81,6 +83,7 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         Assert.Multiple(() =>
         {
             Assert.That(artifact.EditorAlias, Is.EqualTo(Constants.PropertyEditors.Aliases.SingleDropDown));
+            Assert.That(artifact.EditorUiAlias, Is.EqualTo("Umb.PropertyEditorUi.Dropdown.Single"));
             Assert.That(GetConfiguration(artifact).ContainsKey("multiple"), Is.False);
             Assert.That(GetConfiguration(artifact)["items"]!.AsArray().Select(x => x!.GetValue<string>()), Is.EqualTo(_expectedItems));
         });
@@ -113,6 +116,11 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         Assert.Multiple(() =>
         {
             Assert.That(artifact.EditorAlias, Is.EqualTo(expectedEditorAlias));
+            if (expectedEditorAlias == Constants.PropertyEditors.Aliases.SingleDropDown)
+            {
+                Assert.That(artifact.EditorUiAlias, Is.EqualTo("Umb.PropertyEditorUi.Dropdown.Single"));
+            }
+
             Assert.That(GetConfiguration(artifact).ContainsKey("multiple"), Is.False);
             Assert.That(GetConfiguration(artifact)["items"]!.AsArray().Select(x => x!.GetValue<string>()), Is.EqualTo(_expectedItems));
         });
@@ -126,6 +134,7 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         Assert.Multiple(() =>
         {
             Assert.That(artifact.EditorAlias, Is.EqualTo("Umbraco.MediaPicker.Single"));
+            Assert.That(artifact.EditorUiAlias, Is.EqualTo("Umb.PropertyEditorUi.MediaPicker.Single"));
             Assert.That(GetConfiguration(artifact).ContainsKey("multiple"), Is.False);
         });
     }
@@ -150,6 +159,7 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         Assert.Multiple(() =>
         {
             Assert.That(artifact.EditorAlias, Is.EqualTo("Umbraco.UrlPicker.Single"));
+            Assert.That(artifact.EditorUiAlias, Is.EqualTo("Umb.PropertyEditorUi.UrlPicker.Single"));
             Assert.That(GetConfiguration(artifact).ContainsKey("maxNumber"), Is.False);
             Assert.That(GetConfiguration(artifact).ContainsKey("validationLimit"), Is.False);
         });
@@ -164,6 +174,21 @@ internal sealed class LegacyToV19DataTypeMigrationChainTests
         {
             Assert.That(artifact.EditorAlias, Is.EqualTo(Constants.PropertyEditors.Aliases.MultiUrlPicker));
             Assert.That(GetConfiguration(artifact).ContainsKey("maxNumber"), Is.False);
+            Assert.That(GetConfiguration(artifact)["validationLimit"]!["max"]!.GetValue<int>(), Is.EqualTo(3));
+        });
+    }
+
+    [Test]
+    public void Legacy_Multi_Node_Tree_Picker_Min_Max_Ends_Up_As_Validation_Limit()
+    {
+        var artifact = Migrate("Umbraco.MultiNodeTreePicker2", """{"minNumber":"1","maxNumber":"3"}""");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(artifact.EditorAlias, Is.EqualTo(Constants.PropertyEditors.Aliases.MultiNodeTreePicker));
+            Assert.That(GetConfiguration(artifact).ContainsKey("minNumber"), Is.False);
+            Assert.That(GetConfiguration(artifact).ContainsKey("maxNumber"), Is.False);
+            Assert.That(GetConfiguration(artifact)["validationLimit"]!["min"]!.GetValue<int>(), Is.EqualTo(1));
             Assert.That(GetConfiguration(artifact)["validationLimit"]!["max"]!.GetValue<int>(), Is.EqualTo(3));
         });
     }
