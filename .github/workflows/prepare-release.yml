@@ -29,14 +29,14 @@ jobs:
       - name: Check branch
         run: |
           case "$GITHUB_REF" in
-            refs/heads/develop | refs/heads/v*/dev | refs/heads/release/*)
+            refs/heads/develop | refs/heads/support/*.x | refs/heads/release/*)
               ;;
             refs/heads/main | refs/tags/release-*)
               echo "::error::Use 'Prepare patch release' on $GITHUB_REF_NAME."
               exit 1
               ;;
             *)
-              echo "::error::Run this on a development branch (develop, v*/dev) or a release branch (release/*), not $GITHUB_REF_NAME."
+              echo "::error::Run this on a development branch (develop, support/*.x) or a release branch (release/*), not $GITHUB_REF_NAME."
               exit 1
               ;;
           esac

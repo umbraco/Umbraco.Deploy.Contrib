@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: The release tag to merge back, for example 'release-18.1.0'.
+        description: The release tag to merge back, for example 'release-17.2.0'.
         required: true
         type: string
 
@@ -81,7 +81,7 @@ jobs:
           if [ "${developVersion%%.*}" = "$major" ]; then
             devBranch=develop
           else
-            devBranch="v$major/dev"
+            devBranch="support/$major.x"
           fi
 
           pushRefs=''
