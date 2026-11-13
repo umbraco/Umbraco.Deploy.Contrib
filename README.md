@@ -8,11 +8,13 @@ Primarily this project offers connectors for the most popular Umbraco community 
 
 ## Branching
 
-The main branches corresponding to the Umbraco and Umbraco Deploy major releases are:
+`develop` is the development branch for the newest major. Each older, still supported major has its own development branch:
 
-- Umbraco 8/Deploy 4: `v4/dev`
-- Umbraco 9/Deploy 9: `v9/dev`
-- Umbraco 10/Deploy 10: `v10/dev`
+- Umbraco 13/Deploy 13: `support/13.x`
+- Umbraco 17/Deploy 17: `support/17.x`
+- Umbraco 18/Deploy 18: `support/18.x`
+
+See [Releasing](docs/releasing.md) for how releases are cut from these branches.
 
 ## Connectors
 
